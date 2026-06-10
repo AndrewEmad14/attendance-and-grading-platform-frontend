@@ -34,3 +34,4 @@ __screenshots__/
 
 #enviroment variables
 .env
+.env.local

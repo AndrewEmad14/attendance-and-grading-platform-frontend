@@ -8,7 +8,7 @@ export interface ApiResponse<T = any> {
   status: number
 }
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'https://api.academy.local/v1'
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
 class ApiClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -21,7 +21,8 @@ class ApiClient {
     
     // Inject mock token for the active developer profile context
     if (auth.isAuthenticated) {
-      headers.set('Authorization', `Bearer mock-token-for-${auth.userRole}`)
+      // headers.set('Authorization', `Bearer mock-token-for-${auth.userRole}`)
+     headers.set('Authorization',` Bearer 3|pf0BoY9wuP9QbyI2l90qQ8vbt0GkckSO7nQhx5kdef49ee58`)
     }
 
     const config: RequestInit = {
@@ -79,6 +80,14 @@ class ApiClient {
   public delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' })
   }
+
+  public patch<T>(endpoint: string, body: any, options?: RequestInit): Promise<T> {
+  return this.request<T>(endpoint, {
+    ...options,
+    method: 'PATCH',
+    body: JSON.stringify(body)
+  }) //there are endpoints uses patch
+}
 }
 
 export const api = new ApiClient()
