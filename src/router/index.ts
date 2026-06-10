@@ -75,6 +75,18 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/auth/views/UserLifecyclePage.vue'),
         meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] }
       },
+      {
+        path: 'grades/config/:cohortId',
+        name: 'CourseConfig',
+        component: () => import('@/modules/grading/views/CourseConfigPage.vue'),
+        meta: { title: 'Course Configuration', allowedRoles: ['track_admin'] }
+      },
+      {
+        path: 'grades/students/:studentId/tags',
+        name: 'StudentTags',
+        component: () => import('@/modules/grading/views/StudentTagsPage.vue'),
+        meta: { title: 'Student Tags & Notes', allowedRoles: ['track_admin', 'instructor'] }
+},
     ]
   },
   {

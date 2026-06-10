@@ -7,6 +7,8 @@ import router from './router'
 // PrimeVue Core Configuration
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 
 // Global CSS
 import '@/assets/main.css'
@@ -29,6 +31,8 @@ app.use(PrimeVue, {
 
 app.use(createPinia())
 app.use(router)
+app.use(ToastService)
+app.use(ConfirmationService)
 
 app.config.errorHandler = (err, instance, info) => {
   console.error('------- GLOBAL APPLICATION EXCEPTION CRITICAL BOUNDARY -------')

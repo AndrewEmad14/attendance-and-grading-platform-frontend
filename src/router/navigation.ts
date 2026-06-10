@@ -68,5 +68,11 @@ export const navigationConfig: NavigationItem[] = [
     path: '/users',
     icon: 'pi pi-users',
     roles: ['track_admin']
+  },
+  {
+    label: 'Course Configuration',
+    path: '/grades/config/1',
+    icon: 'pi pi-cog',
+    roles: ['track_admin']
   }
 ]

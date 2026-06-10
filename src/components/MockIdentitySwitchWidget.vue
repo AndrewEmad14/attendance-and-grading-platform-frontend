@@ -17,28 +17,28 @@ const auth = useAuthStore()
 
     <div class="grid grid-cols-2 gap-1 mt-1">
       <button 
-        @click="auth.loginAs('branch_manager')" 
+        @click="auth.loginAs('branch_manager'); $router.go(0)" 
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'branch_manager' }"
       >
         Manager
       </button>
       <button 
-        @click="auth.loginAs('track_admin')" 
+        @click="auth.loginAs('track_admin'); $router.go(0)" 
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'track_admin' }"
       >
         Admin
       </button>
       <button 
-        @click="auth.loginAs('instructor')" 
+        @click="auth.loginAs('instructor'); $router.go(0)" 
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'instructor' }"
       >
         Instructor
       </button>
       <button 
-        @click="auth.loginAs('student')" 
+        @click="auth.loginAs('student'); $router.go(0)" 
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'student' }"
       >
