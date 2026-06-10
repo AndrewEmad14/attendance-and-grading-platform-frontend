@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, onMounted } from 'vue'
 import { useGradingStore } from '@/stores/grading'
 import { useAuthStore } from '@/stores/auth'
 import GradeOverrideModal from '@/modules/grading/components/GradeOverrideModal.vue'
-import type { Submission, CourseDeliverable } from '@/modules/grading/services/gradingService'
+import ContentCard from '@/components/structural/ContentCard.vue'
+import DashboardGrid from '@/components/structural/DashboardGrid.vue'
+import StatCard from '@/components/structural/StatCard.vue'
+import type { Submission, CourseDeliverable, Course } from '@/modules/grading/types'
 
 const gradingStore = useGradingStore()
 const auth = useAuthStore()
@@ -20,7 +23,7 @@ const overrideTarget   = ref<{
 } | null>(null)
 const localScores = ref<Record<number, number | null>>({})
 
-// TODO: replace with real call to Zeyad Black's cohort endpoint
+// TODO: replace with real call cohort endpoint
 const cohortOptions = ref([
   { id: 1, label: 'Cohort 44 – Full Stack' },
   { id: 2, label: 'Cohort 44 – Data Science' },
@@ -206,12 +209,52 @@ function onInstrDeliverableChange(id: number) {
 
 // Reuses localScores from Track Admin — keyed by submission.id, no conflict
 function instrSaveGrade(sub: Submission) {
-  const score = localScores[sub.id]
+  const score = localScores.value[sub.id]
   if (score === undefined || score === null) return
   gradingStore.saveGrade(sub.id, score, instrDeliverableId.value!)
 }
 
+const studentCohortId = computed(() => (auth.currentUser as any)?.cohortId ?? 1)
 
+const studentLoading = ref(false)
+
+if (auth.hasRole('student')) {
+  onMounted(async () => {
+    studentLoading.value = true
+    await gradingStore.loadCourses(studentCohortId.value)
+    const allDeliverables = gradingStore.courses.flatMap(c => c.deliverables ?? [])
+    await Promise.all(allDeliverables.map(d => gradingStore.loadSubmissions(d.id)))
+    studentLoading.value = false
+  })
+}
+
+function studentSub(deliverableId: number): Submission | undefined {
+  const subs = gradingStore.submissions[deliverableId]
+  if (!subs) return undefined
+  const studentId = (auth.currentUser as any)?.studentId ?? (auth.currentUser as any)?.id
+  return subs.find(s => s.student_id === studentId) ?? subs[0]
+}
+
+function componentScore(sub: Submission | undefined, d: CourseDeliverable): number {
+  if (!sub) return 0
+  const eff = sub.override_score ?? sub.raw_score ?? 0
+  if (d.max_score === 0) return 0
+  return (eff / d.max_score) * d.course_weight
+}
+
+function courseTotal(course: Course): number {
+  return (course.deliverables ?? []).reduce((sum, d) => {
+    return sum + componentScore(studentSub(d.id), d)
+  }, 0)
+}
+
+const grandTotal = computed(() =>
+  gradingStore.courses.reduce((sum, c) => sum + courseTotal(c), 0)
+)
+
+const isAtRisk = computed(() =>
+  gradingStore.courses.some(c => courseTotal(c) < 60)
+)
 
 </script>
 
@@ -589,9 +632,84 @@ function instrSaveGrade(sub: Submission) {
 </div>
 
 
-  <!-- ── Student ────────────────────────────────────────────────────────── -->
-  <div v-else-if="auth.hasRole('student')" class="p-6">
-    <p class="text-sm text-gray-400">Student view — TASK-008 (pending)</p>
+  <div v-else-if="auth.hasRole('student')" class="flex flex-col gap-4 p-6">
+
+    <div v-if="studentLoading" class="flex items-center gap-2 text-sm text-gray-500">
+      <span class="loading loading-spinner loading-sm"></span> Loading grades…
+    </div>
+
+    <div v-if="gradingStore.error" class="alert alert-error text-sm py-2">
+      {{ gradingStore.error }}
+    </div>
+
+    <DashboardGrid variant="uniform-four">
+      <StatCard
+        label="Course Score"
+        :value="grandTotal.toFixed(1)"
+        :trend-text="gradingStore.courses.length + ' course(s)'"
+      />
+      <StatCard
+        label="Grade Status"
+        :value="isAtRisk ? 'At Risk' : 'Passing'"
+        :trend-type="isAtRisk ? 'danger' : 'success'"
+        :trend-text="isAtRisk ? 'One or more courses below 60' : 'All courses ≥ 60'"
+      />
+    </DashboardGrid>
+
+    <ContentCard
+      v-for="course in gradingStore.courses"
+      :key="course.id"
+      :title="course.name"
+      :subtitle="'Course Total: ' + courseTotal(course).toFixed(1)"
+      isTableContainer
+    >
+      <table class="table table-xs w-full">
+        <thead>
+          <tr class="bg-gray-100">
+            <th>Deliverable</th>
+            <th class="text-center">Type</th>
+            <th class="text-right">Max Score</th>
+            <th class="text-right">Your Score</th>
+            <th class="text-right">Weight (%)</th>
+            <th class="text-right">Component Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="d in course.deliverables" :key="d.id" class="hover:bg-blue-50">
+            <td class="font-medium text-xs">{{ d.name }}</td>
+            <td class="text-center">
+              <span class="badge badge-sm" :class="{
+                'badge-info': d.type === 'lab',
+                'badge-warning': d.type === 'exam',
+                'badge-accent': d.type === 'project'
+              }">{{ d.type }}</span>
+            </td>
+            <td class="text-right font-mono text-xs">{{ d.max_score }}</td>
+            <td class="text-right font-mono text-xs">
+              <template v-if="!studentSub(d.id)">
+                <span class="badge badge-ghost badge-sm">Not Submitted</span>
+              </template>
+              <template v-else>
+                <span class="flex items-center justify-end gap-1">
+                  <span v-if="studentSub(d.id)!.override_score !== null" class="badge badge-warning badge-sm text-[10px]">Adjusted</span>
+                  {{ (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) ?? '–' }}
+                </span>
+              </template>
+            </td>
+            <td class="text-right font-mono text-xs">{{ d.course_weight }}%</td>
+            <td class="text-right font-mono font-bold text-xs">{{ componentScore(studentSub(d.id), d).toFixed(1) }}</td>
+          </tr>
+          <tr class="bg-gray-50 font-bold">
+            <td colspan="5" class="text-right text-xs">Course Total</td>
+            <td class="text-right font-mono text-xs">{{ courseTotal(course).toFixed(1) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ContentCard>
+
+    <p class="text-xs text-gray-400 text-center mt-2">
+      Score formula: (Your Score ÷ Max Score) × Weight
+    </p>
   </div>
 </template>
 
