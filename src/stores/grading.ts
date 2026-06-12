@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Course, Submission, Tag, CohortAnalytics, LabGroupAnalytics } from '@/modules/grading/types'
+import type {
+  Course,
+  Submission,
+  Tag,
+  CohortAnalytics,
+  LabGroupAnalytics,
+} from '@/modules/grading/types'
 import {
   getCohortCourses,
   getDeliverableSubmissions,
@@ -8,16 +14,16 @@ import {
   getCohortAnalytics,
   getLabGroupAnalytics,
   gradeSubmission,
-  overrideSubmission
+  overrideSubmission,
 } from '@/modules/grading/services/gradingService'
 
 export const useGradingStore = defineStore('grading', () => {
   const selectedCohortId = ref<number | null>(null)
-  const selectedLabGroupId  = ref<number | null>(null)
-  const courses  = ref<Course[]>([])
-  const submissions  = ref<Record<number, Submission[]>>({})
-  const tags  = ref<Tag[]>([])
-  const analytics  = ref<CohortAnalytics | LabGroupAnalytics | null>(null)
+  const selectedLabGroupId = ref<number | null>(null)
+  const courses = ref<Course[]>([])
+  const submissions = ref<Record<number, Submission[]>>({})
+  const tags = ref<Tag[]>([])
+  const analytics = ref<CohortAnalytics | LabGroupAnalytics | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -104,7 +110,12 @@ export const useGradingStore = defineStore('grading', () => {
     }
   }
 
-  async function saveOverride(submissionId: number, newScore: number, note: string, deliverableId: number) {
+  async function saveOverride(
+    submissionId: number,
+    newScore: number,
+    note: string,
+    deliverableId: number,
+  ) {
     loading.value = true
     error.value = null
     try {
@@ -134,6 +145,6 @@ export const useGradingStore = defineStore('grading', () => {
     loadCohortAnalytics,
     loadLabGroupAnalytics,
     saveGrade,
-    saveOverride
+    saveOverride,
   }
 })

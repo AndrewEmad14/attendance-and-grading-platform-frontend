@@ -6,7 +6,7 @@ import {
   deleteLabGroup,
   getCohortStudents,
   attachStudentToGroup,
-  detachStudentFromGroup
+  detachStudentFromGroup,
 } from '../services/cohortService'
 
 export function useLabGroupManagement() {
@@ -25,7 +25,7 @@ export function useLabGroupManagement() {
       // Execute concurrently to optimize pipeline delivery speed
       const [groupsData, studentsData] = await Promise.all([
         getLabGroups(cohortId, true),
-        getCohortStudents(cohortId, true)
+        getCohortStudents(cohortId, true),
       ])
       labGroups.value = groupsData
       unassignedStudents.value = studentsData
@@ -105,6 +105,6 @@ export function useLabGroupManagement() {
     addGroup,
     removeGroup,
     assignStudent,
-    dropStudent
+    dropStudent,
   }
 }

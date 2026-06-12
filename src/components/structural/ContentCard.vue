@@ -10,17 +10,17 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   isTableContainer: false,
-  isMainCanvas: false
+  isMainCanvas: false,
 })
 </script>
 
 <template>
-  <div 
+  <div
     class="card bg-white border border-surface-200 shadow-xs w-full overflow-hidden min-w-0"
     :class="{ 'xl:col-span-2': isMainCanvas }"
   >
-    <div 
-      v-if="title" 
+    <div
+      v-if="title"
       class="p-4 bg-surface-50 border-b border-surface-200 flex flex-wrap justify-between items-center gap-2"
     >
       <div>

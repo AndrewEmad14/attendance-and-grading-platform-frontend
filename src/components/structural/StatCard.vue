@@ -7,7 +7,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  trendType: 'neutral'
+  trendType: 'neutral',
 })
 </script>
 
@@ -17,26 +17,29 @@ withDefaults(defineProps<Props>(), {
       <div class="text-xs font-semibold text-surface-400 uppercase tracking-wider truncate">
         {{ label }}
       </div>
-      <div 
+      <div
         class="text-2xl font-bold mt-1 tracking-tight"
         :class="trendType === 'danger' ? 'text-danger' : 'text-surface-900'"
       >
         {{ value }}
       </div>
     </div>
-    
-    <div 
-      v-if="trendText" 
+
+    <div
+      v-if="trendText"
       class="mt-2 flex items-center text-xs font-medium"
       :class="{
         'text-success': trendType === 'success',
         'text-danger': trendType === 'danger',
-        'text-surface-400': trendType === 'neutral'
+        'text-surface-400': trendType === 'neutral',
       }"
     >
-      <i 
-        v-if="trendType !== 'neutral'" 
-        :class="['pi mr-1 text-[10px]', trendType === 'success' ? 'pi-arrow-up-right' : 'pi-exclamation-triangle']"
+      <i
+        v-if="trendType !== 'neutral'"
+        :class="[
+          'pi mr-1 text-[10px]',
+          trendType === 'success' ? 'pi-arrow-up-right' : 'pi-exclamation-triangle',
+        ]"
       ></i>
       <span>{{ trendText }}</span>
     </div>

@@ -1,7 +1,12 @@
 import { api } from '@/utils/api'
-import type { Course, CourseDeliverable, Submission, Tag, CohortAnalytics, LabGroupAnalytics } from '@/modules/grading/types'
-
-
+import type {
+  Course,
+  CourseDeliverable,
+  Submission,
+  Tag,
+  CohortAnalytics,
+  LabGroupAnalytics,
+} from '@/modules/grading/types'
 
 export async function getCohortCourses(cohortId: number): Promise<Course[]> {
   try {
@@ -14,7 +19,7 @@ export async function getCohortCourses(cohortId: number): Promise<Course[]> {
 
 export async function createCourse(
   cohortId: number,
-  data: { name: string; deliverables: Omit<CourseDeliverable, 'id' | 'course_id'>[] }
+  data: { name: string; deliverables: Omit<CourseDeliverable, 'id' | 'course_id'>[] },
 ): Promise<Course> {
   try {
     const res = await api.post<{ data: Course }>(`/cohorts/${cohortId}/courses`, data)
@@ -26,7 +31,7 @@ export async function createCourse(
 
 export async function updateCourse(
   courseId: number,
-  data: { name?: string; deliverables?: Omit<CourseDeliverable, 'course_id'>[] }
+  data: { name?: string; deliverables?: Omit<CourseDeliverable, 'course_id'>[] },
 ): Promise<Course> {
   try {
     const res = await api.patch<{ data: Course }>(`/courses/${courseId}`, data)
@@ -44,7 +49,6 @@ export async function deleteCourse(courseId: number): Promise<void> {
   }
 }
 
-
 export async function getDeliverableSubmissions(deliverableId: number): Promise<Submission[]> {
   try {
     const res = await api.get<{ data: Submission[] }>(`/deliverables/${deliverableId}/submissions`)
@@ -57,7 +61,7 @@ export async function getDeliverableSubmissions(deliverableId: number): Promise<
 export async function gradeSubmission(submissionId: number, rawScore: number): Promise<Submission> {
   try {
     const res = await api.patch<{ data: Submission }>(`/submissions/${submissionId}`, {
-      raw_score: rawScore
+      raw_score: rawScore,
     })
     return res.data
   } catch (err: any) {
@@ -68,19 +72,18 @@ export async function gradeSubmission(submissionId: number, rawScore: number): P
 export async function overrideSubmission(
   submissionId: number,
   newScore: number,
-  overrideNote: string
+  overrideNote: string,
 ): Promise<Submission> {
   try {
     const res = await api.post<{ data: Submission }>(`/submissions/${submissionId}/override`, {
       new_score: newScore,
-      override_note: overrideNote
+      override_note: overrideNote,
     })
     return res.data
   } catch (err: any) {
     throw new Error('Failed to override submission: ' + err.message)
   }
 }
-
 
 export async function getCohortAnalytics(cohortId: number): Promise<CohortAnalytics> {
   try {
@@ -97,7 +100,6 @@ export async function getLabGroupAnalytics(labGroupId: number): Promise<LabGroup
     throw new Error('Failed to load lab group analytics: ' + err.message)
   }
 }
-
 
 export async function getTags(): Promise<Tag[]> {
   try {
@@ -143,16 +145,14 @@ export async function removeStudentTag(studentId: number, tagId: number): Promis
   }
 }
 
-
 export async function appendStudentNote(
   studentId: number,
-  note: string
+  note: string,
 ): Promise<{ message: string; notes: string }> {
   try {
-    return await api.patch<{ message: string; notes: string }>(
-      `/students/${studentId}/notes`,
-      { note }
-    )
+    return await api.patch<{ message: string; notes: string }>(`/students/${studentId}/notes`, {
+      note,
+    })
   } catch (err: any) {
     throw new Error('Failed to append note: ' + err.message)
   }

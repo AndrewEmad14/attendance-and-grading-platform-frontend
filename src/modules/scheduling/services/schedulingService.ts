@@ -1,26 +1,28 @@
 import { api, type ApiResponse } from '@/utils/api'
-import type { 
-  Engagement, 
-  BusinessSession, 
-  StoreEngagementPayload, 
-  UpdateEngagementPayload, 
-  StoreBusinessSessionPayload 
+import type {
+  Engagement,
+  BusinessSession,
+  StoreEngagementPayload,
+  UpdateEngagementPayload,
+  StoreBusinessSessionPayload,
 } from '../types'
 
 /**
  * Extract active timeline engagements bounded by parameters or specific types
  */
-export async function getEngagements(filters: {
-  cohort_id?: number
-  staff_id?: number
-  type?: string
-  engageable_id?: number
-  date_from?: string
-  date_to?: string
-} = {}): Promise<Engagement[]> {
+export async function getEngagements(
+  filters: {
+    cohort_id?: number
+    staff_id?: number
+    type?: string
+    engageable_id?: number
+    date_from?: string
+    date_to?: string
+  } = {},
+): Promise<Engagement[]> {
   try {
     const queryParams = new URLSearchParams()
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         queryParams.append(key, String(value))
@@ -29,7 +31,7 @@ export async function getEngagements(filters: {
 
     const queryString = queryParams.toString()
     const endpoint = queryString ? `/engagements?${queryString}` : '/engagements'
-    
+
     const response = await api.get<ApiResponse<Engagement[]>>(endpoint)
     return response.data
   } catch (err: any) {
@@ -52,7 +54,10 @@ export async function createEngagement(data: StoreEngagementPayload): Promise<En
 /**
  * Alter active engagement dates, assignees, or duration records
  */
-export async function updateEngagement(engagementId: number, data: UpdateEngagementPayload): Promise<Engagement> {
+export async function updateEngagement(
+  engagementId: number,
+  data: UpdateEngagementPayload,
+): Promise<Engagement> {
   try {
     const response = await api.patch<ApiResponse<Engagement>>(`/engagements/${engagementId}`, data)
     return response.data
@@ -87,7 +92,9 @@ export async function getBusinessSessions(): Promise<BusinessSession[]> {
 /**
  * Deploy a baseline cross-track business scenario event profile
  */
-export async function createBusinessSession(data: StoreBusinessSessionPayload): Promise<BusinessSession> {
+export async function createBusinessSession(
+  data: StoreBusinessSessionPayload,
+): Promise<BusinessSession> {
   try {
     const response = await api.post<ApiResponse<BusinessSession>>('/business-sessions', data)
     return response.data
@@ -99,7 +106,10 @@ export async function createBusinessSession(data: StoreBusinessSessionPayload): 
 /**
  * Enroll a full operational cohort into a broader global business session event context
  */
-export async function enrollCohortInBusinessSession(businessSessionId: number, cohortId: number): Promise<void> {
+export async function enrollCohortInBusinessSession(
+  businessSessionId: number,
+  cohortId: number,
+): Promise<void> {
   try {
     await api.post<void>(`/business-sessions/${businessSessionId}/cohorts`, { cohort_id: cohortId })
   } catch (err: any) {
@@ -110,7 +120,10 @@ export async function enrollCohortInBusinessSession(businessSessionId: number, c
 /**
  * Release a cohort index tracking block from cross-track business session views
  */
-export async function removeCohortFromBusinessSession(businessSessionId: number, cohortId: number): Promise<void> {
+export async function removeCohortFromBusinessSession(
+  businessSessionId: number,
+  cohortId: number,
+): Promise<void> {
   try {
     await api.delete<void>(`/business-sessions/${businessSessionId}/cohorts/${cohortId}`)
   } catch (err: any) {

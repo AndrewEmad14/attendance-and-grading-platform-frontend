@@ -1,18 +1,20 @@
 import { api, type ApiResponse } from '@/utils/api'
-import type { 
-  Cohort, 
-  LabGroup, 
-  CohortStudent, 
-  StoreCohortPayload, 
-  UpdateCohortPayload, 
-  StoreLabGroupPayload 
+import type {
+  Cohort,
+  LabGroup,
+  CohortStudent,
+  StoreCohortPayload,
+  UpdateCohortPayload,
+  StoreLabGroupPayload,
 } from '../types'
 
 /**
  * Fetch a list of all cohorts across the system with optional filters
  * Function maps to Route::get('cohorts') and Route::get('tracks/{track}/cohorts')
  */
-export async function getCohorts(filters: { trackId?: number; is_active?: boolean; include_meta?: boolean } = {}): Promise<Cohort[]> {
+export async function getCohorts(
+  filters: { trackId?: number; is_active?: boolean; include_meta?: boolean } = {},
+): Promise<Cohort[]> {
   try {
     let endpoint = '/cohorts'
     const queryParams = new URLSearchParams()
@@ -52,9 +54,16 @@ export async function createCohort(trackId: number, data: StoreCohortPayload): P
 /**
  * Update attributes or lifecycle adjustments on an active cohort
  */
-export async function updateCohort(trackId: number, cohortId: number, data: UpdateCohortPayload): Promise<Cohort> {
+export async function updateCohort(
+  trackId: number,
+  cohortId: number,
+  data: UpdateCohortPayload,
+): Promise<Cohort> {
   try {
-    const response = await api.patch<ApiResponse<Cohort>>(`/tracks/${trackId}/cohorts/${cohortId}`, data)
+    const response = await api.patch<ApiResponse<Cohort>>(
+      `/tracks/${trackId}/cohorts/${cohortId}`,
+      data,
+    )
     return response.data
   } catch (err: any) {
     throw new Error('Failed to modify cohort configurations: ' + err.message)
@@ -64,7 +73,10 @@ export async function updateCohort(trackId: number, cohortId: number, data: Upda
 /**
  * Retrieve sub-divided lab groups attached to a target cohort window
  */
-export async function getLabGroups(cohortId: number, includeStudents: boolean = false): Promise<LabGroup[]> {
+export async function getLabGroups(
+  cohortId: number,
+  includeStudents: boolean = false,
+): Promise<LabGroup[]> {
   try {
     const endpoint = `/cohorts/${cohortId}/lab-groups${includeStudents ? '?include_students=1' : ''}`
     const response = await api.get<ApiResponse<LabGroup[]>>(endpoint)
@@ -77,7 +89,10 @@ export async function getLabGroups(cohortId: number, includeStudents: boolean = 
 /**
  * Provision a new sub-divided lab group container within a cohort context
  */
-export async function createLabGroup(cohortId: number, data: StoreLabGroupPayload): Promise<LabGroup> {
+export async function createLabGroup(
+  cohortId: number,
+  data: StoreLabGroupPayload,
+): Promise<LabGroup> {
   try {
     const response = await api.post<ApiResponse<LabGroup>>(`/cohorts/${cohortId}/lab-groups`, data)
     return response.data
@@ -100,7 +115,10 @@ export async function deleteLabGroup(labGroupId: number): Promise<void> {
 /**
  * Extract comprehensive student registers matching specific filtering scopes
  */
-export async function getCohortStudents(cohortId: number, unassignedOnly: boolean = false): Promise<CohortStudent[]> {
+export async function getCohortStudents(
+  cohortId: number,
+  unassignedOnly: boolean = false,
+): Promise<CohortStudent[]> {
   try {
     const endpoint = `/cohorts/${cohortId}/students${unassignedOnly ? '?unassigned_only=1' : ''}`
     const response = await api.get<ApiResponse<CohortStudent[]>>(endpoint)

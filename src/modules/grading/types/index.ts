@@ -1,4 +1,3 @@
-
 export interface CourseDeliverable {
   id: number
   course_id: number
@@ -27,8 +26,8 @@ export interface Submission {
   raw_score: number | null
   override_score: number | null
   override_note: string | null
- graded_by: { id: number; name: string } | null
- overridden_by: { id: number; name: string } | null
+  graded_by: { id: number; name: string } | null
+  overridden_by: { id: number; name: string } | null
   overridden_at: string | null
 }
 

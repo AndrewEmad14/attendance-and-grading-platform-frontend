@@ -8,7 +8,7 @@ import {
   attachStudentTag,
   removeStudentTag,
   appendStudentNote,
-  createTag
+  createTag,
 } from '@/modules/grading/services/gradingService'
 import type { Tag } from '@/modules/grading/types'
 import ContentCard from '@/components/structural/ContentCard.vue'
@@ -30,21 +30,18 @@ const noteText = ref('')
 const saving = ref(false)
 
 const unassignedTags = computed(() =>
-  availableTags.value.filter(t => !studentTags.value.some(st => st.id === t.id))
+  availableTags.value.filter((t) => !studentTags.value.some((st) => st.id === t.id)),
 )
 
-const isAssignDisabled = computed(() =>
-  !selectedTagId.value || studentTags.value.some(t => t.id === selectedTagId.value)
+const isAssignDisabled = computed(
+  () => !selectedTagId.value || studentTags.value.some((t) => t.id === selectedTagId.value),
 )
 
 async function loadData() {
   loading.value = true
   error.value = ''
   try {
-    const [tags, allTags] = await Promise.all([
-      getStudentTags(studentId.value),
-      getTags()
-    ])
+    const [tags, allTags] = await Promise.all([getStudentTags(studentId.value), getTags()])
     studentTags.value = tags
     availableTags.value = allTags
   } catch (err: any) {
@@ -113,7 +110,6 @@ onMounted(loadData)
 
 <template>
   <div class="flex flex-col gap-4 p-6 max-w-4xl mx-auto">
-
     <h1 class="text-xl font-bold text-surface-900">
       Student Tags &amp; Notes
       <span class="text-sm font-normal text-gray-400 ml-2">Student #{{ studentId }}</span>
@@ -130,27 +126,22 @@ onMounted(loadData)
     <!-- Tags Panel -->
     <ContentCard title="Tags">
       <div class="flex flex-wrap gap-2 mb-4">
-        <span
-          v-for="tag in studentTags"
-          :key="tag.id"
-          class="badge badge-lg gap-1"
-        >
+        <span v-for="tag in studentTags" :key="tag.id" class="badge badge-lg gap-1">
           {{ tag.tag }}
           <button
             v-if="auth.hasRole('track_admin')"
             class="btn btn-ghost btn-xs px-0 text-error"
             @click="removeTag(tag.id)"
             :disabled="saving"
-          >×</button>
+          >
+            ×
+          </button>
         </span>
         <span v-if="!studentTags.length" class="text-sm text-gray-400">No tags assigned.</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <select
-          v-model="selectedTagId"
-          class="select select-bordered select-sm flex-1"
-        >
+        <select v-model="selectedTagId" class="select select-bordered select-sm flex-1">
           <option :value="null">Select tag to assign…</option>
           <option v-for="tag in unassignedTags" :key="tag.id" :value="tag.id">
             {{ tag.tag }}
@@ -160,7 +151,9 @@ onMounted(loadData)
           class="btn btn-sm btn-primary"
           :disabled="isAssignDisabled || saving"
           @click="assignTag"
-        >Assign</button>
+        >
+          Assign
+        </button>
       </div>
 
       <div v-if="auth.hasRole('track_admin')" class="mt-4 pt-4 border-t border-gray-200">
@@ -177,14 +170,21 @@ onMounted(loadData)
             class="btn btn-sm btn-outline"
             :disabled="!newTagText.trim() || saving"
             @click="addNewTag"
-          >Add Tag</button>
+          >
+            Add Tag
+          </button>
         </div>
       </div>
     </ContentCard>
 
     <!-- Notes Panel -->
     <ContentCard title="Notes">
-      <div v-if="notes" class="bg-gray-50 rounded p-3 mb-4 text-sm whitespace-pre-wrap font-mono text-gray-700 max-h-64 overflow-y-auto">{{ notes }}</div>
+      <div
+        v-if="notes"
+        class="bg-gray-50 rounded p-3 mb-4 text-sm whitespace-pre-wrap font-mono text-gray-700 max-h-64 overflow-y-auto"
+      >
+        {{ notes }}
+      </div>
       <div v-else class="text-sm text-gray-400 mb-4">No notes yet.</div>
 
       <div class="flex flex-col gap-2">
@@ -204,10 +204,11 @@ onMounted(loadData)
             class="btn btn-sm btn-primary"
             :disabled="!noteText.trim() || saving"
             @click="appendNote"
-          >Append Note</button>
+          >
+            Append Note
+          </button>
         </div>
       </div>
     </ContentCard>
-
   </div>
 </template>
