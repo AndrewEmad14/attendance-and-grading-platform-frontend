@@ -4,17 +4,20 @@ import { ref, computed } from 'vue'
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
 export interface UserProfile {
-  id?: number
+  id: number
   name: string
   email: string
   role: UserRole
   expires_at?: string | null
+  email_verified_at?: string | null
+  // role-specific profile; key/shape depends on role
+  student_profile?: Record<string, any> | null
+  staff_profile?: Record<string, any> | null
 }
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Restore authentication tracking indicators from structural storage containers
   const token = ref<string | null>(localStorage.getItem('auth_token'))
   const currentUser = ref<UserProfile | null>(
     localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
@@ -23,7 +26,6 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
   const isLoading = ref(false)
 
-  // System target credentials map for real database seeds
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
     track_admin: 'admin@example.com',
@@ -31,11 +33,42 @@ export const useAuthStore = defineStore('auth', () => {
     student: 'student@example.com',
   }
 
-  // Getters / Computed Properties
   const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)
   const userRole = computed(() => currentUser.value?.role ?? null)
 
-  // Actions
+  function authHeaders(): HeadersInit {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }
+    if (token.value) headers.Authorization = `Bearer ${token.value}`
+    return headers
+  }
+
+  // Fetch the authenticated profile from /auth/me (flat user + role-specific profile)
+  async function fetchMe(): Promise<UserProfile | null> {
+    if (!token.value) return null
+
+    const response = await fetch(`${BASE_URL}/auth/me`, {
+      method: 'POST',
+      headers: authHeaders(),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      // Expired/invalid token returns 401 (SEC-2) — clear session
+      if (response.status === 401) {
+        clearSession()
+      }
+      throw new Error(data.message || 'Failed to fetch profile')
+    }
+
+    currentUser.value = data as UserProfile
+    localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
+    return currentUser.value
+  }
+
   async function loginAs(role: UserRole) {
     isLoading.value = true
     error.value = null
@@ -49,7 +82,7 @@ export const useAuthStore = defineStore('auth', () => {
         },
         body: JSON.stringify({
           email: testCredentials[role],
-          password: 'password', // Common test environment password credential
+          password: 'password',
         }),
       })
 
@@ -59,25 +92,14 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error(data.message || 'Authentication operation failed')
       }
 
-      // Sync state context structures
+      // Login returns the token; profile comes from /auth/me
       token.value = data.access_token
-      currentUser.value = {
-        id: data.user.id,
-        name: data.user.name,
-        email: testCredentials[role],
-        role: data.role,
-        expires_at: data.expires_at,
-      }
+      localStorage.setItem('auth_token', token.value!)
 
-      // Commit artifacts to local persistent browser layers
-      localStorage.setItem('auth_token', data.access_token)
-      localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
+      await fetchMe()
     } catch (err: any) {
       error.value = err.message
-      currentUser.value = null
-      token.value = null
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
+      clearSession()
       throw err
     } finally {
       isLoading.value = false
@@ -90,34 +112,30 @@ export const useAuthStore = defineStore('auth', () => {
       if (token.value) {
         await fetch(`${BASE_URL}/auth/logout`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: `Bearer ${token.value}`,
-          },
+          headers: authHeaders(),
         })
       }
     } catch (err) {
       console.error('Logout request failed, clearing local session regardless:', err)
     } finally {
-      // Always purge parameters client side even on operational network drops
-      currentUser.value = null
-      token.value = null
-      error.value = null
+      clearSession()
       isLoading.value = false
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
     }
   }
 
-  // RBAC Helper
+  function clearSession() {
+    currentUser.value = null
+    token.value = null
+    error.value = null
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth_user')
+  }
+
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
     if (!currentUser.value) return false
-
     if (Array.isArray(allowedRoles)) {
       return allowedRoles.includes(currentUser.value.role)
     }
-
     return currentUser.value.role === allowedRoles
   }
 
@@ -130,6 +148,7 @@ export const useAuthStore = defineStore('auth', () => {
     userRole,
     loginAs,
     logout,
+    fetchMe,
     hasRole,
   }
 })
