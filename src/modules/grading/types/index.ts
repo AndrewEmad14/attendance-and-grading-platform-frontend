@@ -19,6 +19,10 @@ export interface Submission {
   id: number
   deliverable_id: number
   student_id: number
+  submission_type: string | null
+  submission_path: string | null
+  submitted_at: string
+  status: 'completed' | 'late'
   student?: {
     id: number
     name: string
@@ -26,6 +30,9 @@ export interface Submission {
   raw_score: number | null
   override_score: number | null
   override_note: string | null
+  effective_raw_score: number | null
+  normalized_score: number | null
+  is_overridden: boolean
   graded_by: { id: number; name: string } | null
   overridden_by: { id: number; name: string } | null
   overridden_at: string | null
