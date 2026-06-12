@@ -82,7 +82,13 @@ async function handleCohortChange() {
 
       labGroups.value = groups
       poolStudents.value = students
-      engagements.value = schedule
+
+
+
+      // NOTE: I changes from schedule to schedule.data because schedule is a paginated response not engagment
+
+
+      engagements.value = schedule.data
       logOutput('Cohort Context Fully Hydrated (Admin)', { groups, students, schedule })
     } else {
       // For students/instructors, safely resolve only the permitted calendar track
@@ -93,8 +99,9 @@ async function handleCohortChange() {
       if (currentRole.value === 'instructor') {
         labGroups.value = await cohortApi.getLabGroups(contextStore.selectedCohortId, false)
       }
-
-      engagements.value = schedule
+      // NOTE: I changes from schedule to schedule.data because schedule is a paginated response not engagment
+      
+      engagements.value = schedule.data
       logOutput(`Cohort Context Hydrated for Role: ${currentRole.value}`, { schedule })
     }
   } catch (err: any) {

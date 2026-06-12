@@ -12,6 +12,7 @@ export interface Engagement {
   engageable_type: EngageableType
   engageable_id: number
   staff_id: number
+  staff_name: string
   starts_at: string // ISO String
   ends_at: string // ISO String
   scheduled_hours: number

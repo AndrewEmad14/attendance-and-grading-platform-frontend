@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useCohortContextStore } from './cohortContext' // Import context to clear it
 
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
@@ -14,7 +15,8 @@ export interface UserProfile {
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Restore authentication tracking indicators from structural storage containers
+  const cohortContext = useCohortContextStore() // Instantiate store reference
+  
   const token = ref<string | null>(localStorage.getItem('auth_token'))
   const currentUser = ref<UserProfile | null>(
     localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
@@ -23,19 +25,16 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
   const isLoading = ref(false)
 
-  // System target credentials map for real database seeds
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
-    track_admin: 'admin@example.com',
+    track_admin: 'ldare@example.net',
     instructor: 'instructor@example.com',
     student: 'student@example.com',
   }
 
-  // Getters / Computed Properties
   const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)
   const userRole = computed(() => currentUser.value?.role ?? null)
 
-  // Actions
   async function loginAs(role: UserRole) {
     isLoading.value = true
     error.value = null
@@ -49,7 +48,7 @@ export const useAuthStore = defineStore('auth', () => {
         },
         body: JSON.stringify({
           email: testCredentials[role],
-          password: 'password', // Common test environment password credential
+          password: 'password',
         }),
       })
 
@@ -59,7 +58,9 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error(data.message || 'Authentication operation failed')
       }
 
-      // Sync state context structures
+      // Always reset admin selection states when a fresh login occurs
+      cohortContext.clearContext()
+
       token.value = data.access_token
       currentUser.value = {
         id: data.user.id,
@@ -69,7 +70,6 @@ export const useAuthStore = defineStore('auth', () => {
         expires_at: data.expires_at,
       }
 
-      // Commit artifacts to local persistent browser layers
       localStorage.setItem('auth_token', data.access_token)
       localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
     } catch (err: any) {
@@ -100,7 +100,9 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err) {
       console.error('Logout request failed, clearing local session regardless:', err)
     } finally {
-      // Always purge parameters client side even on operational network drops
+      // Clear all active context models out of local pins on exit
+      cohortContext.clearContext()
+      
       currentUser.value = null
       token.value = null
       error.value = null
@@ -110,7 +112,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // RBAC Helper
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
     if (!currentUser.value) return false
 

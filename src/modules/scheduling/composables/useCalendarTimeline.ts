@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type { Engagement, BusinessSession, StoreEngagementPayload } from '../types'
+import type { PaginatedResponse } from '@/types'
 import {
   getEngagements,
   createEngagement,
@@ -15,35 +16,66 @@ export function useCalendarTimeline() {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  // Track the user's active calendar timeline query parameters locally
-  const activeDateFrom = ref<string | null>(null)
-  const activeDateTo = ref<string | null>(null)
+  // Track pagination state criteria
+  const paginationMeta = ref<PaginatedResponse<Engagement>['meta'] | null>(null)
+
+  // Cache the active query parameters locally for seamless mutation refreshes
+  const activeFilters = ref<{
+    cohortId?: number
+    staffId?: number
+    dateFrom?: string
+    dateTo?: string
+    page?: number
+    type?: string
+  }>({})
 
   /**
-   * Load engagements filtered by an active calendar timeline block window
+   * Load engagements filtered by timeline windows and explicit page parameters
    */
   async function loadTimeline(
-    filters: { cohortId?: number; staffId?: number; dateFrom?: string; dateTo?: string } = {},
+    filters: {
+      cohortId?: number
+      staffId?: number
+      dateFrom?: string
+      dateTo?: string
+      type?: string
+      page?: number
+    } = {},
   ) {
     isLoading.value = true
     error.value = null
 
-    // Cache active dates locally so subsequent mutations reuse the same window parameters
-    if (filters.dateFrom) activeDateFrom.value = filters.dateFrom
-    if (filters.dateTo) activeDateTo.value = filters.dateTo
+    // Merge new filters with existing cached parameters to maintain state continuity
+    activeFilters.value = {
+      ...activeFilters.value,
+      ...filters,
+    }
 
     try {
-      engagements.value = await getEngagements({
-        cohort_id: filters.cohortId,
-        staff_id: filters.staffId,
-        date_from: activeDateFrom.value || undefined,
-        date_to: activeDateTo.value || undefined,
+      const paginatedData = await getEngagements({
+        cohort_id: activeFilters.value.cohortId,
+        staff_id: activeFilters.value.staffId,
+        date_from: activeFilters.value.dateFrom || undefined,
+        date_to: activeFilters.value.dateTo || undefined,
+        page: activeFilters.value.page || 1,
+        engageable_type: activeFilters.value.type,
       })
+
+      // Unpack data array from metadata shell
+      engagements.value = paginatedData.data
+      paginationMeta.value = paginatedData.meta
     } catch (err: any) {
       error.value = err.message
     } finally {
       isLoading.value = false
     }
+  }
+
+  /**
+   * Change page wrapper shortcut
+   */
+  async function changePage(pageNumber: number) {
+    await loadTimeline({ page: pageNumber })
   }
 
   /**
@@ -69,7 +101,8 @@ export function useCalendarTimeline() {
     error.value = null
     try {
       await createEngagement(payload)
-      await loadTimeline({ cohortId: contextCohortId })
+      // Reset back to page 1 on fresh creations to surface the new block immediately
+      await loadTimeline({ cohortId: contextCohortId, page: 1 })
     } catch (err: any) {
       error.value = err.message
       isLoading.value = false
@@ -124,9 +157,11 @@ export function useCalendarTimeline() {
   return {
     engagements,
     businessSessions,
+    paginationMeta,
     isLoading,
     error,
     loadTimeline,
+    changePage,
     loadBusinessSessions,
     bookSession,
     cancelSession,
