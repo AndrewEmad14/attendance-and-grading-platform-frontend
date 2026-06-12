@@ -124,8 +124,7 @@ const commitOverrideChange = async () => {
         </button>
         <button
           @click="commitOverrideChange"
-          :disabled="isSubmitDisabled"
-          class="btn btn-sm btn-primary text-white font-medium normal-case flex items-center gap-2"
+          class="btn btn-sm btn-primary font-medium normal-case flex items-center gap-2"
         >
           <i v-if="saving" class="pi pi-spinner pi-spin text-[10px]"></i>
           Apply Audit Adjustments

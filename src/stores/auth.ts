@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
-    track_admin: 'ldare@example.net',
+    track_admin: 'admin@example.com',
     instructor: 'instructor@example.com',
     student: 'student@example.com',
   }
