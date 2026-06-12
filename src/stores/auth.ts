@@ -4,58 +4,114 @@ import { ref, computed } from 'vue'
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
 export interface UserProfile {
+  id?: number
   name: string
   email: string
   role: UserRole
+  expires_at?: string | null
 }
 
-export const useAuthStore = defineStore('auth', () => {
-  const currentUser = ref<UserProfile | null>({
-    name: 'Sarah Jenkins',
-    email: 'sarah.j@academy.com',
-    role: 'track_admin'
-  })
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
-  const mockAccounts: UserProfile[] = [
-    {
-      name: 'Marcus Vance',
-      email: 'marcus.v@academy.com',
-      role: 'branch_manager'
-    },
-    {
-      name: 'Sarah Jenkins',
-      email: 'sarah.j@academy.com',
-      role: 'track_admin'
-    },
-    {
-      name: 'Prof. Alan Turing',
-      email: 'alan.t@academy.com',
-      role: 'instructor'
-    },
-    {
-      name: 'Alex Rivera',
-      email: 'alex.r@student.com',
-      role: 'student'
-    }
-  ]
+export const useAuthStore = defineStore('auth', () => {
+  // Restore authentication tracking indicators from structural storage containers
+  const token = ref<string | null>(localStorage.getItem('auth_token'))
+  const currentUser = ref<UserProfile | null>(
+    localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null
+  )
+
+  const error = ref<string | null>(null)
+  const isLoading = ref(false)
+
+  // System target credentials map for real database seeds
+  const testCredentials: Record<UserRole, string> = {
+    branch_manager: 'isabelle.haag@example.net',
+    track_admin: 'ellsworth.ebert@example.org',
+    instructor: 'qsporer@example.org',
+    student: 'al97@example.net'
+  }
 
   // Getters / Computed Properties
-  const isAuthenticated = computed(() => currentUser.value !== null)
+  const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)
   const userRole = computed(() => currentUser.value?.role ?? null)
 
   // Actions
-  function loginAs(role: UserRole) {
-    const account = mockAccounts.find(acc => acc.role === role)
-    if (account) {
-      currentUser.value = { ...account }
+  async function loginAs(role: UserRole) {
+    isLoading.value = true
+    error.value = null
+    
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          email: testCredentials[role],
+          password: 'password' // Common test environment password credential
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Authentication operation failed')
+      }
+
+      // Sync state context structures
+      token.value = data.access_token
+      currentUser.value = {
+        id: data.user.id,
+        name: data.user.name,
+        email: testCredentials[role],
+        role: data.role,
+        expires_at: data.expires_at
+      }
+
+      // Commit artifacts to local persistent browser layers
+      localStorage.setItem('auth_token', data.access_token)
+      localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
+
+    } catch (err: any) {
+      error.value = err.message
+      currentUser.value = null
+      token.value = null
+      localStorage.removeItem('auth_token')
+      localStorage.removeItem('auth_user')
+      throw err
+    } finally {
+      isLoading.value = false
     }
   }
 
-  function logout() {
-    currentUser.value = null
+  async function logout() {
+    isLoading.value = true
+    try {
+      if (token.value) {
+        await fetch(`${BASE_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token.value}`
+          }
+        })
+      }
+    } catch (err) {
+      console.error('Logout request failed, clearing local session regardless:', err)
+    } finally {
+      // Always purge parameters client side even on operational network drops
+      currentUser.value = null
+      token.value = null
+      error.value = null
+      isLoading.value = false
+      localStorage.removeItem('auth_token')
+      localStorage.removeItem('auth_user')
+    }
   }
 
-  // RBAC Helper:
+  // RBAC Helper
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
     if (!currentUser.value) return false
     
@@ -68,7 +124,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     currentUser,
-    mockAccounts,
+    token,
+    isLoading,
+    error,
     isAuthenticated,
     userRole,
     loginAs,
