@@ -10,7 +10,9 @@
       </div>
       <div>
         <h2 class="text-lg font-bold text-surface-900 tracking-tight">Account Expiry Console</h2>
-        <p class="text-xs text-surface-500 font-mono">Component: src/modules/auth/views/Example.vue</p>
+        <p class="text-xs text-surface-500 font-mono">
+          Component: src/modules/auth/views/Example.vue
+        </p>
       </div>
     </div>
     <div class="p-8 border border-dashed border-surface-200 bg-surface-50 rounded-lg text-center">

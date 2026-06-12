@@ -9,7 +9,7 @@ const router = useRouter()
 // Automatically redirect the user to their permitted homepage whenever the active role swaps
 watchEffect(() => {
   if (!auth.isAuthenticated) return
-  
+
   switch (auth.userRole) {
     case 'branch_manager':
       router.replace('/analytics')

@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Restore authentication tracking indicators from structural storage containers
   const token = ref<string | null>(localStorage.getItem('auth_token'))
   const currentUser = ref<UserProfile | null>(
-    localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null
+    localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
   )
 
   const error = ref<string | null>(null)
@@ -25,10 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   // System target credentials map for real database seeds
   const testCredentials: Record<UserRole, string> = {
-    branch_manager: 'isabelle.haag@example.net',
-    track_admin: 'ellsworth.ebert@example.org',
-    instructor: 'qsporer@example.org',
-    student: 'al97@example.net'
+    branch_manager: 'branch@example.com',
+    track_admin: 'admin@example.com',
+    instructor: 'instructor@example.com',
+    student: 'student@example.com',
   }
 
   // Getters / Computed Properties
@@ -39,18 +39,18 @@ export const useAuthStore = defineStore('auth', () => {
   async function loginAs(role: UserRole) {
     isLoading.value = true
     error.value = null
-    
+
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           email: testCredentials[role],
-          password: 'password' // Common test environment password credential
-        })
+          password: 'password', // Common test environment password credential
+        }),
       })
 
       const data = await response.json()
@@ -66,13 +66,12 @@ export const useAuthStore = defineStore('auth', () => {
         name: data.user.name,
         email: testCredentials[role],
         role: data.role,
-        expires_at: data.expires_at
+        expires_at: data.expires_at,
       }
 
       // Commit artifacts to local persistent browser layers
       localStorage.setItem('auth_token', data.access_token)
       localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
-
     } catch (err: any) {
       error.value = err.message
       currentUser.value = null
@@ -93,9 +92,9 @@ export const useAuthStore = defineStore('auth', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-          }
+            Accept: 'application/json',
+            Authorization: `Bearer ${token.value}`,
+          },
         })
       }
     } catch (err) {
@@ -114,11 +113,11 @@ export const useAuthStore = defineStore('auth', () => {
   // RBAC Helper
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
     if (!currentUser.value) return false
-    
+
     if (Array.isArray(allowedRoles)) {
       return allowedRoles.includes(currentUser.value.role)
     }
-    
+
     return currentUser.value.role === allowedRoles
   }
 
@@ -131,6 +130,6 @@ export const useAuthStore = defineStore('auth', () => {
     userRole,
     loginAs,
     logout,
-    hasRole
+    hasRole,
   }
 })

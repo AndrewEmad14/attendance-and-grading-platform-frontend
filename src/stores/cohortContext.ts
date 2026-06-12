@@ -23,6 +23,6 @@ export const useCohortContextStore = defineStore('cohortContext', () => {
     selectedTrackId,
     setCohortId,
     setTrackId,
-    clearContext
+    clearContext,
   }
 })

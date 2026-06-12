@@ -5,20 +5,20 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  variant: 'uniform-four'
+  variant: 'uniform-four',
 })
 </script>
 
 <template>
-  <div 
-    v-if="variant === 'uniform-four'" 
+  <div
+    v-if="variant === 'uniform-four'"
     class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full"
   >
     <slot />
   </div>
 
-  <div 
-    v-else-if="variant === 'main-with-sidebar'" 
+  <div
+    v-else-if="variant === 'main-with-sidebar'"
     class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start w-full"
   >
     <slot />

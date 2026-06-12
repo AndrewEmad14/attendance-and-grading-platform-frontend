@@ -13,7 +13,7 @@ async function handleIdentitySwitch(role: UserRole) {
   try {
     // 1. Await the full round-trip network response safely
     await auth.loginAs(role)
-    
+
     // 2. Clear out any hanging application operational errors
     auth.error = null
 
@@ -34,44 +34,52 @@ async function handleIdentitySwitch(role: UserRole) {
 </script>
 
 <template>
-  <div class="fixed bottom-4 right-4 bg-surface-900 border border-surface-700 p-3 rounded-lg shadow-xl text-white z-50 flex flex-col gap-2 max-w-xs">
-    <div class="text-xs font-bold uppercase tracking-wider text-surface-400 flex justify-between items-center">
+  <div
+    class="fixed bottom-4 right-4 bg-surface-900 border border-surface-700 p-3 rounded-lg shadow-xl text-white z-50 flex flex-col gap-2 max-w-xs"
+  >
+    <div
+      class="text-xs font-bold uppercase tracking-wider text-surface-400 flex justify-between items-center"
+    >
       <span>Dev Sandbox Identity</span>
-      <span v-if="internalLoading || auth.isLoading" class="loading loading-spinner loading-xs text-primary"></span>
+      <span
+        v-if="internalLoading || auth.isLoading"
+        class="loading loading-spinner loading-xs text-primary"
+      ></span>
     </div>
-    
+
     <div class="text-sm">
-      Active: <span class="text-primary font-semibold">{{ auth.currentUser?.name || 'Guest' }}</span> 
+      Active:
+      <span class="text-primary font-semibold">{{ auth.currentUser?.name || 'Guest' }}</span>
       <div class="text-xs text-surface-400">Role: {{ auth.currentUser?.role || 'None' }}</div>
     </div>
 
     <div class="grid grid-cols-2 gap-1 mt-1">
-      <button 
-        @click="handleIdentitySwitch('branch_manager')" 
+      <button
+        @click="handleIdentitySwitch('branch_manager')"
         :disabled="internalLoading"
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'branch_manager' }"
       >
         Manager
       </button>
-      <button 
-        @click="handleIdentitySwitch('track_admin')" 
+      <button
+        @click="handleIdentitySwitch('track_admin')"
         :disabled="internalLoading"
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'track_admin' }"
       >
         Admin
       </button>
-      <button 
-        @click="handleIdentitySwitch('instructor')" 
+      <button
+        @click="handleIdentitySwitch('instructor')"
         :disabled="internalLoading"
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'instructor' }"
       >
         Instructor
       </button>
-      <button 
-        @click="handleIdentitySwitch('student')" 
+      <button
+        @click="handleIdentitySwitch('student')"
         :disabled="internalLoading"
         class="btn btn-xs btn-outline text-white"
         :class="{ 'btn-active btn-primary': auth.userRole === 'student' }"

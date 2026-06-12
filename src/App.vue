@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'; 
-import MockIdentitySwitchWidget from './components/MockIdentitySwitchWidget.vue';
-
+import { RouterView } from 'vue-router'
+import MockIdentitySwitchWidget from './components/MockIdentitySwitchWidget.vue'
 </script>
 
 <template>
-  <RouterView/>
+  <RouterView />
   <MockIdentitySwitchWidget />
 </template>
 

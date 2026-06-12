@@ -6,7 +6,7 @@ import {
   deleteEngagement,
   getBusinessSessions,
   enrollCohortInBusinessSession,
-  removeCohortFromBusinessSession
+  removeCohortFromBusinessSession,
 } from '../services/schedulingService'
 
 export function useCalendarTimeline() {
@@ -22,10 +22,12 @@ export function useCalendarTimeline() {
   /**
    * Load engagements filtered by an active calendar timeline block window
    */
-  async function loadTimeline(filters: { cohortId?: number; staffId?: number; dateFrom?: string; dateTo?: string } = {}) {
+  async function loadTimeline(
+    filters: { cohortId?: number; staffId?: number; dateFrom?: string; dateTo?: string } = {},
+  ) {
     isLoading.value = true
     error.value = null
-    
+
     // Cache active dates locally so subsequent mutations reuse the same window parameters
     if (filters.dateFrom) activeDateFrom.value = filters.dateFrom
     if (filters.dateTo) activeDateTo.value = filters.dateTo
@@ -35,7 +37,7 @@ export function useCalendarTimeline() {
         cohort_id: filters.cohortId,
         staff_id: filters.staffId,
         date_from: activeDateFrom.value || undefined,
-        date_to: activeDateTo.value || undefined
+        date_to: activeDateTo.value || undefined,
       })
     } catch (err: any) {
       error.value = err.message
@@ -129,6 +131,6 @@ export function useCalendarTimeline() {
     bookSession,
     cancelSession,
     joinBusinessSession,
-    leaveBusinessSession
+    leaveBusinessSession,
   }
 }
