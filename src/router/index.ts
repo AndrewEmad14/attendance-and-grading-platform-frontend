@@ -72,7 +72,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'submissions',
         name: 'MyDeliverables',
-        component: () => import('@/modules/submission/views/DeliverablesPage.vue'),
+        component: () => import('@/modules/submission/views/deliverable-page/DeliverablesPage.vue'),
         meta: { title: 'My Homework Deliverables', allowedRoles: ['student'] },
       },
       {
