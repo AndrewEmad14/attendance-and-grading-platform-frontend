@@ -1,4 +1,5 @@
 import { api, type ApiResponse } from '@/utils/api'
+import type { PaginatedResponse } from '@/types'
 import type {
   Engagement,
   BusinessSession,
@@ -8,18 +9,21 @@ import type {
 } from '../types'
 
 /**
- * Extract active timeline engagements bounded by parameters or specific types
+ * Extract active timeline engagements bounded by parameters or specific types.
+ * Maps to standard Laravel pagination layout structures.
  */
 export async function getEngagements(
   filters: {
     cohort_id?: number
     staff_id?: number
-    type?: string
+    engageable_type?: string
     engageable_id?: number
     date_from?: string
     date_to?: string
+    page?: number
+    per_page?: number
   } = {},
-): Promise<Engagement[]> {
+): Promise<PaginatedResponse<Engagement>> {
   try {
     const queryParams = new URLSearchParams()
 
@@ -32,8 +36,10 @@ export async function getEngagements(
     const queryString = queryParams.toString()
     const endpoint = queryString ? `/engagements?${queryString}` : '/engagements'
 
-    const response = await api.get<ApiResponse<Engagement[]>>(endpoint)
-    return response.data
+    // We pass PaginatedResponse directly. The api.get helper treats the root JSON 
+    // object as the type argument, mapping perfectly to your network response.
+    const response = await api.get<PaginatedResponse<Engagement>>(endpoint)
+    return response
   } catch (err: any) {
     throw new Error('Failed to load system timeline windows: ' + err.message)
   }
@@ -79,6 +85,7 @@ export async function deleteEngagement(engagementId: number): Promise<void> {
 
 /**
  * Retrieve cross-track business event logs open to cohort enrollments
+ * Note: If your backend also paginates business sessions, we can apply PaginatedResponse here too.
  */
 export async function getBusinessSessions(): Promise<BusinessSession[]> {
   try {

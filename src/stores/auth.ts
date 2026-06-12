@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useCohortContextStore } from './cohortContext' // Import context to clear it
 
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
@@ -18,6 +19,8 @@ export interface UserProfile {
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', () => {
+  const cohortContext = useCohortContextStore() // Instantiate store reference
+
   const token = ref<string | null>(localStorage.getItem('auth_token'))
   const currentUser = ref<UserProfile | null>(
     localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
@@ -28,7 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
-    track_admin: 'admin@example.com',
+    track_admin: 'ldare@example.net',
     instructor: 'instructor@example.com',
     student: 'student@example.com',
   }
@@ -93,6 +96,9 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Login returns the token; profile comes from /auth/me
+      // Always reset admin selection states when a fresh login occurs
+      cohortContext.clearContext()
+
       token.value = data.access_token
       localStorage.setItem('auth_token', token.value!)
 
