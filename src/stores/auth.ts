@@ -5,18 +5,22 @@ import { useCohortContextStore } from './cohortContext' // Import context to cle
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
 export interface UserProfile {
-  id?: number
+  id: number
   name: string
   email: string
   role: UserRole
   expires_at?: string | null
+  email_verified_at?: string | null
+  // role-specific profile; key/shape depends on role
+  student_profile?: Record<string, any> | null
+  staff_profile?: Record<string, any> | null
 }
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', () => {
   const cohortContext = useCohortContextStore() // Instantiate store reference
-  
+
   const token = ref<string | null>(localStorage.getItem('auth_token'))
   const currentUser = ref<UserProfile | null>(
     localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
@@ -34,6 +38,39 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)
   const userRole = computed(() => currentUser.value?.role ?? null)
+
+  function authHeaders(): HeadersInit {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }
+    if (token.value) headers.Authorization = `Bearer ${token.value}`
+    return headers
+  }
+
+  // Fetch the authenticated profile from /auth/me (flat user + role-specific profile)
+  async function fetchMe(): Promise<UserProfile | null> {
+    if (!token.value) return null
+
+    const response = await fetch(`${BASE_URL}/auth/me`, {
+      method: 'POST',
+      headers: authHeaders(),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      // Expired/invalid token returns 401 (SEC-2) — clear session
+      if (response.status === 401) {
+        clearSession()
+      }
+      throw new Error(data.message || 'Failed to fetch profile')
+    }
+
+    currentUser.value = data as UserProfile
+    localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
+    return currentUser.value
+  }
 
   async function loginAs(role: UserRole) {
     isLoading.value = true
@@ -58,26 +95,17 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error(data.message || 'Authentication operation failed')
       }
 
+      // Login returns the token; profile comes from /auth/me
       // Always reset admin selection states when a fresh login occurs
       cohortContext.clearContext()
 
       token.value = data.access_token
-      currentUser.value = {
-        id: data.user.id,
-        name: data.user.name,
-        email: testCredentials[role],
-        role: data.role,
-        expires_at: data.expires_at,
-      }
+      localStorage.setItem('auth_token', token.value!)
 
-      localStorage.setItem('auth_token', data.access_token)
-      localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
+      await fetchMe()
     } catch (err: any) {
       error.value = err.message
-      currentUser.value = null
-      token.value = null
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
+      clearSession()
       throw err
     } finally {
       isLoading.value = false
@@ -90,35 +118,30 @@ export const useAuthStore = defineStore('auth', () => {
       if (token.value) {
         await fetch(`${BASE_URL}/auth/logout`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: `Bearer ${token.value}`,
-          },
+          headers: authHeaders(),
         })
       }
     } catch (err) {
       console.error('Logout request failed, clearing local session regardless:', err)
     } finally {
-      // Clear all active context models out of local pins on exit
-      cohortContext.clearContext()
-      
-      currentUser.value = null
-      token.value = null
-      error.value = null
+      clearSession()
       isLoading.value = false
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
     }
+  }
+
+  function clearSession() {
+    currentUser.value = null
+    token.value = null
+    error.value = null
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth_user')
   }
 
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
     if (!currentUser.value) return false
-
     if (Array.isArray(allowedRoles)) {
       return allowedRoles.includes(currentUser.value.role)
     }
-
     return currentUser.value.role === allowedRoles
   }
 
@@ -131,6 +154,7 @@ export const useAuthStore = defineStore('auth', () => {
     userRole,
     loginAs,
     logout,
+    fetchMe,
     hasRole,
   }
 })

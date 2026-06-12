@@ -16,8 +16,17 @@ class ApiClient {
 
     // 1. Setup default system header rules + authorization injections
     const headers = new Headers(options.headers)
-    headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
+    const body = options.body
+    const isFormData = body instanceof FormData
+    const isUrlEncoded = body instanceof URLSearchParams
+    if (!isFormData && !isUrlEncoded && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    }
+
+    if (auth.isAuthenticated) {
+      headers.set('Authorization', `Bearer ${auth.token}`)
+    }
 
     // Inject mock token for the active developer profile context
     if (auth.isAuthenticated) {
@@ -61,10 +70,11 @@ class ApiClient {
   }
 
   public post<T>(endpoint: string, body: any, options?: RequestInit): Promise<T> {
+    const isRaw = body instanceof FormData || body instanceof URLSearchParams
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
-      body: JSON.stringify(body),
+      body: isRaw ? body : JSON.stringify(body),
     })
   }
 
