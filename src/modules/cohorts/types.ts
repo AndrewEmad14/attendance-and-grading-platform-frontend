@@ -64,3 +64,28 @@ export interface UpdateCohortPayload {
 export interface StoreLabGroupPayload {
   name: string
 }
+
+// Request payloads matching backend FormRequests
+export interface StoreTrackPayload {
+  name: string
+}
+
+export interface UpdateTrackPayload {
+  name?: string
+}
+
+export interface TrackAdminCandidate {
+  id: number // user id — for display/keying only
+  name: string
+  email: string
+  role: 'track_admin'
+  expires_at: string | null
+  staff_profile: { id: number } // staff id — this is what assign/unassign use
+}
+
+export interface CohortAdmin {
+  staff_profile_id: number
+  user_id: number
+  name: string | null
+  email: string | null
+}
