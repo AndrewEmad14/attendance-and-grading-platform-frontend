@@ -76,6 +76,18 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Branch Analytics', allowedRoles: ['branch_manager'] },
       },
       {
+        path: 'finance',
+        name: 'BillingFinance',
+        component: () => import('@/modules/finance/views/BillingSummaryPage.vue'),
+        meta: { title: 'Finance', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'finance/instructors/:staffProfileId',
+        name: 'InstructorBillingDetail',
+        component: () => import('@/modules/finance/views/InstructorBillingDetailPage.vue'),
+        meta: { title: 'Instructor Billing Detail', allowedRoles: ['branch_manager'] },
+      },
+      {
         path: 'cohorts',
         name: 'CohortSettings',
         component: () => import('@/modules/cohorts/views/CohortConfigPage.vue'),
@@ -209,7 +221,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes,
 })
 
