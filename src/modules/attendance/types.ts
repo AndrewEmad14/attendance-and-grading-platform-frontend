@@ -9,6 +9,21 @@ export type CheckInOutcome =
   | 'not_found'
   | 'session_ended'
 
+export interface PaginatedMeta {
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+}
+
+export interface Paginated<T> {
+  data: T[]
+  meta: PaginatedMeta
+  links: { first: string; last: string; prev: string | null; next: string | null }
+}
+
 export interface AttendanceRecord {
   id: number
   student: {
@@ -45,7 +60,8 @@ export interface ExcuseRequest {
   }
   engagement: {
     id: number
-    type: EngagementType
+    type: EngagementType | null
+    name: string
     starts_at: string
     ends_at: string
     instructor?: string | null
@@ -78,9 +94,10 @@ export interface LedgerEntry {
   deduction: number
 }
 
-export interface AttendanceLedger {
-  student: { id: number; name: string; current_balance: number }
-  entries: LedgerEntry[]
+export interface AttendanceLedgerMeta {
+  id: number
+  name: string
+  current_balance: number
 }
 
 export interface AttendanceBalance {

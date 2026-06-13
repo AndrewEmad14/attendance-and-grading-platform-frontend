@@ -14,6 +14,8 @@ export interface AuthUser {
   expires_at: string | null
   staff_profile?: StaffProfile | null
   student_profile?: StudentProfile | null
+  created_at?: string
+  updated_at?: string
 }
 
 interface LoginPayload {

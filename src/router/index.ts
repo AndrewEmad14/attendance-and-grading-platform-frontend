@@ -76,20 +76,50 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Branch Analytics', allowedRoles: ['branch_manager'] },
       },
       {
+        path: 'analytics/at-risk',
+        name: 'AtRiskIndex',
+        component: () => import('@/modules/analytics/views/AtRiskIndexPage.vue'),
+        meta: { title: 'At-Risk Students', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'analytics/cohorts/:cohortId/at-risk',
+        name: 'AtRiskStudents',
+        component: () => import('@/modules/analytics/views/AtRiskStudentsPage.vue'),
+        meta: { title: 'At-Risk Students', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'finance',
+        name: 'BillingFinance',
+        component: () => import('@/modules/finance/views/BillingSummaryPage.vue'),
+        meta: { title: 'Finance', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'finance/instructors/:staffProfileId',
+        name: 'InstructorBillingDetail',
+        component: () => import('@/modules/finance/views/InstructorBillingDetailPage.vue'),
+        meta: { title: 'Instructor Billing Detail', allowedRoles: ['branch_manager'] },
+      },
+      {
         path: 'cohorts',
         name: 'CohortSettings',
         component: () => import('@/modules/cohorts/views/CohortConfigPage.vue'),
         meta: {
           title: 'Cohort Configurations',
-          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+          allowedRoles: ['branch_manager'],
         }, //['track_admin'] }
+      },
+      {
+        path: 'assigned-cohorts',
+        name: 'assigned-cohorts',
+        component: () => import('@/modules/cohorts/views/AssignedCohortsPage.vue'),
+        meta: { title: 'Assigned Cohorts', allowedRoles: ['track_admin'] },
       },
       {
         path: 'schedule',
         name: 'EngagementCalendar',
         component: () => import('@/modules/scheduling/views/CalendarPage.vue'),
         meta: {
-          title: 'Engagement Calendar',
+          title: 'Sessions Calendar',
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },
@@ -114,29 +144,41 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'My Excuse Requests', allowedRoles: ['student'] },
       },
       {
-        path: 'attendance/me/excuses/new',
+        path: 'attendance/excuses/new',
         name: 'NewExcuseRequest',
         component: () => import('@/modules/attendance/views/ExcuseRequestFormPage.vue'),
         meta: { title: 'New Excuse Request', allowedRoles: ['student'] },
       },
       {
-        path: 'attendance/me/excuses/:excuseId/edit',
+        path: 'attendance/excuses/:id/edit',
         name: 'EditExcuseRequest',
         component: () => import('@/modules/attendance/views/ExcuseRequestFormPage.vue'),
         meta: { title: 'Edit Excuse Request', allowedRoles: ['student'] },
       },
+      // {
+      //   path: 'attendance/sessions',
+      //   name: 'SessionsList',
+      //   component: () => import('@/modules/attendance/views/StaffSessionsList.vue'),
+      //   meta: { title: 'Sessions List', allowedRoles: ['track_admin', 'instructor'] },
+      // },
       {
-        path: 'attendance/sessions',
-        name: 'SessionsList',
-        component: () => import('@/modules/attendance/views/StaffSessionsList.vue'),
-        meta: { title: 'Sessions List', allowedRoles: ['track_admin', 'instructor'] },
-      },
-      {
-        path: 'attendance/sessions/:engagementId',
-        name: 'SessionAttendance',
+        path: 'schedule/:engagementId',
+        name: 'EngagementDetail',
         component: () => import('@/modules/attendance/views/StaffSessionPage.vue'),
         meta: { title: 'Session Attendance', allowedRoles: ['track_admin', 'instructor'] },
       },
+      {
+        path: 'attendance',
+        name: 'AdminCohortAttendance',
+        component: () => import('@/modules/attendance/views/AdminCohortAttendancePage.vue'),
+        meta: { title: 'Cohort Attendance', allowedRoles: ['track_admin'] },
+      },
+      // {
+      //   path: 'attendance/sessions/:engagementId',
+      //   name: 'SessionAttendance',
+      //   component: () => import('@/modules/attendance/views/StaffSessionPage.vue'),
+      //   meta: { title: 'Session Attendance', allowedRoles: ['track_admin', 'instructor'] },
+      // },
       {
         path: 'attendance/students/:studentId',
         name: 'StudentLedger',
@@ -150,7 +192,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Excuse Requests', allowedRoles: ['track_admin'] },
       },
       {
-        path: 'attendance/excuses/:excuseId',
+        path: 'attendance/excuses/:id',
         name: 'AdminExcuseDetail',
         component: () => import('@/modules/attendance/views/AdminExcuseDetailPage.vue'),
         meta: { title: 'Excuse Request', allowedRoles: ['track_admin'] },
@@ -180,12 +222,12 @@ const routes: Array<RouteRecordRaw> = [
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },
-      // {
-      //   path: 'users',
-      //   name: 'SystemUsers',
-      //   component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
-      //   meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
-      // },
+      {
+        path: 'users',
+        name: 'SystemUsers',
+        component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
+        meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin','branch_manager'] },
+      },
       {
         path: 'grades/config/:cohortId?',
         name: 'CourseConfig',
@@ -198,12 +240,18 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/grading/views/StudentTagsPage.vue'),
         meta: { title: 'Student Tags & Notes', allowedRoles: ['track_admin', 'instructor'] },
       },
+      {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/modules/users/views/ProfilePage.vue'),
+        meta: { title: 'My Profile', allowedRoles: ['track_admin', 'instructor', 'student'] },
+      }
     ],
   },
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes,
 })
 
