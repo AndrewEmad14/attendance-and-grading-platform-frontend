@@ -19,7 +19,7 @@ async function handleLogin() {
   if (!validation.success) {
     validation.error.issues.forEach((err: ZodIssue) => {
       if (err.path.length > 0) {
-        errors.value[err.path[0]] = err.message
+        errors.value[String(err.path[0])] = err.message
       } 
     })
     return
