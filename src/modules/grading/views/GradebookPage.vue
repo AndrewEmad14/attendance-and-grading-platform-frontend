@@ -271,9 +271,9 @@ if (auth.hasRole('student')) {
   onMounted(async () => {
     studentLoading.value = true
     await gradingStore.loadCourses(studentCohortId.value)
-    
-    if (gradingStore.courses.length > 0) {
-      studentSelectedCourseId.value = gradingStore.courses[0].id
+    const firstCourse = gradingStore.courses[0]
+    if (firstCourse) {
+      studentSelectedCourseId.value = firstCourse.id
     }
     
     // Instead of loading all deliverables (which throws 403 for students),
