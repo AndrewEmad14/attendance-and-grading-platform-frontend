@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+
+/* Inject daisyUI components and utilities */
+@plugin "daisyui";
+
+/* Inject PrimeVue Tailwind bridge utilities */
+@plugin "tailwindcss-primeui";
+
+/* Fix styling collision by establishing precise CSS Layer hierarchies */
+@layer theme, base, primevue, daisyui, utilities;
+
+@theme {
+  /* Connects DaisyUI/Tailwind primary color smoothly to PrimeVue's token system */
+  /* Core Brand Colors */
+  --color-primary: var(--p-primary-color);
+  --color-primary-hover: var(--p-primary-hover-color);
+  --color-primary-active: var(--p-primary-active-color);
+
+  /* Neutral Surfaces (Grays, Cards, Backgrounds) */
+  --color-surface-50: var(--p-surface-50);
+  --color-surface-100: var(--p-surface-100);
+  --color-surface-200: var(--p-surface-200);
+  --color-surface-300: var(--p-surface-300);
+  --color-surface-400: var(--p-surface-400);
+  --color-surface-500: var(--p-surface-500);
+  --color-surface-600: var(--p-surface-600);
+  --color-surface-700: var(--p-surface-700);
+  --color-surface-800: var(--p-surface-800);
+  --color-surface-900: var(--p-surface-900);
+  --color-surface-950: var(--p-surface-950);
+
+  /* Semantic Validation Statuses */
+  --color-success: var(--p-green-500);
+  --color-info: var(--p-blue-500);
+  --color-warning: var(--p-amber-500);
+  --color-danger: var(--p-red-500);
+
+  /* Shared Border Radius Tokens */
+  --radius-sm: var(--p-content-border-radius);
+  --radius-md: calc(var(--p-content-border-radius) * 1.5);
+  --radius-lg: calc(var(--p-content-border-radius) * 2);
+}
