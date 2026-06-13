@@ -127,13 +127,21 @@ const commitOverrideChange = async () => {
 
       <div class="flex flex-col gap-1">
         <label class="text-xs font-semibold text-surface-600">
-          {{ deliverableType === 'lab' ? 'Mandatory Administrative Justification Note' : 'Optional Note (Internal)' }}
+          {{
+            deliverableType === 'lab'
+              ? 'Mandatory Administrative Justification Note'
+              : 'Optional Note (Internal)'
+          }}
         </label>
         <Textarea
           v-model="overrideNote"
           rows="3"
           fluid
-          :placeholder="deliverableType === 'lab' ? 'State explicit educational reasons or context validating this manual entry logic... (Min 10 chars)' : 'Any optional context for this grade...'"
+          :placeholder="
+            deliverableType === 'lab'
+              ? 'State explicit educational reasons or context validating this manual entry logic... (Min 10 chars)'
+              : 'Any optional context for this grade...'
+          "
           class="text-sm"
         />
       </div>
