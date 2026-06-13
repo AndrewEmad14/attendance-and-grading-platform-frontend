@@ -13,14 +13,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: MainLayout,
-    redirect: '/dashboard-dispatcher',
+    redirect: '/dashboard',
     children: [
       {
-        path: 'dashboard-dispatcher',
-        name: 'DashboardDispatcher',
-        component: () => import('@/components/DashboardDispatcher.vue'),
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/modules/dashboard/views/DashboardPage.vue'),
         meta: {
-          title: 'Resolving Dashboard',
+          title: 'Dashboard',
           allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
         },
       },
