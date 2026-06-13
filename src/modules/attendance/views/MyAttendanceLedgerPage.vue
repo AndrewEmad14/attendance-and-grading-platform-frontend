@@ -31,7 +31,7 @@ onMounted(loadMeta)
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+  <div class="max-w-6xl mx-auto px-4 py-8 space-y-6 ">
     <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
@@ -40,10 +40,9 @@ onMounted(loadMeta)
       <div class="h-80 rounded-xl bg-zinc-100 animate-pulse" />
       <div class="lg:col-span-3 h-80 rounded-xl bg-zinc-100 animate-pulse" />
     </div>
-
-    <div v-else-if="meta" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div v-else-if="meta" class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:items-start">
       <!-- Sidebar -->
-      <div class="space-y-4 lg:sticky lg:top-8 lg:self-start">
+      <div class="space-y-4 sticky top-0 h-screen overflow-y-auto">
         <AttendanceBalanceCard :balance="meta.current_balance" :max="MAX_BALANCE"
           :deducted="MAX_BALANCE - meta.current_balance" />
         <div class="rounded-xl border border-zinc-200 bg-white p-5">
