@@ -76,13 +76,31 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Branch Analytics', allowedRoles: ['branch_manager'] },
       },
       {
+        path: 'finance',
+        name: 'BillingFinance',
+        component: () => import('@/modules/finance/views/BillingSummaryPage.vue'),
+        meta: { title: 'Finance', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'finance/instructors/:staffProfileId',
+        name: 'InstructorBillingDetail',
+        component: () => import('@/modules/finance/views/InstructorBillingDetailPage.vue'),
+        meta: { title: 'Instructor Billing Detail', allowedRoles: ['branch_manager'] },
+      },
+      {
         path: 'cohorts',
         name: 'CohortSettings',
         component: () => import('@/modules/cohorts/views/CohortConfigPage.vue'),
         meta: {
           title: 'Cohort Configurations',
-          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+          allowedRoles: ['branch_manager'],
         }, //['track_admin'] }
+      },
+      {
+        path: 'assigned-cohorts',
+        name: 'assigned-cohorts',
+        component: () => import('@/modules/cohorts/views/AssignedCohortsPage.vue'),
+        meta: { title: 'Assigned Cohorts', allowedRoles: ['track_admin'] },
       },
       {
         path: 'schedule',
@@ -215,7 +233,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes,
 })
 
