@@ -40,26 +40,18 @@ const isNavActive = (itemPath: string) => {
 
 <template>
   <div class="min-h-screen bg-surface-50 flex">
-    <aside
-      class="w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0"
-    >
+    <aside class="w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0">
       <div class="h-16 flex items-center px-6 border-b border-surface-800 gap-2">
         <i class="pi pi-graduation-cap text-primary text-xl"></i>
         <span class="font-bold text-lg tracking-wide text-white">AcademyOS</span>
       </div>
 
-      <nav class="flex-1 p-4 overflow-y-auto space-y-1">
-        <RouterLink
-          v-for="item in allowedNavItems"
-          :key="item.path"
-          :to="item.path"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200"
-          :class="
-            isNavActive(item.path)
-              ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'
-              : 'text-surface-400 hover:bg-surface-800 hover:text-white'
-          "
-        >
+      <nav class="flex-1 p-4 overflow-y-auto space-y-2">
+        <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200" :class="isNavActive(item.path)
+            ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'
+            : 'text-surface-400 hover:bg-surface-800 hover:text-white'
+            ">
           <i :class="[item.icon, 'text-base']"></i>
           <span>{{ item.label }}</span>
         </RouterLink>
@@ -72,8 +64,7 @@ const isNavActive = (itemPath: string) => {
 
     <div class="flex-1 flex flex-col min-w-0">
       <header
-        class="h-16 bg-white border-b border-surface-200 flex items-center justify-between px-8 shadow-xs shrink-0"
-      >
+        class="h-16 bg-white border-b border-surface-200 flex items-center justify-between px-8 shadow-xs shrink-0">
         <h1 class="text-xl font-bold text-surface-800 tracking-tight">
           {{ pageTitle }}
         </h1>
@@ -90,8 +81,7 @@ const isNavActive = (itemPath: string) => {
 
           <div class="avatar placeholder">
             <div
-              class="bg-primary text-white w-10 h-10 rounded-full font-bold text-sm tracking-wider shadow-inner flex items-center justify-center"
-            >
+              class="bg-primary text-white w-10 h-10 rounded-full font-bold text-sm tracking-wider shadow-inner flex items-center justify-center">
               <span>{{ userInitials }}</span>
             </div>
           </div>

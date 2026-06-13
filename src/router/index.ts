@@ -44,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'EngagementCalendar',
         component: () => import('@/modules/scheduling/views/CalendarPage.vue'),
         meta: {
-          title: 'Engagement Calendar',
+          title: 'Sessions Calendar',
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },

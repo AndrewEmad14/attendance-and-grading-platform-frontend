@@ -3,6 +3,21 @@ export type ExcuseStatus = 'pending' | 'approved' | 'rejected' | 'none'
 export type EngagementType = 'lecture' | 'lab' | 'business_session'
 export type CheckInOutcome = 'checked_in' | 'checked_out' | 'idempotent' | 'rejected' | 'not_found' | 'session_ended'
 
+export interface PaginatedMeta {
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+}
+
+export interface Paginated<T> {
+  data: T[]
+  meta: PaginatedMeta
+  links: { first: string; last: string; prev: string | null; next: string | null }
+}
+
 export interface AttendanceRecord {
   id: number
   student: {
@@ -72,8 +87,14 @@ export interface LedgerEntry {
   deduction: number
 }
 
+export interface AttendanceLedgerMeta {
+  id: number
+  name: string
+  current_balance: number
+}
+
 export interface AttendanceLedger {
-  student: { id: number; name: string; current_balance: number }
+  student: AttendanceLedgerMeta
   entries: LedgerEntry[]
 }
 

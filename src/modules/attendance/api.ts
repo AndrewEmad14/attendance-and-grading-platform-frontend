@@ -7,14 +7,9 @@ import type {
   ExcuseStatus,
   CheckInResult,
   Engagement,
-  EngagementAttendanceEntry
+  EngagementAttendanceEntry,
+  Paginated,
 } from './types'
-
-interface Paginated<T> {
-  data: T[]
-  meta: { current_page: number; last_page: number; per_page: number; total: number }
-  links: { first: string; last: string; prev: string | null; next: string | null }
-}
 
 type ListParams = {
   page?: number
@@ -29,8 +24,12 @@ export const attendanceApi = {
   scan: (engagementId: number, token: string) =>
     api.post<{ data: CheckInResult }>('/attendance', { engagement_id: engagementId, token }),
 
-  studentLedger: (studentId: number) => api.get<{ data: AttendanceLedger }>(`/students/${studentId}/attendance-ledger`),
-
+  studentLedger: (studentId: number, params: Record<string, string> = {}) =>
+    api.get<{ data: AttendanceLedger }>(`/students/${studentId}/attendance-ledger${buildQuery(params)}`),
+  
+  studentLedgerMeta: (studentId: number) =>
+    api.get<{ data: { id: number; name: string; current_balance: number } }>(`/students/${studentId}/attendance-ledger/meta`),
+  
   attendanceRecord: (id: number) => api.get<{ data: AttendanceRecord }>(`/attendance/${id}`),
 
   excuseRequest: (id: number) => api.get<{ data: ExcuseRequest }>(`/excuse-requests/${id}`),
