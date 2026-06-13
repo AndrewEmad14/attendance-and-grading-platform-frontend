@@ -68,12 +68,12 @@ const TYPE_LABELS: Record<string, string> = {
 
 const TYPE_CLASSES: Record<string, string> = {
   lecture: 'bg-blue-100 text-blue-700 border-blue-200',
-  lab: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  lab: 'bg-emerald-100 text-success border-emerald-200',
   business_session: 'bg-purple-100 text-purple-700 border-purple-200',
 }
 
 const STATUS_CLASSES: Record<string, string> = {
-  forwarded: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  forwarded: 'bg-emerald-100 text-success border-emerald-200',
   pending: 'bg-amber-100 text-amber-700 border-amber-200',
   in_progress: 'bg-surface-100 text-surface-600 border-surface-200',
 }
@@ -91,8 +91,7 @@ const STATUS_LABELS: Record<string, string> = {
     <div>
       <button
         class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3"
-        @click="router.push('/finance')"
-      >
+        @click="router.push('/finance')">
         <i class="pi pi-chevron-left text-[10px]"></i>
         Back to Billing Summary
       </button>
@@ -107,14 +106,10 @@ const STATUS_LABELS: Record<string, string> = {
       <template v-else-if="detail">
         <div class="flex flex-wrap items-center gap-3">
           <h2 class="text-2xl font-bold text-surface-900">{{ detail.name }}</h2>
-          <span
-            class="badge badge-sm font-semibold uppercase tracking-wider px-2 py-1"
-            :class="
-              detail.compensation_type === 'internal'
-                ? 'bg-blue-100 text-blue-700 border-blue-200'
-                : 'bg-amber-100 text-amber-700 border-amber-200'
-            "
-          >
+          <span class="badge badge-sm font-semibold uppercase tracking-wider px-2 py-1" :class="detail.compensation_type === 'internal'
+              ? 'bg-blue-100 text-blue-700 border-blue-200'
+              : 'bg-amber-100 text-amber-700 border-amber-200'
+            ">
             {{ detail.compensation_type }}
           </span>
         </div>
@@ -129,15 +124,11 @@ const STATUS_LABELS: Record<string, string> = {
 
     <!-- ── Initial Error ── -->
     <template v-if="error && !detail">
-      <div
-        class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
-      >
+      <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
         <i class="pi pi-exclamation-triangle text-lg text-red-500"></i>
         <span>{{ error }}</span>
-        <button
-          class="ml-auto btn btn-xs btn-outline border-red-300 text-red-600"
-          @click="loadDetail(staffProfileId, currentPage, perPage)"
-        >
+        <button class="ml-auto btn btn-xs btn-outline border-red-300 text-red-600"
+          @click="loadDetail(staffProfileId, currentPage, perPage)">
           Retry
         </button>
       </div>
@@ -159,10 +150,8 @@ const STATUS_LABELS: Record<string, string> = {
         </div>
 
         <!-- Base Salary — only shown for internal -->
-        <div
-          v-if="detail.compensation_type === 'internal'"
-          class="bg-white border border-surface-200 p-5 rounded-lg shadow-xs"
-        >
+        <div v-if="detail.compensation_type === 'internal'"
+          class="bg-white border border-surface-200 p-5 rounded-lg shadow-xs">
           <div class="text-[11px] font-bold tracking-widest text-surface-500 uppercase">
             Base Salary
           </div>
@@ -185,10 +174,8 @@ const STATUS_LABELS: Record<string, string> = {
 
         <!-- Total Payout -->
         <div class="relative bg-white border border-surface-200 p-5 rounded-lg shadow-xs overflow-hidden">
-          <i
-            class="pi pi-wallet absolute right-4 bottom-3 text-slate-300/40 pointer-events-none"
-            style="font-size: 4rem; line-height: 1;"
-          ></i>
+          <i class="pi pi-wallet absolute right-4 bottom-3 text-slate-300/40 pointer-events-none"
+            style="font-size: 4rem; line-height: 1;"></i>
           <div class="relative z-10">
             <div class="text-[11px] font-bold tracking-widest text-surface-500 uppercase">
               Total Payout
@@ -205,10 +192,8 @@ const STATUS_LABELS: Record<string, string> = {
       <ContentCard title="Engagement Breakdown" :isTableContainer="true">
         <template #headerAction>
           <!-- Type Filter -->
-          <select
-            v-model="selectedType"
-            class="select select-bordered select-xs bg-white text-surface-800 border-surface-300 font-semibold"
-          >
+          <select v-model="selectedType"
+            class="select select-bordered select-xs bg-white text-surface-800 border-surface-300 font-semibold">
             <option value="all">All Types</option>
             <option value="lecture">Lecture</option>
             <option value="lab">Lab</option>
@@ -217,16 +202,12 @@ const STATUS_LABELS: Record<string, string> = {
         </template>
 
         <!-- Localized error if a sub-page load fails -->
-        <div
-          v-if="error && detail"
-          class="mx-4 mt-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded flex items-center gap-2"
-        >
+        <div v-if="error && detail"
+          class="mx-4 mt-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded flex items-center gap-2">
           <i class="pi pi-exclamation-triangle"></i>
           <span>{{ error }}</span>
-          <button
-            class="btn btn-xs btn-outline border-red-300 text-red-600 ml-auto"
-            @click="loadDetail(staffProfileId, currentPage, perPage)"
-          >
+          <button class="btn btn-xs btn-outline border-red-300 text-red-600 ml-auto"
+            @click="loadDetail(staffProfileId, currentPage, perPage)">
             Retry
           </button>
         </div>
@@ -234,18 +215,14 @@ const STATUS_LABELS: Record<string, string> = {
         <!-- Table wrapper with localized loading overlay -->
         <div class="relative overflow-x-auto min-h-[200px]">
           <!-- Spinner overlay on page changes -->
-          <div
-            v-if="isLoading && detail"
-            class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center z-20 gap-2"
-          >
+          <div v-if="isLoading && detail"
+            class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center z-20 gap-2">
             <span class="loading loading-spinner loading-md text-primary"></span>
             <span class="text-xs font-semibold text-slate-500">Loading engagements…</span>
           </div>
 
-          <table
-            class="table table-sm w-full text-sm"
-            :class="{ 'opacity-40 pointer-events-none': isLoading && detail }"
-          >
+          <table class="table table-sm w-full text-sm"
+            :class="{ 'opacity-40 pointer-events-none': isLoading && detail }">
             <thead>
               <tr class="bg-surface-50 text-surface-600 text-xs uppercase tracking-wider">
                 <th class="font-semibold py-3 px-4">Title</th>
@@ -262,20 +239,15 @@ const STATUS_LABELS: Record<string, string> = {
                   No engagements match the selected filter.
                 </td>
               </tr>
-              <tr
-                v-for="eng in filteredEngagements"
-                :key="eng.engagement_id"
-                class="border-b border-surface-100 hover:bg-surface-50 transition-colors"
-              >
+              <tr v-for="eng in filteredEngagements" :key="eng.engagement_id"
+                class="border-b border-surface-100 hover:bg-surface-50 transition-colors">
                 <!-- Title -->
                 <td class="py-3 px-4 font-medium text-surface-800">{{ eng.title }}</td>
 
                 <!-- Type badge -->
                 <td class="py-3 px-4">
-                  <span
-                    class="badge badge-xs font-semibold px-2 py-1"
-                    :class="TYPE_CLASSES[eng.type] ?? 'bg-surface-100 text-surface-600 border-surface-200'"
-                  >
+                  <span class="badge badge-xs font-semibold px-2 py-1"
+                    :class="TYPE_CLASSES[eng.type] ?? 'bg-surface-100 text-surface-600 border-surface-200'">
                     {{ TYPE_LABELS[eng.type] ?? eng.type }}
                   </span>
                 </td>
@@ -297,10 +269,8 @@ const STATUS_LABELS: Record<string, string> = {
 
                 <!-- Status badge -->
                 <td class="py-3 px-4">
-                  <span
-                    class="badge badge-xs font-semibold px-2 py-1"
-                    :class="STATUS_CLASSES[eng.status] ?? 'bg-surface-100 text-surface-600 border-surface-200'"
-                  >
+                  <span class="badge badge-xs font-semibold px-2 py-1"
+                    :class="STATUS_CLASSES[eng.status] ?? 'bg-surface-100 text-surface-600 border-surface-200'">
                     {{ STATUS_LABELS[eng.status] ?? eng.status }}
                   </span>
                 </td>
@@ -310,47 +280,29 @@ const STATUS_LABELS: Record<string, string> = {
         </div>
 
         <!-- Pagination Footer -->
-        <div
-          v-if="detail.engagements.last_page > 1"
-          class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50"
-        >
+        <div v-if="detail.engagements.last_page > 1"
+          class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50">
           <span class="text-xs text-surface-500">{{ paginationLabel }}</span>
           <div class="flex items-center gap-1">
-            <button
-              class="btn btn-xs btn-outline border-surface-300 text-surface-600"
-              :disabled="currentPage <= 1"
-              @click="goToPage(currentPage - 1)"
-            >
+            <button class="btn btn-xs btn-outline border-surface-300 text-surface-600" :disabled="currentPage <= 1"
+              @click="goToPage(currentPage - 1)">
               <i class="pi pi-chevron-left text-[10px]"></i>
             </button>
-            <button
-              v-for="p in detail.engagements.last_page"
-              :key="p"
-              class="btn btn-xs"
-              :class="
-                p === currentPage
-                  ? 'btn-primary text-white'
-                  : 'btn-outline border-surface-300 text-surface-600'
-              "
-              @click="goToPage(p)"
-            >
+            <button v-for="p in detail.engagements.last_page" :key="p" class="btn btn-xs" :class="p === currentPage
+                ? 'btn-primary text-white'
+                : 'btn-outline border-surface-300 text-surface-600'
+              " @click="goToPage(p)">
               {{ p }}
             </button>
-            <button
-              class="btn btn-xs btn-outline border-surface-300 text-surface-600"
-              :disabled="currentPage >= detail.engagements.last_page"
-              @click="goToPage(currentPage + 1)"
-            >
+            <button class="btn btn-xs btn-outline border-surface-300 text-surface-600"
+              :disabled="currentPage >= detail.engagements.last_page" @click="goToPage(currentPage + 1)">
               <i class="pi pi-chevron-right text-[10px]"></i>
             </button>
           </div>
         </div>
 
         <!-- Single-page summary label (no nav needed) -->
-        <div
-          v-else-if="detail.engagements.total > 0"
-          class="px-4 py-3 border-t border-surface-100 bg-surface-50"
-        >
+        <div v-else-if="detail.engagements.total > 0" class="px-4 py-3 border-t border-surface-100 bg-surface-50">
           <span class="text-xs text-surface-500">{{ paginationLabel }}</span>
         </div>
       </ContentCard>

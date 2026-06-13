@@ -60,12 +60,12 @@ onMounted(() => load(1))
     <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between pt-2 text-xs text-zinc-500">
       <button :disabled="page === 1" @click="load(page - 1)"
         class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
-        <i class="pi pi-chevron-left" />
+        <i class="pi pi-chevron-left" style="font-size: 0.6rem;" />
       </button>
       <span>Page {{ meta.current_page }} of {{ meta.last_page }}</span>
       <button :disabled="page === meta.last_page" @click="load(page + 1)"
         class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
-        <i class="pi pi-chevron-right" />
+        <i class="pi pi-chevron-right" style="font-size: 0.6rem;" />
       </button>
     </div>
   </div>

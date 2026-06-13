@@ -9,9 +9,9 @@ export interface NavigationItem {
 
 export const navigationConfig: NavigationItem[] = [
   {
-    label: 'Example',
-    path: '/example',
-    icon: 'pi pi-question-circle',
+    label: 'Dashboard',
+    path: '/dashboard',
+    icon: 'pi pi-home',
     roles: ['branch_manager', 'track_admin', 'instructor', 'student'],
   },
   {
@@ -33,7 +33,13 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
-    label: 'Assigned Cohorts',
+    label: 'Course Configuration',
+    path: '/grades/config',
+    icon: 'pi pi-cog',
+    roles: ['track_admin'],
+  },
+  {
+    label: 'Assign Labs & Sessions',
     path: '/assigned-cohorts',
     icon: 'pi pi-sitemap',
     roles: ['track_admin'],
@@ -44,6 +50,12 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-calendar',
     roles: ['track_admin', 'instructor', 'student'],
   },
+  {
+    label: 'Manage Attendance',
+    path: '/attendance',
+    icon: 'pi pi-check-square',
+    roles: ['track_admin'],
+  },
   
 
   // Attendance Navigation
@@ -52,12 +64,6 @@ export const navigationConfig: NavigationItem[] = [
     path: '/attendance/me',
     icon: 'pi pi-check-square',
     roles: ['student'],
-  },
-  {
-    label: 'Manage Attendance',
-    path: '/attendance',
-    icon: 'pi pi-check-square',
-    roles: ['track_admin'],
   },
   // {
   //   label: 'My Sessions',
@@ -84,18 +90,12 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-megaphone',
     roles: ['track_admin', 'instructor', 'student'],
   },
-  {
-    label: 'System Users',
-    path: '/users',
-    icon: 'pi pi-users',
-    roles: ['track_admin'],
-  },
-  {
-    label: 'Course Configuration',
-    path: '/grades/config/1',
-    icon: 'pi pi-cog',
-    roles: ['track_admin'],
-  },
+  // {
+  //   label: 'System Users',
+  //   path: '/users',
+  //   icon: 'pi pi-users',
+  //   roles: ['track_admin'],
+  // },
 ]
 
 export const accountNavigationConfig = {

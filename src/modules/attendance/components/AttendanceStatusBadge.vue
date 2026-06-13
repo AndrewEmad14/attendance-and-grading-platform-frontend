@@ -4,8 +4,8 @@ import type { AttendanceStatus } from '../types'
 const props = defineProps<{ status: AttendanceStatus }>()
 
 const config: Record<AttendanceStatus, { label: string; classes: string }> = {
-  present: { label: 'Present', classes: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  absent: { label: 'Absent', classes: 'bg-red-100 text-red-800 border-red-200' },
+  present: { label: 'Present', classes: 'bg-success text-success-content border-success-border' },
+  absent: { label: 'Absent', classes: 'bg-danger text-danger-content border-danger-border' },
   excused: { label: 'Excused', classes: 'bg-sky-100 text-sky-800 border-sky-200' },
   upcoming: { label: 'Upcoming', classes: 'bg-zinc-100 text-zinc-500 border-zinc-200' },
 }

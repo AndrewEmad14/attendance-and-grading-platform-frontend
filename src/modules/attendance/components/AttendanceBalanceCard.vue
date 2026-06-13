@@ -11,9 +11,9 @@ const RADIUS = 54
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 const color = computed(() => {
-  if (props.balance >= 150) return { stroke: 'stroke-emerald-500', text: 'text-emerald-700' }
-  if (props.balance >= 40) return { stroke: 'stroke-amber-500', text: 'text-amber-500' }
-  return { stroke: 'stroke-red-500', text: 'text-red-700' }
+  if (props.balance >= 150) return { stroke: 'stroke-success-content', text: 'text-success-content' }
+  if (props.balance >= 40) return { stroke: 'stroke-warning-content', text: 'text-warning-content' }
+  return { stroke: 'stroke-danger-content', text: 'text-danger-content' }
 })
 
 const statusLabel = computed(() => {
@@ -56,7 +56,7 @@ onMounted(() => {
     <div class="flex items-center justify-between mt-4 text-xs">
       <div>
         <p class="text-zinc-400 mb-0.5">Deducted</p>
-        <p :class="['font-semibold', deducted > 0 ? 'text-red-600' : 'text-zinc-400']">
+        <p :class="['font-semibold', deducted > 0 ? 'text-danger-content' : 'text-zinc-400']">
           {{ deducted > 0 ? `-${deducted}` : '0' }} pts
         </p>
       </div>

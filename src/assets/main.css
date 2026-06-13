@@ -7,16 +7,32 @@
 @plugin "tailwindcss-primeui";
 
 /* Fix styling collision by establishing precise CSS Layer hierarchies */
-@layer theme, base, primevue, daisyui, utilities;
+@layer base, primevue, daisyui, utilities, theme;
 
 @theme {
-  /* Connects DaisyUI/Tailwind primary color smoothly to PrimeVue's token system */
   /* Core Brand Colors */
-  --color-primary: var(--p-primary-color);
-  --color-primary-hover: var(--p-primary-hover-color);
-  --color-primary-active: var(--p-primary-active-color);
+  --color-primary: #9b3333;
+  --color-primary-hover: #8a2e2e;
+  --color-primary-active: #762727;
+  --color-primary-content: #ffffff;
 
-  /* Neutral Surfaces (Grays, Cards, Backgrounds) */
+  --color-secondary: #2d7a7a;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #e0a458;
+  --color-accent-content: #2a1810;
+
+  /* Light Theme Backgrounds (warm-tinted neutrals) */
+  --color-bg-100: #fbf6f4;
+  --color-bg-200: #f2e6e3;
+  --color-bg-300: #e6d2cd;
+  --color-bg-content: #2e1f1d;
+
+  /* Sidebar / Dark Surface */
+  --color-surface: #2b1a1c;
+  --color-surface-content: #f0e2de;
+
+  /* Neutral Surfaces (Grays, Cards, Backgrounds) — PrimeVue bridge */
   --color-surface-50: var(--p-surface-50);
   --color-surface-100: var(--p-surface-100);
   --color-surface-200: var(--p-surface-200);
@@ -29,14 +45,86 @@
   --color-surface-900: var(--p-surface-900);
   --color-surface-950: var(--p-surface-950);
 
-  /* Semantic Validation Statuses */
-  --color-success: var(--p-green-500);
-  --color-info: var(--p-blue-500);
-  --color-warning: var(--p-amber-500);
-  --color-danger: var(--p-red-500);
-
   /* Shared Border Radius Tokens */
   --radius-sm: var(--p-content-border-radius);
   --radius-md: calc(var(--p-content-border-radius) * 1.5);
   --radius-lg: calc(var(--p-content-border-radius) * 2);
+
+  /* Semantic Validation Statuses — Tailwind emerald/amber/red/blue scales */
+  --color-success: #a7f3d0;
+  /* emerald-200 */
+  --color-success-bg: #10b981;
+  /* emerald-500 */
+  --color-success-content: #065f46;
+  /* emerald-800 */
+  --color-success-border: #34d399;
+  /* emerald-400 */
+
+  --color-warning: #fde68a;
+  /* amber-200 */
+  --color-warning-bg: #f59e0b;
+  /* amber-500 */
+  --color-warning-content: #92400e;
+  /* amber-800 */
+  --color-warning-border: #fbbf24;
+  /* amber-400 */
+
+  --color-danger: #fecaca;
+  /* red-200 */
+  --color-danger-bg: #ef4444;
+  /* red-500 */
+  --color-danger-content: #991b1b;
+  /* red-800 */
+  --color-danger-border: #f87171;
+  /* red-400 */
+
+  --color-info: #bfdbfe;
+  /* blue-200 */
+  --color-info-bg: #3b82f6;
+  /* blue-500 */
+  --color-info-content: #1e40af;
+  /* blue-800 */
+  --color-info-border: #60a5fa;
+  /* blue-400 */
+}
+
+/* Unlayered override — always wins over daisyUI's layered defaults,
+   regardless of @layer order. This is what actually makes bg-primary
+   render the correct color. */
+:root,
+[data-theme='light'] {
+  --color-primary: #9b3333;
+  --color-primary-hover: #8a2e2e;
+  --color-primary-active: #762727;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #2d7a7a;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #e0a458;
+  --color-accent-content: #2a1810;
+
+  --color-bg-100: #fbf6f4;
+  --color-bg-200: #f2e6e3;
+  --color-bg-300: #e6d2cd;
+  --color-bg-content: #2e1f1d;
+
+  --color-surface: #2b1a1c;
+  --color-surface-content: #f0e2de;
+
+  --color-success-border: #d0fae5;
+  --color-success: #c8f6e1;
+  --color-success-content: #065f46;
+
+  --color-warning-border: #fef3c6;
+  --color-warning: #fee685;
+  --color-warning-content: #ffba00;
+
+  --color-danger-border: #fef2f2;
+  --color-danger: #ffe2e2;
+  --color-danger-content: #9f0712;
+
+  --color-info-border: #dff2fe;
+  --color-info: #b8e6fe;
+  --color-info-content: #00598a;
 }

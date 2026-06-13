@@ -5,22 +5,16 @@ import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 // Instructor: scoped to their assigned lab group(s).
 const cards = [
   {
-    label: 'Gradebook',
-    description: 'Grade students in your assigned lab group.',
-    icon: 'pi pi-book',
-    to: '/grades',
-  },
-  {
-    label: 'Attendance Ledger',
-    description: 'Take and review attendance for your group.',
-    icon: 'pi pi-list',
-    to: '/attendance',
-  },
-  {
-    label: 'Engagement Calendar',
-    description: 'View your scheduled sessions.',
+    label: 'Sessions Calendar',
+    description: 'View your scheduled sessions and attendance for your groups.',
     icon: 'pi pi-calendar',
     to: '/schedule',
+  },
+  {
+    label: 'Gradebook',
+    description: 'Grade submissions and add notes/tags to students in your assigned lab group.',
+    icon: 'pi pi-book',
+    to: '/grades',
   },
   {
     label: 'Announcements',

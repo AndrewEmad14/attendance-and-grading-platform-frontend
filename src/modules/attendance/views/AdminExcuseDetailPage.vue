@@ -65,7 +65,7 @@ const formatDate = (iso: string) =>
   <div class="max-w-2xl mx-auto px-4 py-8 space-y-6">
     <button @click="router.push({ name: 'AdminExcuses' })"
       class="cursor-pointer text-xs text-zinc-400 hover:text-zinc-600 flex justify-center items-center gap-1 transition">
-      <i class="pi pi-arrow-left" style="font-size: 0.7rem;" /> Back to Excuse Requests
+      <i class="pi pi-arrow-left" style="font-size: 0.6rem;" /> Back to Excuse Requests
     </button>
 
     <div v-if="loading" class="space-y-4">
@@ -140,7 +140,7 @@ const formatDate = (iso: string) =>
 
       <div v-if="excuse.status === 'pending'" class="flex gap-3">
         <button @click="approve" :disabled="!!actionLoading"
-          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 transition flex items-center justify-center gap-2">
+          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-success disabled:opacity-50 transition flex items-center justify-center gap-2">
           <i v-if="actionLoading === 'approve'" class="pi pi-spin pi-spinner" />
           <i v-else class="pi pi-check" />
           Approve
