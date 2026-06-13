@@ -148,6 +148,13 @@ const attendanceBarOptions = {
   indexAxis: 'y' as const,
   responsive: true,
   maintainAspectRatio: false,
+  // Reserve space on the right so the custom datalabel plugin (bar.x + 6)
+  // never clips or overflows when a bar reaches 100%.
+  layout: {
+    padding: {
+      right: 40,
+    },
+  },
   plugins: {
     legend: { display: false },
     tooltip: { callbacks: { label: (c: any) => ` ${c.raw}%` } },
