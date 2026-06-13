@@ -708,7 +708,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               <!-- Grade Preview (Normalized) -->
               <td class="text-right font-mono font-bold text-xs pr-4 text-gray-900">
                 <span v-if="(sub.override_score !== null || typeof localScores[sub.id] === 'number' || sub.graded_by) && instrSelectedDeliverable?.max_score">
-                  {{ Math.round(((sub.override_score ?? (typeof localScores[sub.id] === 'number' ? localScores[sub.id] : null) ?? sub.raw_score) / instrSelectedDeliverable.max_score) * 100) }}%
+                  {{ Math.round((((sub.override_score ?? (typeof localScores[sub.id] === 'number' ? localScores[sub.id] : null) ?? sub.raw_score)?? 0) / instrSelectedDeliverable.max_score) * 100) }}%
                 </span>
                 <span v-else class="text-gray-400 font-normal">
                   –

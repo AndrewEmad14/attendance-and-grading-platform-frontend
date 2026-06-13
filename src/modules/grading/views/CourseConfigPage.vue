@@ -379,6 +379,7 @@ watch(
                 :key="i"
                 class="bg-surface-50 rounded-xl border border-surface-200 p-4"
               >
+
                 <div class="grid grid-cols-12 gap-3 items-start">
                   <div class="col-span-3">
                     <FormRow label="Name">
@@ -387,7 +388,7 @@ watch(
                         placeholder="e.g. Lab 1"
                         size="small"
                         class="w-full"
-                        :disabled="isLocked"
+                        :disabled="isLocked || false"
                       />
                     </FormRow>
                   </div>
@@ -399,7 +400,7 @@ watch(
                         :options="['lab', 'exam', 'project']"
                         size="small"
                         class="w-full"
-                        :disabled="isLocked"
+                        :disabled="isLocked || false"
                       />
                     </FormRow>
                   </div>
@@ -412,7 +413,7 @@ watch(
                         size="small"
                         class="w-full"
                         inputClass="w-full"
-                        :disabled="isLocked"
+                        :disabled="isLocked || false"
                       />
                     </FormRow>
                   </div>
@@ -426,14 +427,14 @@ watch(
                         size="small"
                         class="w-full"
                         inputClass="w-full"
-                        :disabled="isLocked"
+                        :disabled="isLocked || false"
                       />
                     </FormRow>
                   </div>
 
                   <div class="col-span-2">
                     <FormRow label="Due Date">
-                      <InputText v-model="d.due_date" type="date" size="small" class="w-full" :disabled="isLocked" />
+                      <InputText v-model="d.due_date" type="date" size="small" class="w-full" :disabled="isLocked || false" />
                     </FormRow>
                   </div>
 
