@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import Toast from 'primevue/toast'
@@ -17,6 +17,7 @@ import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 import FormRow from '@/components/structural/FormRow.vue'
 
 import { useGradingStore } from '@/stores/grading'
+import { useAuthStore } from '@/stores/auth'
 import {
   createCourse,
   updateCourse,
@@ -25,8 +26,31 @@ import {
 import type { Course, CourseDeliverable } from '@/modules/grading/types'
 
 const route = useRoute()
+const router = useRouter()
 const store = useGradingStore()
-const cohortId = Number(route.params.cohortId)
+const auth = useAuthStore()
+
+const currentCohortId = computed(() => Number(route.params.cohortId) || null)
+
+const cohortOptions = computed(() => {
+  if (auth.hasRole(['track_admin', 'branch_manager'])) {
+    const managed = auth.currentUser?.staff_profile?.managed_cohorts ?? []
+    return managed.map((c: any) => ({
+      id: c.cohort_id,
+      label: `Cohort ${c.cohort?.number} (${c.cohort?.track?.name ?? 'Unknown Track'})`,
+    }))
+  }
+  return []
+})
+
+function onCohortChange(e: Event) {
+  const id = Number((e.target as HTMLSelectElement).value)
+  if (id) {
+    router.push({ name: 'CourseConfig', params: { cohortId: id } })
+  } else {
+    router.push({ name: 'CourseConfig', params: { cohortId: '' } })
+  }
+}
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -52,7 +76,12 @@ function selectCourse(course: Course) {
   editingDelivs.value = course.deliverables.map((d) => ({ ...d }))
 }
 
+const isLocked = computed(() => {
+  return selectedCourse.value && selectedCourse.value.deliverables.length > 0
+})
+
 function addDeliverable() {
+  if (isLocked.value) return
   editingDelivs.value.push({
     name: '',
     type: 'lab',
@@ -63,6 +92,7 @@ function addDeliverable() {
 }
 
 function removeDeliverable(i: number) {
+  if (isLocked.value) return
   editingDelivs.value.splice(i, 1)
 }
 
@@ -71,13 +101,13 @@ function revert() {
 }
 
 async function saveWeights() {
-  if (!weightValid.value || !selectedCourse.value) return
+  if (!weightValid.value || !selectedCourse.value || !currentCohortId.value) return
   saving.value = true
   try {
     await updateCourse(selectedCourse.value.id, {
       deliverables: editingDelivs.value as CourseDeliverable[],
     })
-    await store.loadCourses(cohortId)
+    await store.loadCourses(currentCohortId.value)
     const updated = store.courses.find((c) => c.id === selectedCourse.value!.id)
     if (updated) selectCourse(updated)
     toast.add({
@@ -99,11 +129,11 @@ async function saveWeights() {
 }
 
 async function handleAddCourse() {
-  if (!newCourseName.value.trim()) return
+  if (!newCourseName.value.trim() || !currentCohortId.value) return
   saving.value = true
   try {
-    await createCourse(cohortId, { name: newCourseName.value, deliverables: [] })
-    await store.loadCourses(cohortId)
+    await createCourse(currentCohortId.value, { name: newCourseName.value, deliverables: [] })
+    await store.loadCourses(currentCohortId.value)
     newCourseName.value = ''
     showAddForm.value = false
     toast.add({ severity: 'success', summary: 'Success', detail: 'Course created', life: 3000 })
@@ -120,6 +150,7 @@ async function handleAddCourse() {
 }
 
 function handleDeleteCourse(id: number) {
+  if (!currentCohortId.value) return
   confirm.require({
     message: 'Are you sure you want to delete this course and all its deliverables?',
     header: 'Confirm Deletion',
@@ -127,7 +158,7 @@ function handleDeleteCourse(id: number) {
     accept: async () => {
       try {
         await deleteCourseApi(id)
-        await store.loadCourses(cohortId)
+        await store.loadCourses(currentCohortId.value!)
         if (selectedCourse.value?.id === id) {
           selectedCourse.value = null
           editingDelivs.value = []
@@ -145,7 +176,19 @@ function handleDeleteCourse(id: number) {
   })
 }
 
-onMounted(() => store.loadCourses(cohortId))
+watch(
+  () => route.params.cohortId,
+  (newId) => {
+    selectedCourse.value = null
+    editingDelivs.value = []
+    if (newId) {
+      store.loadCourses(Number(newId))
+    } else {
+      store.courses = []
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -157,13 +200,24 @@ onMounted(() => store.loadCourses(cohortId))
       <!-- LEFT: Course List -->
       <ContentCard title="Courses">
         <template #headerAction>
-          <button
-            @click="showAddForm = !showAddForm"
-            class="text-xs text-primary-600 hover:text-primary-800 flex items-center gap-1 font-medium"
-          >
-            <i class="pi pi-plus" style="font-size: 0.65rem" />
-            New Course
-          </button>
+          <div class="flex items-center gap-3">
+            <select
+              class="select select-bordered select-sm max-w-[220px] font-normal"
+              :value="currentCohortId || ''"
+              @change="onCohortChange"
+            >
+              <option value="">Select Cohort…</option>
+              <option v-for="c in cohortOptions" :key="c.id" :value="c.id">{{ c.label }}</option>
+            </select>
+            <button
+              v-if="currentCohortId"
+              @click="showAddForm = !showAddForm"
+              class="text-xs text-primary-600 hover:text-primary-800 flex items-center gap-1 font-medium"
+            >
+              <i class="pi pi-plus" style="font-size: 0.65rem" />
+              New Course
+            </button>
+          </div>
         </template>
 
         <div class="mb-3">
@@ -231,12 +285,12 @@ onMounted(() => store.loadCourses(cohortId))
               :class="
                 selectedCourse?.id === course.id
                   ? 'bg-primary-50 border-primary-200 text-primary-900'
-                  : 'hover:bg-surface-50 border-surface-100'
+                  : 'hover:bg-surface-50 border-surface-100 text-surface-900'
               "
             >
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium truncate">{{ course.name }}</p>
-                <p class="text-xs opacity-70 mt-0.5">
+                <p class="text-xs mt-0.5" :class="selectedCourse?.id === course.id ? 'text-primary-700' : 'text-surface-500'">
                   {{ course.deliverables?.length ?? 0 }} deliverable(s)
                 </p>
               </div>
@@ -281,21 +335,11 @@ onMounted(() => store.loadCourses(cohortId))
 
         <template v-else>
           <div class="space-y-4">
-            <!-- Weight Validator -->
-            <div
-              class="rounded-xl p-4 border flex items-center justify-between gap-4"
-              :class="weightValid ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'"
-            >
+            <!-- Weight Progress Bar -->
+            <div class="bg-surface-100 p-4 rounded-xl border border-surface-200 mb-4 flex items-center gap-4">
               <div class="flex-1">
-                <div class="flex items-center gap-2 mb-2">
-                  <i
-                    :class="
-                      weightValid
-                        ? 'pi pi-check-circle text-green-600'
-                        : 'pi pi-exclamation-circle text-red-500'
-                    "
-                    style="font-size: 1rem"
-                  />
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-semibold text-surface-700">Course Weight Allocation</span>
                   <span
                     class="text-sm font-medium"
                     :class="weightValid ? 'text-green-700' : 'text-red-700'"
@@ -343,6 +387,7 @@ onMounted(() => store.loadCourses(cohortId))
                         placeholder="e.g. Lab 1"
                         size="small"
                         class="w-full"
+                        :disabled="isLocked"
                       />
                     </FormRow>
                   </div>
@@ -354,6 +399,7 @@ onMounted(() => store.loadCourses(cohortId))
                         :options="['lab', 'exam', 'project']"
                         size="small"
                         class="w-full"
+                        :disabled="isLocked"
                       />
                     </FormRow>
                   </div>
@@ -366,6 +412,7 @@ onMounted(() => store.loadCourses(cohortId))
                         size="small"
                         class="w-full"
                         inputClass="w-full"
+                        :disabled="isLocked"
                       />
                     </FormRow>
                   </div>
@@ -376,21 +423,21 @@ onMounted(() => store.loadCourses(cohortId))
                         v-model="d.course_weight"
                         :min="0"
                         :max="100"
-                        suffix="%"
                         size="small"
                         class="w-full"
                         inputClass="w-full"
+                        :disabled="isLocked"
                       />
                     </FormRow>
                   </div>
 
                   <div class="col-span-2">
                     <FormRow label="Due Date">
-                      <InputText v-model="d.due_date" type="date" size="small" class="w-full" />
+                      <InputText v-model="d.due_date" type="date" size="small" class="w-full" :disabled="isLocked" />
                     </FormRow>
                   </div>
 
-                  <div class="col-span-1 flex justify-center pt-6">
+                  <div v-if="!isLocked" class="col-span-1 flex justify-center pt-6">
                     <button
                       @click="removeDeliverable(i)"
                       class="text-red-400 hover:text-red-600 transition-colors"
@@ -404,6 +451,7 @@ onMounted(() => store.loadCourses(cohortId))
 
               <!-- Add Deliverable -->
               <button
+                v-if="!isLocked"
                 @click="addDeliverable"
                 class="w-full py-3 rounded-xl border-2 border-dashed border-surface-200 text-surface-400 hover:border-primary-400 hover:text-primary-500 transition-colors text-sm flex items-center justify-center gap-2"
               >
@@ -412,7 +460,7 @@ onMounted(() => store.loadCourses(cohortId))
               </button>
             </div>
 
-            <div class="flex justify-end gap-2 pt-4 mt-4 border-t border-surface-200">
+            <div v-if="!isLocked" class="flex justify-end gap-2 pt-4 mt-4 border-t border-surface-200">
               <Button label="Revert" severity="secondary" outlined size="small" @click="revert" />
               <Button
                 :label="saving ? 'Saving...' : 'Save Configuration'"

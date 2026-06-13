@@ -9,10 +9,13 @@ import type {
 } from '@/modules/grading/types'
 import {
   getCohortCourses,
+  getCohortStudents,
   getDeliverableSubmissions,
+  getStudentSubmissions,
   getTags,
   getCohortAnalytics,
   getLabGroupAnalytics,
+
   gradeSubmission,
   overrideSubmission,
 } from '@/modules/grading/services/gradingService'
@@ -21,6 +24,7 @@ export const useGradingStore = defineStore('grading', () => {
   const selectedCohortId = ref<number | null>(null)
   const selectedLabGroupId = ref<number | null>(null)
   const courses = ref<Course[]>([])
+  const students = ref<any[]>([])
   const submissions = ref<Record<number, Submission[]>>({})
   const tags = ref<Tag[]>([])
   const analytics = ref<CohortAnalytics | LabGroupAnalytics | null>(null)
@@ -48,11 +52,45 @@ export const useGradingStore = defineStore('grading', () => {
     }
   }
 
+  async function loadCohortStudents(cohortId: number) {
+    try {
+      students.value = await getCohortStudents(cohortId)
+    } catch (err: any) {
+      error.value = err.message
+    }
+  }
+
   async function loadSubmissions(deliverableId: number) {
     loading.value = true
     error.value = null
     try {
       submissions.value[deliverableId] = await getDeliverableSubmissions(deliverableId)
+    } catch (err: any) {
+      error.value = err.message
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function loadStudentSubmissions(studentId: number) {
+    loading.value = true
+    error.value = null
+    try {
+      const studentSubs = await getStudentSubmissions(studentId)
+      
+      // Group submissions by deliverable_id so the Gradebook UI logic works
+      const grouped: Record<number, Submission[]> = {}
+      studentSubs.forEach(sub => {
+        if (!grouped[sub.deliverable_id]) {
+          grouped[sub.deliverable_id] = []
+        }
+        grouped[sub.deliverable_id]!.push(sub)
+      })
+      
+      // Assign the grouped submissions to the store state
+      for (const [delivId, subs] of Object.entries(grouped)) {
+        submissions.value[Number(delivId)] = subs
+      }
     } catch (err: any) {
       error.value = err.message
     } finally {
@@ -128,10 +166,12 @@ export const useGradingStore = defineStore('grading', () => {
     }
   }
 
+
   return {
     selectedCohortId,
     selectedLabGroupId,
     courses,
+    students,
     submissions,
     tags,
     analytics,
@@ -140,7 +180,9 @@ export const useGradingStore = defineStore('grading', () => {
     setCohortId,
     setLabGroupId,
     loadCourses,
+    loadCohortStudents,
     loadSubmissions,
+    loadStudentSubmissions,
     loadTags,
     loadCohortAnalytics,
     loadLabGroupAnalytics,
