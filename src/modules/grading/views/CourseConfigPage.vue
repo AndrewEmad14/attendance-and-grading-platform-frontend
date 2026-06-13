@@ -187,7 +187,7 @@ watch(
       store.courses = []
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 
@@ -290,7 +290,12 @@ watch(
             >
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium truncate">{{ course.name }}</p>
-                <p class="text-xs mt-0.5" :class="selectedCourse?.id === course.id ? 'text-primary-700' : 'text-surface-500'">
+                <p
+                  class="text-xs mt-0.5"
+                  :class="
+                    selectedCourse?.id === course.id ? 'text-primary-700' : 'text-surface-500'
+                  "
+                >
                   {{ course.deliverables?.length ?? 0 }} deliverable(s)
                 </p>
               </div>
@@ -336,10 +341,14 @@ watch(
         <template v-else>
           <div class="space-y-4">
             <!-- Weight Progress Bar -->
-            <div class="bg-surface-100 p-4 rounded-xl border border-surface-200 mb-4 flex items-center gap-4">
+            <div
+              class="bg-surface-100 p-4 rounded-xl border border-surface-200 mb-4 flex items-center gap-4"
+            >
               <div class="flex-1">
                 <div class="flex justify-between mb-1">
-                  <span class="text-sm font-semibold text-surface-700">Course Weight Allocation</span>
+                  <span class="text-sm font-semibold text-surface-700"
+                    >Course Weight Allocation</span
+                  >
                   <span
                     class="text-sm font-medium"
                     :class="weightValid ? 'text-green-700' : 'text-red-700'"
@@ -379,7 +388,6 @@ watch(
                 :key="i"
                 class="bg-surface-50 rounded-xl border border-surface-200 p-4"
               >
-
                 <div class="grid grid-cols-12 gap-3 items-start">
                   <div class="col-span-3">
                     <FormRow label="Name">
@@ -434,7 +442,13 @@ watch(
 
                   <div class="col-span-2">
                     <FormRow label="Due Date">
-                      <InputText v-model="d.due_date" type="date" size="small" class="w-full" :disabled="isLocked || false" />
+                      <InputText
+                        v-model="d.due_date"
+                        type="date"
+                        size="small"
+                        class="w-full"
+                        :disabled="isLocked || false"
+                      />
                     </FormRow>
                   </div>
 
@@ -461,7 +475,10 @@ watch(
               </button>
             </div>
 
-            <div v-if="!isLocked" class="flex justify-end gap-2 pt-4 mt-4 border-t border-surface-200">
+            <div
+              v-if="!isLocked"
+              class="flex justify-end gap-2 pt-4 mt-4 border-t border-surface-200"
+            >
               <Button label="Revert" severity="secondary" outlined size="small" @click="revert" />
               <Button
                 :label="saving ? 'Saving...' : 'Save Configuration'"

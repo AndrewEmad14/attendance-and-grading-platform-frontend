@@ -100,10 +100,7 @@ async function onCohortChange(e: Event) {
   if (!id) return
   selectedCohortId.value = id
   selectedCourseId.value = null
-  await Promise.all([
-    gradingStore.loadCourses(id),
-    gradingStore.loadCohortStudents(id)
-  ])
+  await Promise.all([gradingStore.loadCourses(id), gradingStore.loadCohortStudents(id)])
 }
 
 async function onCourseChange(e: Event) {
@@ -127,7 +124,6 @@ function openOverride(sub: Submission, d: CourseDeliverable, studentName: string
   overrideTarget.value = { submission: sub, deliverable: d, studentName }
   overrideVisible.value = true
 }
-
 
 async function onOverrideSuccess() {
   // Refresh all deliverables for the selected course
@@ -236,14 +232,14 @@ if (auth.hasRole('student')) {
   onMounted(async () => {
     studentLoading.value = true
     await gradingStore.loadCourses(studentCohortId.value)
-    
+
     // Instead of loading all deliverables (which throws 403 for students),
     // we fetch the student's personal tracker data all at once.
     const studentId = auth.currentUser?.student_profile?.id
     if (studentId) {
       await gradingStore.loadStudentSubmissions(studentId)
     }
-    
+
     studentLoading.value = false
   })
 }
@@ -271,31 +267,41 @@ function courseTotal(course: Course): number {
 const grandTotal = computed(() => {
   const attendanceBalance = auth.currentUser?.student_profile?.attendance_balance ?? 250
   const coursesSum = gradingStore.courses.reduce((sum, c) => sum + courseTotal(c), 0)
-  
+
   // Grand Total = Attendance Ledger (out of 250) + Sum of Course Scores (each out of 100)
-  const maxPossible = 250 + (gradingStore.courses.length * 100)
+  const maxPossible = 250 + gradingStore.courses.length * 100
   if (maxPossible === 0) return 0
-  
+
   return ((attendanceBalance + coursesSum) / maxPossible) * 100
 })
 const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) < 60))
 </script>
 
 <template>
-  <div v-if="auth.hasRole('track_admin')" class="flex flex-col h-full overflow-hidden bg-surface-50">
+  <div
+    v-if="auth.hasRole('track_admin')"
+    class="flex flex-col h-full overflow-hidden bg-surface-50"
+  >
     <!-- Top Action Bar -->
-    <header class="bg-white px-6 py-4 border-b border-surface-200 flex items-center justify-between shrink-0">
+    <header
+      class="bg-white px-6 py-4 border-b border-surface-200 flex items-center justify-between shrink-0"
+    >
       <div class="flex items-center gap-4">
         <h2 class="text-2xl font-bold text-surface-900 tracking-tight">Gradebook Overview</h2>
-        <span class="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded font-bold text-[10px] uppercase tracking-wider border border-blue-200">Track Admin</span>
+        <span
+          class="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded font-bold text-[10px] uppercase tracking-wider border border-blue-200"
+          >Track Admin</span
+        >
       </div>
       <div class="flex items-center gap-3">
         <div class="relative">
-          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm"></i>
-          <input 
+          <i
+            class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm"
+          ></i>
+          <input
             v-model="searchQuery"
-            class="pl-9 pr-3 py-2 border border-surface-300 rounded text-sm text-surface-900 bg-surface-50 focus:border-primary-500 focus:ring-1 focus:ring-primary-200 outline-none w-64 transition-all" 
-            placeholder="Search student..." 
+            class="pl-9 pr-3 py-2 border border-surface-300 rounded text-sm text-surface-900 bg-surface-50 focus:border-primary-500 focus:ring-1 focus:ring-primary-200 outline-none w-64 transition-all"
+            placeholder="Search student..."
             type="text"
           />
         </div>
@@ -307,8 +313,8 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       <!-- Table Controls -->
       <div class="mb-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <select 
-            class="border border-surface-300 rounded px-3 py-1.5 text-sm text-surface-900 bg-white focus:outline-none focus:border-primary-500 shadow-sm" 
+          <select
+            class="border border-surface-300 rounded px-3 py-1.5 text-sm text-surface-900 bg-white focus:outline-none focus:border-primary-500 shadow-sm"
             @change="onCohortChange"
           >
             <option value="">Select Cohort…</option>
@@ -346,7 +352,10 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       </div>
 
       <!-- Loading -->
-      <div v-if="gradingStore.loading" class="flex items-center justify-center flex-1 text-sm text-surface-500">
+      <div
+        v-if="gradingStore.loading"
+        class="flex items-center justify-center flex-1 text-sm text-surface-500"
+      >
         <span class="loading loading-spinner loading-md mr-2"></span> Loading gradebook data…
       </div>
 
@@ -360,17 +369,22 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       </div>
 
       <!-- Scrollable Table Container -->
-      <div v-else class="bg-white border border-surface-300 rounded-lg flex-1 overflow-auto dense-table-container shadow-sm">
+      <div
+        v-else
+        class="bg-white border border-surface-300 rounded-lg flex-1 overflow-auto dense-table-container shadow-sm"
+      >
         <table class="w-full text-left border-collapse whitespace-nowrap">
           <thead class="sticky top-0 bg-surface-50 z-10 shadow-[0_1px_0_#cbd5e1]">
             <tr>
-              <th class="px-4 py-3 text-xs font-bold text-surface-900 border-r border-surface-300 w-64 uppercase tracking-wider">
+              <th
+                class="px-4 py-3 text-xs font-bold text-surface-900 border-r border-surface-300 w-64 uppercase tracking-wider"
+              >
                 Student Identifier
               </th>
-              
-              <th 
-                v-for="d in deliverables" 
-                :key="d.id" 
+
+              <th
+                v-for="d in deliverables"
+                :key="d.id"
                 class="px-3 py-2 border-r border-surface-300 text-center bg-white min-w-[120px]"
               >
                 <div class="text-xs font-bold text-surface-900 truncate">{{ d.name }}</div>
@@ -378,33 +392,39 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   {{ d.type }} · /{{ d.max_score }}
                 </div>
               </th>
-              
-              <th class="px-4 py-3 text-xs font-bold text-primary-700 text-right w-32 bg-blue-50 border-l border-surface-300 uppercase tracking-wider shadow-[-4px_0_12px_rgba(0,0,0,0.02)] sticky right-0">
+
+              <th
+                class="px-4 py-3 text-xs font-bold text-primary-700 text-right w-32 bg-blue-50 border-l border-surface-300 uppercase tracking-wider shadow-[-4px_0_12px_rgba(0,0,0,0.02)] sticky right-0"
+              >
                 Course Total
-                <div class="text-[9px] text-primary-600/70 font-normal mt-0.5 normal-case">Out of 100%</div>
+                <div class="text-[9px] text-primary-600/70 font-normal mt-0.5 normal-case">
+                  Out of 100%
+                </div>
               </th>
             </tr>
           </thead>
-          
+
           <tbody class="bg-white">
             <template v-for="[groupName, students] in studentsByGroup" :key="groupName">
               <!-- Group Separator -->
               <tr class="bg-surface-100 border-y border-surface-300">
-                <td 
-                  :colspan="deliverables.length + 2" 
+                <td
+                  :colspan="deliverables.length + 2"
                   class="px-4 py-2 text-xs font-bold text-surface-700 sticky left-0 bg-surface-100 shadow-[1px_0_0_#cbd5e1]"
                 >
                   {{ groupName }}
                 </td>
               </tr>
-              
+
               <!-- Data Rows -->
-              <tr 
-                v-for="student in students" 
-                :key="student.id" 
+              <tr
+                v-for="student in students"
+                :key="student.id"
                 class="hover:border hover:border-primary-400 hover:-outline-offset-1 border-b border-surface-200 h-10 group"
               >
-                <td class="px-4 py-1.5 text-sm text-surface-900 border-r border-surface-300 group-hover:border-transparent sticky left-0 bg-white group-hover:bg-blue-50/50 shadow-[1px_0_0_#cbd5e1]">
+                <td
+                  class="px-4 py-1.5 text-sm text-surface-900 border-r border-surface-300 group-hover:border-transparent sticky left-0 bg-white group-hover:bg-blue-50/50 shadow-[1px_0_0_#cbd5e1]"
+                >
                   <RouterLink
                     :to="{ name: 'StudentTags', params: { studentId: student.id } }"
                     class="text-primary-700 hover:underline font-medium"
@@ -413,19 +433,25 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   </RouterLink>
                 </td>
 
-                <td 
-                  v-for="d in deliverables" 
-                  :key="d.id" 
+                <td
+                  v-for="d in deliverables"
+                  :key="d.id"
                   class="px-3 py-1.5 text-right border-r border-surface-300 group-hover:border-transparent font-mono text-sm"
                 >
                   <!-- No submission -->
-                  <span v-if="!getSub(student.id, d.id)" class="text-surface-300 flex items-center justify-end gap-1">
-                    <span :class="{ 'hidden': d.type !== 'lab' }">—</span>
+                  <span
+                    v-if="!getSub(student.id, d.id)"
+                    class="text-surface-300 flex items-center justify-end gap-1"
+                  >
+                    <span :class="{ hidden: d.type !== 'lab' }">—</span>
                   </span>
 
                   <!-- Ungraded -->
                   <span
-                    v-else-if="!getSub(student.id, d.id)!.graded_by && getSub(student.id, d.id)!.override_score === null"
+                    v-else-if="
+                      !getSub(student.id, d.id)!.graded_by &&
+                      getSub(student.id, d.id)!.override_score === null
+                    "
                     class="flex items-center justify-end gap-1"
                   >
                     <template v-if="d.type !== 'lab'">
@@ -447,7 +473,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       </button>
                     </template>
                     <template v-else>
-                      <span class="text-amber-500 italic text-[11px] tracking-tight mr-1" title="Waiting for instructor to grade">Pending</span>
+                      <span
+                        class="text-amber-500 italic text-[11px] tracking-tight mr-1"
+                        title="Waiting for instructor to grade"
+                        >Pending</span
+                      >
                     </template>
                   </span>
 
@@ -457,7 +487,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     class="flex items-center justify-end gap-1"
                   >
                     <i class="pi pi-bolt text-amber-500 text-[12px]" title="Manual Override"></i>
-                    <span class="font-bold text-blue-700 ml-1">{{ getSub(student.id, d.id)!.override_score }}</span>
+                    <span class="font-bold text-blue-700 ml-1">{{
+                      getSub(student.id, d.id)!.override_score
+                    }}</span>
                     <button
                       class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1"
                       title="Edit Override"
@@ -471,7 +503,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   <span v-else class="flex items-center justify-end gap-1 group/grade">
                     <span
                       class="text-surface-900"
-                      :class="isLow(getSub(student.id, d.id)!.raw_score!, d.max_score) ? 'text-red-600 font-bold' : ''"
+                      :class="
+                        isLow(getSub(student.id, d.id)!.raw_score!, d.max_score)
+                          ? 'text-red-600 font-bold'
+                          : ''
+                      "
                     >
                       {{ getSub(student.id, d.id)!.raw_score }}
                     </span>
@@ -485,7 +521,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   </span>
                 </td>
 
-                <td class="px-4 py-1.5 font-bold text-right text-surface-900 bg-surface-50 group-hover:bg-transparent sticky right-0 shadow-[-1px_0_0_#cbd5e1] border-l border-surface-300">
+                <td
+                  class="px-4 py-1.5 font-bold text-right text-surface-900 bg-surface-50 group-hover:bg-transparent sticky right-0 shadow-[-1px_0_0_#cbd5e1] border-l border-surface-300"
+                >
                   {{ rowTotal(student.id) }}%
                 </td>
               </tr>
@@ -514,33 +552,45 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
     class="flex flex-col gap-4 p-6 h-full overflow-hidden"
   >
     <!-- Header Controls -->
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+    <div
+      class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0"
+    >
       <div>
         <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
           <i class="pi pi-check-square text-primary"></i>
           Lab Grading Matrix
         </h2>
-        
+
         <!-- Deliverable selector grouped by course -->
         <div class="flex flex-col gap-1">
-          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Lab Deliverable</label>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide"
+            >Select Lab Deliverable</label
+          >
           <div class="relative">
             <select
               class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm min-w-[280px] transition-all cursor-pointer"
               :disabled="!gradingStore.courses.length"
-              @change="(e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))"
+              @change="
+                (e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))
+              "
             >
               <option value="">
-                {{ gradingStore.loading ? 'Loading courses…' : (gradingStore.courses.length ? 'Choose a deliverable…' : 'No lab deliverables available in this cohort') }}
+                {{
+                  gradingStore.loading
+                    ? 'Loading courses…'
+                    : gradingStore.courses.length
+                      ? 'Choose a deliverable…'
+                      : 'No lab deliverables available in this cohort'
+                }}
               </option>
               <template v-for="course in gradingStore.courses" :key="course.id">
-                <optgroup 
-                  v-if="(course.deliverables || []).some(d => d.type === 'lab')"
+                <optgroup
+                  v-if="(course.deliverables || []).some((d) => d.type === 'lab')"
                   :label="course.name"
                 >
-                  <option 
-                    v-for="d in (course.deliverables || []).filter(d => d.type === 'lab')" 
-                    :key="d.id" 
+                  <option
+                    v-for="d in (course.deliverables || []).filter((d) => d.type === 'lab')"
+                    :key="d.id"
                     :value="d.id"
                   >
                     {{ d.name }} · /{{ d.max_score }} pts
@@ -548,7 +598,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                 </optgroup>
               </template>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+            >
               <i class="pi pi-chevron-down text-[10px]"></i>
             </div>
           </div>
@@ -600,9 +652,13 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
         <table class="table table-xs table-pin-rows w-full whitespace-nowrap">
           <thead>
             <tr class="bg-gray-100">
-              <th class="w-52 sticky left-0 bg-gray-100 z-10 px-4 py-2 font-semibold text-gray-600">Student Name</th>
+              <th class="w-52 sticky left-0 bg-gray-100 z-10 px-4 py-2 font-semibold text-gray-600">
+                Student Name
+              </th>
               <th class="w-40 text-left px-4 py-2 font-semibold text-gray-600">Submission</th>
-              <th class="text-right min-w-[140px] px-4 py-2 font-semibold text-gray-600">Score (Input)</th>
+              <th class="text-right min-w-[140px] px-4 py-2 font-semibold text-gray-600">
+                Score (Input)
+              </th>
               <th class="text-right w-24 px-4 py-2 font-semibold text-gray-600">Grade Preview</th>
               <th class="text-center w-24 px-4 py-2 font-semibold text-gray-600">Status</th>
             </tr>
@@ -629,18 +685,18 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
               <!-- Submission File/Link -->
               <td class="text-xs">
-                <a 
-                  v-if="sub.submission_type === 'link' || sub.submission_type === 'url'" 
-                  :href="sub.submission_path || '#'" 
+                <a
+                  v-if="sub.submission_type === 'link' || sub.submission_type === 'url'"
+                  :href="sub.submission_path || '#'"
                   target="_blank"
                   class="text-blue-600 hover:underline truncate inline-block max-w-[150px]"
                   title="Open Submission Link"
                 >
                   <i class="pi pi-external-link text-[10px] mr-1"></i> View Link
                 </a>
-                <a 
+                <a
                   v-else-if="sub.submission_type === 'file'"
-                  :href="`/api/submissions/${sub.id}/download`" 
+                  :href="`/api/submissions/${sub.id}/download`"
                   target="_blank"
                   class="text-blue-600 hover:underline truncate inline-block max-w-[150px]"
                   title="Download File"
@@ -681,7 +737,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       class="w-14 text-right border-b border-gray-400 bg-transparent focus:border-primary focus:outline-none px-1 py-0.5 text-sm font-mono text-gray-900"
                       @keydown.enter="instrSaveGrade(sub)"
                     />
-                    <button 
+                    <button
                       class="inline-flex items-center justify-center text-primary hover:bg-primary/10 rounded p-1 transition-colors"
                       title="Save"
                       @click="instrSaveGrade(sub)"
@@ -709,12 +765,26 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
               <!-- Grade Preview (Normalized) -->
               <td class="text-right font-mono font-bold text-xs pr-4 text-gray-900">
-                <span v-if="(sub.override_score !== null || typeof localScores[sub.id] === 'number' || sub.graded_by) && instrSelectedDeliverable?.max_score">
-                  {{ Math.round((((sub.override_score ?? (typeof localScores[sub.id] === 'number' ? localScores[sub.id] : null) ?? sub.raw_score)?? 0) / instrSelectedDeliverable.max_score) * 100) }}%
+                <span
+                  v-if="
+                    (sub.override_score !== null ||
+                      typeof localScores[sub.id] === 'number' ||
+                      sub.graded_by) &&
+                    instrSelectedDeliverable?.max_score
+                  "
+                >
+                  {{
+                    Math.round(
+                      ((sub.override_score ??
+                        (typeof localScores[sub.id] === 'number' ? localScores[sub.id] : null) ??
+                        sub.raw_score ??
+                        0) /
+                        instrSelectedDeliverable.max_score) *
+                        100,
+                    )
+                  }}%
                 </span>
-                <span v-else class="text-gray-400 font-normal">
-                  –
-                </span>
+                <span v-else class="text-gray-400 font-normal"> – </span>
               </td>
 
               <!-- Status Badge -->
@@ -729,7 +799,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   class="badge badge-success badge-sm text-[10px] font-bold uppercase tracking-wider"
                   >Graded</span
                 >
-                <span v-else class="badge badge-ghost badge-sm text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500">Pending</span>
+                <span
+                  v-else
+                  class="badge badge-ghost badge-sm text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500"
+                  >Pending</span
+                >
               </td>
             </tr>
           </tbody>
@@ -765,7 +839,10 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
   </div>
 
   <div v-else-if="auth.hasRole('student')" class="max-w-7xl mx-auto w-full px-6 py-8">
-    <div v-if="studentLoading" class="flex items-center justify-center py-12 gap-3 text-surface-500">
+    <div
+      v-if="studentLoading"
+      class="flex items-center justify-center py-12 gap-3 text-surface-500"
+    >
       <span class="loading loading-spinner loading-md"></span> Loading your academic record…
     </div>
 
@@ -779,20 +856,29 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       <aside class="md:col-span-3 flex flex-col gap-4">
         <div class="bg-white border border-surface-200 rounded-2xl p-6 shadow-sm">
           <div class="flex flex-col items-center text-center gap-2 mb-6">
-            <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary-50 bg-surface-100 mb-2 flex items-center justify-center shadow-inner">
+            <div
+              class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary-50 bg-surface-100 mb-2 flex items-center justify-center shadow-inner"
+            >
               <span class="text-3xl font-bold text-surface-400">
                 {{ auth.currentUser?.name.charAt(0).toUpperCase() }}
               </span>
             </div>
             <h2 class="text-lg font-bold text-surface-900">{{ auth.currentUser?.name }}</h2>
-            <span class="bg-blue-50 text-blue-700 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md">Student</span>
-            <p class="text-surface-500 text-sm mt-1">{{ gradingStore.courses.length }} Active Courses</p>
+            <span
+              class="bg-blue-50 text-blue-700 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md"
+              >Student</span
+            >
+            <p class="text-surface-500 text-sm mt-1">
+              {{ gradingStore.courses.length }} Active Courses
+            </p>
           </div>
-          
+
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Overall Score</span>
-              <span class="font-mono font-bold text-primary-700 text-base">{{ grandTotal.toFixed(1) }}%</span>
+              <span class="font-mono font-bold text-primary-700 text-base"
+                >{{ grandTotal.toFixed(1) }}%</span
+              >
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Status</span>
@@ -807,24 +893,39 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       <!-- Main Content Area -->
       <div class="md:col-span-9 flex flex-col gap-6">
         <div class="mb-2">
-          <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">My Grades Breakdown</h1>
-          <p class="text-surface-500 text-sm">Detailed view of your performance across current courses.</p>
+          <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">
+            My Grades Breakdown
+          </h1>
+          <p class="text-surface-500 text-sm">
+            Detailed view of your performance across current courses.
+          </p>
         </div>
 
         <!-- Course Cards -->
-        <div 
-          v-for="course in gradingStore.courses" 
+        <div
+          v-for="course in gradingStore.courses"
           :key="course.id"
           class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group"
         >
           <div class="flex justify-between items-start mb-8">
             <div>
-              <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-700 transition-colors">{{ course.name }}</h3>
-              <p class="text-surface-500 text-sm mt-1">{{ course.deliverables.length }} Deliverable(s)</p>
+              <h3
+                class="text-lg font-bold text-surface-900 group-hover:text-primary-700 transition-colors"
+              >
+                {{ course.name }}
+              </h3>
+              <p class="text-surface-500 text-sm mt-1">
+                {{ course.deliverables.length }} Deliverable(s)
+              </p>
             </div>
             <div class="text-right">
-              <span class="block text-3xl font-bold text-surface-900 tracking-tight">{{ courseTotal(course).toFixed(1) }}<span class="text-xl text-surface-400">%</span></span>
-              <span class="text-xs font-semibold text-surface-400 uppercase tracking-wider">Overall</span>
+              <span class="block text-3xl font-bold text-surface-900 tracking-tight"
+                >{{ courseTotal(course).toFixed(1)
+                }}<span class="text-xl text-surface-400">%</span></span
+              >
+              <span class="text-xs font-semibold text-surface-400 uppercase tracking-wider"
+                >Overall</span
+              >
             </div>
           </div>
 
@@ -833,52 +934,73 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
             <div v-for="d in course.deliverables" :key="d.id">
               <div class="flex justify-between text-sm mb-2 items-end">
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-surface-700 uppercase tracking-wider text-[11px]">{{ d.name }}</span>
-                  <span 
+                  <span class="font-bold text-surface-700 uppercase tracking-wider text-[11px]">{{
+                    d.name
+                  }}</span>
+                  <span
                     class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
                     :class="{
                       'bg-blue-50 text-blue-600': d.type === 'lab',
                       'bg-purple-50 text-purple-600': d.type === 'exam',
-                      'bg-emerald-50 text-emerald-600': d.type === 'project'
+                      'bg-emerald-50 text-emerald-600': d.type === 'project',
                     }"
-                  >{{ d.type }}</span>
+                    >{{ d.type }}</span
+                  >
                 </div>
                 <span class="font-mono text-[13px] text-surface-600">
                   <template v-if="!studentSub(d.id)">
-                    <span class="text-surface-400 italic mr-1">Missing</span> / {{ d.max_score }} pts
+                    <span class="text-surface-400 italic mr-1">Missing</span> /
+                    {{ d.max_score }} pts
                   </template>
-                  <template v-else-if="(studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) === null">
+                  <template
+                    v-else-if="
+                      (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) === null
+                    "
+                  >
                     <span class="text-amber-500 italic mr-1">Pending</span> / {{ d.max_score }} pts
                   </template>
                   <template v-else>
                     <span class="font-bold text-surface-900">
                       {{ studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score }}
                     </span>
-                     / {{ d.max_score }} pts
+                    / {{ d.max_score }} pts
                   </template>
                 </span>
               </div>
-              <div class="w-full bg-surface-100 h-2.5 rounded-full overflow-hidden shadow-inner relative">
-                <div 
+              <div
+                class="w-full bg-surface-100 h-2.5 rounded-full overflow-hidden shadow-inner relative"
+              >
+                <div
                   class="h-full rounded-full transition-all duration-700 ease-out"
                   :class="{
                     'bg-blue-500': d.type === 'lab',
                     'bg-purple-500': d.type === 'exam',
                     'bg-emerald-500': d.type === 'project',
-                    'opacity-50': (studentSub(d.id)?.override_score ?? studentSub(d.id)?.raw_score) === null
+                    'opacity-50':
+                      (studentSub(d.id)?.override_score ?? studentSub(d.id)?.raw_score) === null,
                   }"
-                  :style="{ 
-                    width: studentSub(d.id) && (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null 
-                      ? Math.min(100, ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) / d.max_score) * 100) + '%' 
-                      : '0%' 
+                  :style="{
+                    width:
+                      studentSub(d.id) &&
+                      (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null
+                        ? Math.min(
+                            100,
+                            ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) /
+                              d.max_score) *
+                              100,
+                          ) + '%'
+                        : '0%',
                   }"
                 ></div>
               </div>
             </div>
           </div>
         </div>
-        
-        <div v-if="gradingStore.courses.length === 0" class="text-center py-12 text-surface-500 border-2 border-dashed border-surface-200 rounded-2xl">
+
+        <div
+          v-if="gradingStore.courses.length === 0"
+          class="text-center py-12 text-surface-500 border-2 border-dashed border-surface-200 rounded-2xl"
+        >
           No courses are currently configured for your cohort.
         </div>
       </div>

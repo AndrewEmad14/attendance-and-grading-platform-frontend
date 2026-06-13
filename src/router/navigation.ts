@@ -32,18 +32,27 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-calendar',
     roles: ['track_admin', 'instructor', 'student'],
   },
+
+  // Attendance Navigation
   {
-    label: 'Attendance Ledger',
-    path: '/attendance',
-    icon: 'pi pi-list',
-    roles: ['track_admin', 'instructor'],
+    label: 'My Attendance',
+    path: '/attendance/me',
+    icon: 'pi pi-check-square',
+    roles: ['student'],
   },
   {
-    label: 'Kiosk Simulator',
-    path: '/kiosk',
-    icon: 'pi pi-qrcode',
+    label: 'My Sessions',
+    path: '/attendance/sessions',
+    icon: 'pi pi-id-card',
+    roles: ['instructor', 'track_admin'],
+  },
+  {
+    label: 'Excuse Requests',
+    path: '/attendance/excuses',
+    icon: 'pi pi-inbox',
     roles: ['track_admin'],
   },
+
   {
     label: 'Gradebook',
     path: '/grades',

@@ -29,8 +29,16 @@ function handleClose() {
     :dismissableMask="true"
     @hide="handleClose"
     :pt="{
-      root: { class: ['bg-white border border-surface-200 shadow-xl rounded-xl max-w-lg w-full mx-4 overflow-hidden', modalClass] },
-      header: { class: 'p-4 bg-surface-50 border-b border-surface-200 flex items-center justify-between text-surface-900 font-bold text-sm tracking-tight' },
+      root: {
+        class: [
+          'bg-white border border-surface-200 shadow-xl rounded-xl max-w-lg w-full mx-4 overflow-hidden',
+          modalClass,
+        ],
+      },
+      header: {
+        class:
+          'p-4 bg-surface-50 border-b border-surface-200 flex items-center justify-between text-surface-900 font-bold text-sm tracking-tight',
+      },
       content: { class: 'p-4 space-y-4 text-sm text-surface-600' },
     }"
   >
