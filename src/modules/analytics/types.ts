@@ -1,3 +1,4 @@
+// ─── Existing types (unchanged) ───────────────────────────────────────────────
 export interface Track {
   track_id: number
   track_name: string
@@ -32,4 +33,22 @@ export interface AnalyticsResponse {
   kpis: Kpis
   tracks: Track[]
   attendance_trend: AttendanceTrend[]
+}
+
+// ─── At-Risk types ────────────────────────────────────────────────────────────
+
+export interface FailingCourse {
+  course_id: number
+  course_name: string
+  score: number
+}
+
+export interface AtRiskStudent {
+  student_id: number
+  name: string
+  email: string
+  attendance_balance: number
+  at_risk_attendance: boolean
+  at_risk_grade: boolean
+  failing_courses: FailingCourse[]
 }

@@ -76,6 +76,18 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Branch Analytics', allowedRoles: ['branch_manager'] },
       },
       {
+        path: 'analytics/at-risk',
+        name: 'AtRiskIndex',
+        component: () => import('@/modules/analytics/views/AtRiskIndexPage.vue'),
+        meta: { title: 'At-Risk Students', allowedRoles: ['branch_manager'] },
+      },
+      {
+        path: 'analytics/cohorts/:cohortId/at-risk',
+        name: 'AtRiskStudents',
+        component: () => import('@/modules/analytics/views/AtRiskStudentsPage.vue'),
+        meta: { title: 'At-Risk Students', allowedRoles: ['branch_manager'] },
+      },
+      {
         path: 'finance',
         name: 'BillingFinance',
         component: () => import('@/modules/finance/views/BillingSummaryPage.vue'),
