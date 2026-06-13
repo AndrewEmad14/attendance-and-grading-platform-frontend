@@ -11,11 +11,11 @@ const error = ref<string | null>(null)
 const secondsLeft = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
-const qrUrl = computed(() =>
-  token.value
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(token.value)}`
-    : null,
-)
+const qrUrl = computed(() => {
+  if (!token.value) return null
+  const scanUrl = `${window.location.origin}/attendance/scan/${props.engagementId}?token=${encodeURIComponent(token.value)}`
+  return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(scanUrl)}`
+})
 
 const expiryColor = computed(() => {
   if (secondsLeft.value > 60) return 'text-emerald-600'
