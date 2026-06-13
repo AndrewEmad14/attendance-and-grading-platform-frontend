@@ -28,12 +28,6 @@ class ApiClient {
       headers.set('Authorization', `Bearer ${auth.token}`)
     }
 
-    // Inject mock token for the active developer profile context
-    if (auth.isAuthenticated) {
-      // headers.set('Authorization', `Bearer mock-token-for-${auth.userRole}`)
-      headers.set('Authorization', `Bearer ${auth.token}`)
-    }
-
     const config: RequestInit = {
       ...options,
       headers,

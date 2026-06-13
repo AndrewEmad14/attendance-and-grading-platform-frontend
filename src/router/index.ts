@@ -48,18 +48,69 @@ const routes: Array<RouteRecordRaw> = [
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },
+
+      // Attendance Routes
       {
-        path: 'attendance',
-        name: 'AttendanceLedger',
-        component: () => import('@/modules/attendance/views/AttendanceLogPage.vue'),
-        meta: { title: 'Attendance Ledger', allowedRoles: ['track_admin', 'instructor'] },
+        path: 'attendance/scan/:engagementId',
+        name: 'AttendanceScan',
+        component: () => import('@/modules/attendance/views/AttendanceScanPage.vue'),
+        meta: { title: 'Check In', allowedRoles: ['student'] },
       },
       {
-        path: 'kiosk',
-        name: 'KioskSimulator',
-        component: () => import('@/modules/attendance/views/KioskPage.vue'),
-        meta: { title: 'QR/NFC Kiosk Scanner', allowedRoles: ['track_admin'] },
+        path: 'attendance/me',
+        name: 'MyAttendanceLedger',
+        component: () => import('@/modules/attendance/views/MyAttendanceLedgerPage.vue'),
+        meta: { title: 'My Attendance', allowedRoles: ['student'] },
       },
+      {
+        path: 'attendance/me/excuses',
+        name: 'MyExcuses',
+        component: () => import('@/modules/attendance/views/MyExcusesPage.vue'),
+        meta: { title: 'My Excuse Requests', allowedRoles: ['student'] },
+      },
+      {
+        path: 'attendance/me/excuses/new',
+        name: 'NewExcuseRequest',
+        component: () => import('@/modules/attendance/views/ExcuseRequestFormPage.vue'),
+        meta: { title: 'New Excuse Request', allowedRoles: ['student'] },
+      },
+      {
+        path: 'attendance/me/excuses/:excuseId/edit',
+        name: 'EditExcuseRequest',
+        component: () => import('@/modules/attendance/views/ExcuseRequestFormPage.vue'),
+        meta: { title: 'Edit Excuse Request', allowedRoles: ['student'] },
+      },
+      {
+        path: 'attendance/sessions',
+        name: 'SessionsList',
+        component: () => import('@/modules/attendance/views/StaffSessionsList.vue'),
+        meta: { title: 'Sessions List', allowedRoles: ['track_admin', 'instructor'] },
+      },
+      {
+        path: 'attendance/sessions/:engagementId',
+        name: 'SessionAttendance',
+        component: () => import('@/modules/attendance/views/StaffSessionPage.vue'),
+        meta: { title: 'Session Attendance', allowedRoles: ['track_admin', 'instructor'] },
+      },
+      {
+        path: 'attendance/students/:studentId',
+        name: 'StudentLedger',
+        component: () => import('@/modules/attendance/views/AdminViewStudentLedgerPage.vue'),
+        meta: { title: 'Student Attendance', allowedRoles: ['track_admin'] },
+      },
+      {
+        path: 'attendance/excuses',
+        name: 'AdminExcuses',
+        component: () => import('@/modules/attendance/views/AdminExcusesPage.vue'),
+        meta: { title: 'Excuse Requests', allowedRoles: ['track_admin'] },
+      },
+      {
+        path: 'attendance/excuses/:excuseId',
+        name: 'AdminExcuseDetail',
+        component: () => import('@/modules/attendance/views/AdminExcuseDetailPage.vue'),
+        meta: { title: 'Excuse Request', allowedRoles: ['track_admin'] },
+      },
+
       {
         path: 'grades',
         name: 'Gradebook',
