@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth-real'
+import { useAuthStore } from '@/stores/auth.ts'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthRealStore } from '@/stores/auth-real.ts'
 import {
   getStudentTags,
   getTags,
