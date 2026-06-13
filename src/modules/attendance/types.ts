@@ -60,7 +60,7 @@ export interface ExcuseRequest {
   }
   engagement: {
     id: number
-    type: EngagementType
+    type: EngagementType | null
     name: string
     starts_at: string
     ends_at: string
