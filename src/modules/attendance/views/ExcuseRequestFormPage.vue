@@ -1,98 +1,101 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import { attendanceApi } from '../api'
+import type { ExcuseRequest } from '../types'
+import ExcuseRequestForm from '../components/ExcuseRequestForm.vue'
 
-const props = defineProps<{ engagementId: number }>()
-const emit = defineEmits<{ (e: 'submitted'): void; (e: 'cancel'): void }>()
+const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
+// Determine mode from route
+const excuseId = route.params.id ? Number(route.params.id) : null
+const isEdit = excuseId !== null
+const engagementIdFromQuery = route.query.engagement_id ? Number(route.query.engagement_id) : null
+const engagementLabelFromQuery = route.query.engagement_name
+  ? `${route.query.engagement_name as string} — ${formatDate(route.query.engagement_date as string)}`
+  : null
 
-const form = reactive({ reason: '', attachment: null as File | null })
+const excuse = ref<ExcuseRequest | null>(null)
+const absentOptions = ref<{ id: number; name: string; date: string }[]>([])
+const selectedEngagementId = ref<number | null>(engagementIdFromQuery)
 const loading = ref(false)
 const error = ref<string | null>(null)
-const fileInput = ref<HTMLInputElement | null>(null)
 
-function onFileChange(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0] ?? null
-  form.attachment = file
-}
+const studentId = computed(() => auth.currentUser?.student_profile?.id)
 
-async function submit() {
-  if (!form.reason.trim()) {
-    error.value = 'Reason is required'
-    return
-  }
+
+onMounted(async () => {
   loading.value = true
   error.value = null
   try {
-    await attendanceApi.createExcuse({
-      engagement_id: props.engagementId,
-      reason: form.reason,
-      attachment: form.attachment,
-    })
-    emit('submitted')
+    if (isEdit && excuseId) {
+      excuse.value = (await attendanceApi.excuseRequest(excuseId)).data
+    } else if (!engagementIdFromQuery && studentId.value) {
+      // No engagement_id in query — load dropdown options
+      absentOptions.value = (await attendanceApi.absentEngagements(studentId.value)).data
+    }
   } catch (e: any) {
-    error.value = e.message || 'Submission failed'
+    error.value = e.message || 'Failed to load'
   } finally {
     loading.value = false
   }
+})
+
+function onDone() {
+  router.push({ name: 'MyExcuses' })
 }
 </script>
 
 <template>
-  <div class="rounded-xl border border-zinc-200 bg-white p-6 space-y-4">
-    <h3 class="text-sm font-semibold text-zinc-800">Submit Excuse Request</h3>
-
-    <div
-      v-if="error"
-      class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-    >
-      <i class="pi pi-exclamation-triangle mr-1.5" />{{ error }}
+  <div class="max-w-xl mx-auto px-4 py-8 space-y-4">
+    <!-- Header -->
+    <div class="flex items-center gap-3">
+      <button @click="router.push({ name: 'MyExcuses' })"
+        class="cursor-pointer flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition">
+        <i class="pi pi-arrow-left text-xs" />
+      </button>
+      <h1 class="text-lg font-semibold text-zinc-800">
+        {{ isEdit ? 'Edit Excuse Request' : 'New Excuse Request' }}
+      </h1>
     </div>
 
-    <div class="space-y-1">
-      <label class="block text-xs font-medium text-zinc-600"
-        >Reason <span class="text-red-500">*</span></label
-      >
-      <textarea
-        v-model="form.reason"
-        rows="4"
-        placeholder="Explain why you couldn't attend..."
-        class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 resize-none"
-      />
+    <!-- Error -->
+    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
-    <div class="space-y-1">
-      <label class="block text-xs font-medium text-zinc-600"
-        >Attachment <span class="text-zinc-400">(optional)</span></label
-      >
-      <div
-        @click="fileInput?.click()"
-        class="cursor-pointer rounded-lg border border-dashed border-zinc-300 px-4 py-4 text-center hover:border-indigo-400 hover:bg-indigo-50/30 transition"
-      >
-        <i class="pi pi-paperclip text-zinc-400 text-lg block mb-1" />
-        <p class="text-xs text-zinc-400">
-          {{ form.attachment ? form.attachment.name : 'Click to attach a file' }}
-        </p>
+    <!-- Loading -->
+    <div v-if="loading" class="space-y-3">
+      <div v-for="n in 3" :key="n" class="h-12 rounded-xl bg-zinc-100 animate-pulse" />
+    </div>
+
+    <template v-else>
+      <!-- Engagement picker — only in create mode when no engagement_id in query -->
+      <div v-if="!isEdit && !engagementIdFromQuery" class="space-y-1">
+        <label class="block text-xs font-medium text-zinc-600">
+          Session <span class="text-red-500">*</span>
+        </label>
+        <div v-if="!absentOptions.length"
+          class="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-center text-sm text-zinc-400">
+          No absent sessions without an existing excuse.
+        </div>
+        <select v-else v-model="selectedEngagementId"
+          class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+          <option :value="null" disabled>Select a session…</option>
+          <option v-for="opt in absentOptions" :key="opt.id" :value="opt.id">
+            {{ opt.name }} — {{ formatDate(opt.date) }}
+          </option>
+        </select>
       </div>
-      <input ref="fileInput" type="file" class="hidden" @change="onFileChange" />
-    </div>
 
-    <div class="flex gap-2 justify-end pt-1">
-      <button
-        type="button"
-        @click="emit('cancel')"
-        class="px-4 py-2 rounded-lg text-sm text-zinc-600 border border-zinc-200 hover:bg-zinc-50 transition"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        :disabled="loading"
-        @click="submit"
-        class="px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2"
-      >
-        <i v-if="loading" class="pi pi-spin pi-spinner" />
-        Submit
-      </button>
-    </div>
+      <!-- Form — shown in edit mode always, in create mode only when engagement is selected/provided -->
+      <ExcuseRequestForm v-if="isEdit ? !!excuse : !!selectedEngagementId" :excuse="excuse ?? undefined"
+        :engagement-id="selectedEngagementId ?? undefined" :engagement-label="engagementLabelFromQuery ?? undefined"
+        @submitted="onDone" @cancel="router.push({ name: 'MyExcuses' })" />
+    </template>
   </div>
 </template>

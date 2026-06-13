@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { attendanceApi } from '../api'
+import { useRouter } from 'vue-router'
 import type { ExcuseRequest, PaginatedMeta } from '../types'
 import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
 
+const router = useRouter()
 const excuses = ref<ExcuseRequest[]>([])
 const meta = ref<PaginatedMeta | null>(null)
 const page = ref(1)
@@ -34,7 +36,13 @@ const formatDate = (iso: string) =>
 <template>
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-6">
     <div class="flex items-center justify-between gap-3">
-      <h1 class="text-xl font-semibold text-zinc-800">My Excuse Requests</h1>
+      <div class="flex items-center gap-3">
+        <button @click="router.push({ name: 'MyAttendanceLedger' })"
+          class="cursor-pointer flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition">
+          <i class="pi pi-arrow-left text-xs" />
+        </button>
+        <h1 class="text-xl font-semibold text-zinc-800">Manage Your Excuses</h1>
+      </div>
       <RouterLink :to="{ name: 'NewExcuseRequest' }"
         class="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition">
         <i class="pi pi-plus" /> New Excuse
@@ -62,13 +70,13 @@ const formatDate = (iso: string) =>
             <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Submitted</th>
             <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Reason</th>
             <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Status</th>
-            <th class="px-4 py-3" />
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Action</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
           <tr v-for="excuse in excuses" :key="excuse.id" class="hover:bg-zinc-50 transition-colors">
             <td class="px-4 py-3">
-              <p class="font-medium text-zinc-800 capitalize">{{ excuse.engagement.type.replace('_', ' ') }}</p>
+              <p class="font-medium text-zinc-800">{{ excuse.engagement.name }}</p>
               <p class="text-xs text-zinc-400">{{ formatDate(excuse.engagement.starts_at) }}</p>
             </td>
             <td class="px-4 py-3 text-xs text-zinc-400">{{ formatDate(excuse.created_at) }}</td>
@@ -78,9 +86,9 @@ const formatDate = (iso: string) =>
             <td class="px-4 py-3">
               <ExcuseStatusTag :status="excuse.status" />
             </td>
-            <td class="px-4 py-3 text-right">
+            <td class="px-4 py-3">
               <RouterLink v-if="excuse.status === 'pending'"
-                :to="{ name: 'EditExcuseRequest', params: { excuseId: excuse.id } }"
+                :to="{ name: 'EditExcuseRequest', params: { id: excuse.id } }"
                 class="cursor-pointer px-2.5 py-1 rounded text-xs font-medium text-indigo-700 border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 transition">
                 Edit
               </RouterLink>

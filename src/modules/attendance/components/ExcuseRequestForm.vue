@@ -5,6 +5,7 @@ import type { ExcuseRequest } from '../types'
 
 const props = defineProps<{
   engagementId?: number
+  engagementLabel?: string
   excuse?: ExcuseRequest
 }>()
 
@@ -22,7 +23,11 @@ const form = reactive({
 
 const loading = ref(false)
 const error = ref<string | null>(null)
+const clearedAttachment = ref<boolean>(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
 
 function onFileChange(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0] ?? null
@@ -30,13 +35,13 @@ function onFileChange(e: Event) {
 }
 
 function clearAttachment() {
+  clearedAttachment.value = true
   form.attachment = null
   if (fileInput.value) fileInput.value.value = ''
 }
 
 async function submit() {
   if (!form.reason.trim()) { error.value = 'Reason is required'; return }
-
   if (!isEdit && !props.engagementId) { error.value = 'Missing engagement'; return }
 
   loading.value = true
@@ -46,6 +51,7 @@ async function submit() {
       await attendanceApi.updateExcuse(props.excuse.id, {
         reason: form.reason,
         attachment: form.attachment,
+        remove_attachment: clearedAttachment.value && !form.attachment,
       })
     } else {
       await attendanceApi.createExcuse({
@@ -65,12 +71,22 @@ async function submit() {
 
 <template>
   <div class="rounded-xl border border-zinc-200 bg-white p-6 space-y-4">
-    <h3 class="text-sm font-semibold text-zinc-800">
-      {{ isEdit ? 'Edit Excuse Request' : 'Submit Excuse Request' }}
-    </h3>
-
     <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
       <i class="pi pi-exclamation-triangle mr-1.5" />{{ error }}
+    </div>
+
+    <!-- Session info — read only -->
+    <div v-if="excuse?.engagement || engagementId" class="space-y-1">
+      <label class="block text-xs font-medium text-zinc-600">Session</label>
+      <div class="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
+        <template v-if="excuse?.engagement">
+          <p class="text-sm font-medium text-zinc-700">{{ excuse.engagement.name }}</p>
+          <p class="text-xs text-zinc-400">{{ formatDate(excuse.engagement.starts_at) }}</p>
+        </template>
+        <p v-else class="text-sm text-zinc-700">
+          {{ engagementLabel ?? `Session #${engagementId}` }}
+        </p>
+      </div>
     </div>
 
     <!-- Reason -->
@@ -89,14 +105,15 @@ async function submit() {
       </label>
 
       <!-- Existing attachment in edit mode -->
-      <div v-if="isEdit && excuse?.attachment_url && !form.attachment"
+      <div v-if="isEdit && excuse?.attachment_url && !form.attachment && !clearedAttachment"
         class="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
         <a :href="excuse.attachment_url" target="_blank"
           class="text-xs text-indigo-500 hover:underline flex items-center gap-1.5">
           <i class="pi pi-paperclip" /> Current attachment
         </a>
-        <button @click="clearAttachment" class="text-xs text-zinc-400 hover:text-red-500 transition">
-          <i class="pi pi-times" /> Replace
+        <button @click="clearAttachment"
+          class="cursor-pointer flex items-center justify-center  gap-1 text-xs text-zinc-400 hover:text-red-500 transition">
+          Remove<i class="pi pi-times" style="font-size: smaller;" />
         </button>
       </div>
 
@@ -118,11 +135,11 @@ async function submit() {
     <!-- Actions -->
     <div class="flex gap-2 justify-end pt-1">
       <button type="button" @click="emit('cancel')"
-        class="px-4 py-2 rounded-lg text-sm text-zinc-600 border border-zinc-200 hover:bg-zinc-50 transition">
+        class="cursor-pointer px-4 py-2 rounded-lg text-sm text-zinc-600 border border-zinc-200 hover:bg-zinc-50 transition">
         Cancel
       </button>
       <button type="button" :disabled="loading" @click="submit"
-        class="px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2">
+        class="cursor-pointer px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2">
         <i v-if="loading" class="pi pi-spin pi-spinner" />
         {{ isEdit ? 'Save Changes' : 'Submit' }}
       </button>
