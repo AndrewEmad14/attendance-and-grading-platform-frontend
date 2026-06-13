@@ -94,9 +94,14 @@ async function handleLogin() {
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="password" class="text-xs font-bold text-zinc-800 tracking-wider uppercase">
-            Password
-          </label>
+          <div class="flex justify-between items-center">
+            <label for="password" class="text-xs font-bold text-zinc-800 tracking-wider uppercase">
+              Password
+            </label>
+            <router-link to="/forgot-password" class="text-xs font-semibold text-[#990011] hover:text-[#7a000d] transition-colors">
+              Forgot password?
+            </router-link>
+          </div>
           <div class="relative w-full">
             <input
               id="password"
