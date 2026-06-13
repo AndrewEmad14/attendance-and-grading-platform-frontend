@@ -21,17 +21,30 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
+    label: 'Finance',
+    path: '/finance',
+    icon: 'pi pi-wallet',
+    roles: ['branch_manager'],
+  },
+  {
     label: 'Cohort Settings',
     path: '/cohorts',
     icon: 'pi pi-sliders-h',
+    roles: ['branch_manager'],
+  },
+  {
+    label: 'Assigned Cohorts',
+    path: '/assigned-cohorts',
+    icon: 'pi pi-sitemap',
     roles: ['track_admin'],
   },
   {
-    label: 'Engagement Calendar',
+    label: 'Sessions Calendar',
     path: '/schedule',
     icon: 'pi pi-calendar',
     roles: ['track_admin', 'instructor', 'student'],
   },
+  
 
   // Attendance Navigation
   {
@@ -41,17 +54,17 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['student'],
   },
   {
-    label: 'My Sessions',
-    path: '/attendance/sessions',
-    icon: 'pi pi-id-card',
-    roles: ['instructor', 'track_admin'],
-  },
-  {
-    label: 'Excuse Requests',
-    path: '/attendance/excuses',
-    icon: 'pi pi-inbox',
+    label: 'Manage Attendance',
+    path: '/attendance',
+    icon: 'pi pi-check-square',
     roles: ['track_admin'],
   },
+  // {
+  //   label: 'My Sessions',
+  //   path: '/attendance/sessions',
+  //   icon: 'pi pi-video',
+  //   roles: ['track_admin', 'instructor'],
+  // },
 
   {
     label: 'Gradebook',
@@ -79,7 +92,7 @@ export const navigationConfig: NavigationItem[] = [
   },
   {
     label: 'Course Configuration',
-    path: '/grades/config',
+    path: '/grades/config/1',
     icon: 'pi pi-cog',
     roles: ['track_admin'],
   },

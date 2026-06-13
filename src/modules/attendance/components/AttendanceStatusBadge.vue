@@ -13,11 +13,7 @@ const config: Record<AttendanceStatus, { label: string; classes: string }> = {
 
 <template>
   <span
-    :class="[
-      'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border',
-      config[props.status].classes,
-    ]"
-  >
+    :class="['inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border', config[props.status].classes]">
     {{ config[props.status].label }}
   </span>
 </template>

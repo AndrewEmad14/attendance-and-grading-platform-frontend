@@ -1,108 +1,66 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { attendanceApi } from '../api'
+import type { AttendanceLedgerMeta } from '../types'
+import AttendanceBalanceCard from '../components/AttendanceBalanceCard.vue'
+import AttendanceLedgerTable from '../components/AttendanceLedgerTable.vue'
 
-const studentId = ref('')
-const ledger = ref([] as any)
+const route = useRoute()
+const router = useRouter()
+const studentId = Number(route.params.studentId)
+
+const meta = ref<AttendanceLedgerMeta | null>(null)
 const loading = ref(false)
-const error = ref('')
+const error = ref<string | null>(null)
+const MAX_BALANCE = 250
 
-async function loadLedger() {
-  error.value = ''
-  ledger.value = []
-  if (!studentId.value) {
-    error.value = 'Please provide a student id.'
-    return
-  }
+async function loadMeta() {
   loading.value = true
+  error.value = null
   try {
-    // Placeholder: replace with real API call
-    await new Promise((r) => setTimeout(r, 500))
-    ledger.value = [
-      { date: '2026-06-01', activity: 'Opening balance', credit: 0, debit: 0, balance: 100 },
-      { date: '2026-06-05', activity: 'Tuition', credit: 0, debit: 20, balance: 80 },
-      { date: '2026-06-10', activity: 'Payment', credit: 50, debit: 0, balance: 130 },
-    ] as any
-  } catch {
-    error.value = String('Failed to load ledger')
+    meta.value = (await attendanceApi.studentLedgerMeta(studentId)).data
+  } catch (e: any) {
+    error.value = e.message || 'Failed to load attendance info'
   } finally {
     loading.value = false
   }
 }
+
+onMounted(loadMeta)
 </script>
 
 <template>
-  <div class="admin-student-ledger">
-    <h1>Student Ledger (Admin View)</h1>
-
-    <div class="controls">
-      <label>
-        Student ID:
-        <input v-model="studentId" type="text" placeholder="Enter student id" />
-      </label>
-      <button @click="loadLedger">Load Ledger</button>
+  <div class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+    <div class="flex items-center gap-3">
+      <button @click="router.push({ name: 'AdminCohortAttendance' })"
+        class="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 hover:bg-zinc-50 transition">
+        <i class="pi pi-arrow-left text-[0.7rem]" /> All Students
+      </button>
     </div>
 
-    <section v-if="loading">Loading...</section>
-    <section v-else>
-      <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
+    </div>
 
-      <div v-if="ledger && ledger.length">
-        <table class="ledger-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Activity</th>
-              <th>Credit</th>
-              <th>Debit</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, idx) in ledger" :key="idx">
-              <td>{{ row.date }}</td>
-              <td>{{ row.activity }}</td>
-              <td>{{ row.credit ?? '-' }}</td>
-              <td>{{ row.debit ?? '-' }}</td>
-              <td>{{ row.balance ?? '-' }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div v-if="loading" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="h-80 rounded-xl bg-zinc-100 animate-pulse" />
+      <div class="lg:col-span-3 h-80 rounded-xl bg-zinc-100 animate-pulse" />
+    </div>
+
+    <div v-else-if="meta" class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:items-start">
+      <!-- Sidebar -->
+      <div class="space-y-4 sticky top-0 h-screen overflow-y-auto">
+        <div class="rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-sm font-semibold text-zinc-800">{{ meta.name }}</p>
+          <p class="text-xs text-zinc-400 mt-0.5">Student #{{ studentId }}</p>
+        </div>
+        <AttendanceBalanceCard :balance="meta.current_balance" :max="MAX_BALANCE"
+          :deducted="MAX_BALANCE - meta.current_balance" />
       </div>
-      <div v-else>
-        <p>No ledger entries. Enter a student id and click Load Ledger.</p>
-      </div>
-    </section>
+
+      <!-- Table -->
+      <AttendanceLedgerTable :student-id="meta.id" class="lg:col-span-3" />
+    </div>
   </div>
 </template>
-
-<style scoped>
-.admin-student-ledger {
-  padding: 16px;
-  font-family: Arial, sans-serif;
-}
-.controls {
-  margin-bottom: 12px;
-}
-.controls input {
-  margin-left: 8px;
-  padding: 4px;
-}
-.controls button {
-  margin-left: 8px;
-  padding: 6px 10px;
-}
-.ledger-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.ledger-table th,
-.ledger-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-.error {
-  color: red;
-  margin-bottom: 8px;
-}
-</style>
