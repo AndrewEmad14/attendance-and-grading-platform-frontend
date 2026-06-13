@@ -6,17 +6,17 @@ const props = defineProps<{ status: ExcuseStatus | null }>()
 const config: Record<ExcuseStatus, { label: string; classes: string; icon: string }> = {
   pending: {
     label: 'Pending',
-    classes: 'bg-amber-100 text-amber-800 border-amber-200',
+    classes: 'bg-warning text-warning-content border-warning-border',
     icon: 'pi pi-clock',
   },
   approved: {
     label: 'Approved',
-    classes: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    classes: 'bg-success text-success-content border-success-border',
     icon: 'pi pi-check-circle',
   },
   rejected: {
     label: 'Rejected',
-    classes: 'bg-red-100 text-red-800 border-red-200',
+    classes: 'bg-danger text-danger-content border-danger-border',
     icon: 'pi pi-times-circle',
   },
   none: {

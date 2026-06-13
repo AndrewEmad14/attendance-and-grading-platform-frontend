@@ -12,12 +12,12 @@ const loading = ref(true)
 const fatalError = ref<string | null>(null)
 
 const outcomeConfig: Record<CheckInResult['outcome'], { icon: string; color: string; title: string }> = {
-  checked_in: { icon: 'pi pi-sign-in', color: 'text-emerald-600 bg-emerald-50 border-emerald-200', title: 'Checked In' },
-  checked_out: { icon: 'pi pi-sign-out', color: 'text-emerald-600 bg-emerald-50 border-emerald-200', title: 'Checked Out' },
-  idempotent: { icon: 'pi pi-info-circle', color: 'text-sky-600 bg-sky-50 border-sky-200', title: 'Already Recorded' },
-  rejected: { icon: 'pi pi-times-circle', color: 'text-red-600 bg-red-50 border-red-200', title: 'Rejected' },
+  checked_in: { icon: 'pi pi-sign-in', color: 'text-success-content bg-success border-success-border', title: 'Checked In' },
+  checked_out: { icon: 'pi pi-sign-out', color: 'text-success-content bg-success border-success-border', title: 'Checked Out' },
+  idempotent: { icon: 'pi pi-info-circle', color: 'text-info-content bg-info border-info-border', title: 'Already Recorded' },
+  rejected: { icon: 'pi pi-times-circle', color: 'text-danger-content bg-danger border-danger-border', title: 'Rejected' },
   not_found: { icon: 'pi pi-question-circle', color: 'text-zinc-500 bg-zinc-50 border-zinc-200', title: 'Session Not Found' },
-  session_ended: { icon: 'pi pi-clock', color: 'text-amber-500 bg-amber-50 border-amber-200', title: 'Session Ended' },
+  session_ended: { icon: 'pi pi-clock', color: 'text-warning-content bg-warning border-warning-border', title: 'Session Ended' },
 }
 
 async function run() {
@@ -61,7 +61,7 @@ const formatTime = (iso: string | null | undefined) =>
 
     <!-- Fatal error (no token, network failure) -->
     <template v-else-if="fatalError">
-      <div class="w-20 h-20 rounded-full flex items-center justify-center border text-red-600 bg-red-50 border-red-200">
+      <div class="w-20 h-20 rounded-full flex items-center justify-center border text-danger-content bg-danger border-danger-border">
         <i class="pi pi-times-circle text-3xl" />
       </div>
       <div>

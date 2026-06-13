@@ -374,8 +374,8 @@ const outcomesBarOptions = {
     <!-- ── Error State ────────────────────────────────── -->
     <template v-else-if="error">
       <div
-        class="alert alert-error bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-center gap-3">
-        <i class="pi pi-exclamation-triangle text-xl text-red-600"></i>
+        class="alert alert-error bg-danger border border-danger-border text-danger-content p-4 rounded-lg flex items-center gap-3">
+        <i class="pi pi-exclamation-triangle text-xl text-danger-content"></i>
         <span>{{ error }}</span>
       </div>
     </template>

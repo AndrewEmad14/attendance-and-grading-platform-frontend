@@ -81,7 +81,7 @@ watch([activeCohortId, activeType, activeStaffId], () => {
   >
     <div class="flex flex-col gap-1 w-full">
       <label class="text-[10px] font-bold text-surface-400 uppercase tracking-wider"
-        >Filter By Cohort <span class="text-red-500">*</span></label
+        >Filter By Cohort <span class="text-danger-content">*</span></label
       >
       <Select
         v-model="activeCohortId"

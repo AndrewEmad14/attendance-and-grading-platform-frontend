@@ -261,7 +261,7 @@ watch(
 
         <div
           v-if="store.error"
-          class="px-4 py-2 bg-red-50 text-red-600 text-xs border border-red-100 rounded-lg mb-3"
+          class="px-4 py-2 bg-danger text-danger-content text-xs border border-danger-border rounded-lg mb-3"
         >
           {{ store.error }}
         </div>
@@ -303,7 +303,7 @@ watch(
               <div class="flex items-center gap-2 ml-2 flex-shrink-0">
                 <button
                   @click.stop="handleDeleteCourse(course.id)"
-                  class="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-600"
+                  class="opacity-0 group-hover:opacity-100 transition-opacity text-danger-content hover:text-danger-content"
                   title="Delete Course"
                 >
                   <i class="pi pi-trash" style="font-size: 0.85rem" />
@@ -352,7 +352,7 @@ watch(
                   >
                   <span
                     class="text-sm font-medium"
-                    :class="weightValid ? 'text-green-700' : 'text-red-700'"
+                    :class="weightValid ? 'text-success-content' : 'text-danger-content'"
                   >
                     {{
                       weightValid
@@ -366,7 +366,7 @@ watch(
                 <div class="h-2 w-full rounded-full bg-white/70 overflow-hidden">
                   <div
                     class="h-full rounded-full transition-all duration-300"
-                    :class="weightValid ? 'bg-green-500' : 'bg-red-400'"
+                    :class="weightValid ? 'bg-success' : 'bg-danger'"
                     :style="{ width: Math.min(weightSum, 100) + '%' }"
                   />
                 </div>
@@ -374,7 +374,7 @@ watch(
               <div class="text-right flex-shrink-0">
                 <span
                   class="text-2xl font-bold tabular-nums"
-                  :class="weightValid ? 'text-green-700' : 'text-red-600'"
+                  :class="weightValid ? 'text-success-content' : 'text-danger-content'"
                 >
                   {{ weightSum }}%
                 </span>
@@ -456,7 +456,7 @@ watch(
                   <div v-if="!isLocked" class="col-span-1 flex justify-center pt-6">
                     <button
                       @click="removeDeliverable(i)"
-                      class="text-red-400 hover:text-red-600 transition-colors"
+                      class="text-danger-content hover:text-danger-content transition-colors"
                       title="Remove Deliverable"
                     >
                       <i class="pi pi-trash" style="font-size: 1rem" />

@@ -64,7 +64,7 @@ function onDone() {
     </div>
 
     <!-- Error -->
-    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
@@ -77,7 +77,7 @@ function onDone() {
       <!-- Engagement picker — only in create mode when no engagement_id in query -->
       <div v-if="!isEdit && !engagementIdFromQuery" class="space-y-1">
         <label class="block text-xs font-medium text-zinc-600">
-          Session <span class="text-red-500">*</span>
+          Session <span class="text-danger-content">*</span>
         </label>
         <div v-if="!absentOptions.length"
           class="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-center text-sm text-zinc-400">

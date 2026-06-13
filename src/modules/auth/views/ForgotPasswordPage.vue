@@ -70,8 +70,8 @@ function goBackToLogin() {
 
       <!-- Success Screen -->
       <div v-if="success" class="text-center py-4">
-        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-200">
-          <i class="pi pi-check text-green-600 text-2xl"></i>
+        <div class="w-16 h-16 bg-success rounded-full flex items-center justify-center mx-auto mb-4 border border-success-border">
+          <i class="pi pi-check text-success-content text-2xl"></i>
         </div>
         <h2 class="text-xl font-bold text-zinc-900 mb-2">Check your email</h2>
         <p class="text-sm text-zinc-600 mb-6 leading-relaxed">
@@ -92,7 +92,7 @@ function goBackToLogin() {
           Enter your registered email address below, and we'll send you instructions to reset your password.
         </p>
 
-        <div v-if="authStore.error" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md flex items-center gap-2">
+        <div v-if="authStore.error" class="mb-4 p-3 bg-danger border border-danger-border text-danger-content text-sm rounded-md flex items-center gap-2">
           <i class="pi pi-exclamation-circle text-base"></i>
           <span>{{ authStore.error }}</span>
         </div>
@@ -110,13 +110,13 @@ function goBackToLogin() {
                 required
                 autocomplete="email"
                 placeholder="enter your email"
-                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
-                :class="{ 'border-red-500': errors.email || authStore.error }"
+                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
+                :class="{ 'border-danger-border': errors.email || authStore.error }"
                 :disabled="authStore.loading"
               />
               <i class="pi pi-envelope absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"></i>
             </div>
-            <p v-if="errors.email" class="text-xs text-red-600 mt-1">{{ errors.email }}</p>
+            <p v-if="errors.email" class="text-xs text-danger-content mt-1">{{ errors.email }}</p>
           </div>
 
           <button 

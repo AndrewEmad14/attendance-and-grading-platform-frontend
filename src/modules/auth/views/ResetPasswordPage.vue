@@ -85,8 +85,8 @@ function goBackToLogin() {
 
       <!-- Success Screen -->
       <div v-if="success" class="text-center py-4">
-        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-200">
-          <i class="pi pi-check text-green-600 text-2xl"></i>
+        <div class="w-16 h-16 bg-success rounded-full flex items-center justify-center mx-auto mb-4 border border-success-border">
+          <i class="pi pi-check text-success-content text-2xl"></i>
         </div>
         <h2 class="text-xl font-bold text-zinc-900 mb-2">Password Reset Success</h2>
         <p class="text-sm text-zinc-600 mb-6 leading-relaxed">
@@ -107,12 +107,12 @@ function goBackToLogin() {
           Please enter your new password to update your credentials.
         </p>
 
-        <div v-if="!form.token || !form.email" class="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-md flex items-center gap-2">
+        <div v-if="!form.token || !form.email" class="mb-4 p-3 bg-warning border border-warning-border text-warning-content text-sm rounded-md flex items-center gap-2">
           <i class="pi pi-exclamation-triangle text-base"></i>
           <span>Invalid or missing reset token/email. Please request a new password reset link.</span>
         </div>
 
-        <div v-if="authStore.error" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md flex items-center gap-2">
+        <div v-if="authStore.error" class="mb-4 p-3 bg-danger border border-danger-border text-danger-content text-sm rounded-md flex items-center gap-2">
           <i class="pi pi-exclamation-circle text-base"></i>
           <span>{{ authStore.error }}</span>
         </div>
@@ -131,8 +131,8 @@ function goBackToLogin() {
                 required
                 autocomplete="new-password"
                 placeholder="Enter new password"
-                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
-                :class="{ 'border-red-500': errors.password }"
+                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
+                :class="{ 'border-danger-border': errors.password }"
                 :disabled="authStore.loading || !form.token || !form.email"
               />
               <button
@@ -145,7 +145,7 @@ function goBackToLogin() {
                 <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
               </button>
             </div>
-            <p v-if="errors.password" class="text-xs text-red-600 mt-1">{{ errors.password }}</p>
+            <p v-if="errors.password" class="text-xs text-danger-content mt-1">{{ errors.password }}</p>
           </div>
 
           <!-- Confirm Password Input -->
@@ -161,8 +161,8 @@ function goBackToLogin() {
                 required
                 autocomplete="new-password"
                 placeholder="Confirm new password"
-                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
-                :class="{ 'border-red-500': errors.password_confirmation }"
+                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
+                :class="{ 'border-danger-border': errors.password_confirmation }"
                 :disabled="authStore.loading || !form.token || !form.email"
               />
               <button
@@ -175,7 +175,7 @@ function goBackToLogin() {
                 <i :class="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
               </button>
             </div>
-            <p v-if="errors.password_confirmation" class="text-xs text-red-600 mt-1">{{ errors.password_confirmation }}</p>
+            <p v-if="errors.password_confirmation" class="text-xs text-danger-content mt-1">{{ errors.password_confirmation }}</p>
           </div>
 
           <button 
