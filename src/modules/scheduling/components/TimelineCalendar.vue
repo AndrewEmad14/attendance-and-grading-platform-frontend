@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'cancel', id: number): void
+  (e: 'edit', session: Engagement): void
   (e: 'page-change', pageNumber: number): void
 }>()
 
@@ -132,16 +133,26 @@ function handlePageChange(event: any) {
             </div>
           </div>
 
-          <div v-if="showActions" class="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              @click="$emit('cancel', session.id)"
-              class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
-              title="Cancel Session"
-            >
-              <i class="pi pi-trash text-xs"></i>
-            </button>
-          </div>
+          <div v-if="showActions" class="flex items-center gap-1 shrink-0">
+            
+          <button v-if="true || session.type !== 'business_session'"
+            type="button"
+            @click="$emit('edit', session)"
+            class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0"
+            title="Edit Session"
+          >
+            <i class="pi pi-pencil text-xs"></i>
+          </button>
+          
+          <button 
+            type="button"
+            @click="$emit('cancel', session.id)"
+            class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
+            title="Cancel Session"
+          >
+            <i class="pi pi-trash text-xs"></i>
+          </button>
+        </div>
         </div>
       </div>
     </div>

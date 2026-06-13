@@ -114,6 +114,7 @@ function handleFilterChange(newFilters: any) {
         :meta="paginationMeta"
         :show-actions="true"
         @cancel="handleCancel"
+        @edit="openEditModal"
         @page-change="changePage"
       >
       </TimelineCalendar>

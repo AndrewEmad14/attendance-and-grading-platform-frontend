@@ -38,9 +38,15 @@ const modelOptions = ref<EngageableType[]>([
 // Convert ISO strings into HTML local datetime formats safely
 function convertToLocalInput(isoString: string): string {
   if (!isoString) return ''
+  
   const date = new Date(isoString)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+  
+  // Shift the timestamp coordinates by the browser's exact timezone difference in minutes
+  const timezoneOffsetMs = date.getTimezoneOffset() * 60 * 1000
+  const localTime = new Date(date.getTime() - timezoneOffsetMs)
+  
+  // .toISOString() returns 'YYYY-MM-DDTHH:mm:ss.sssZ' -> we slice out the exact length we need
+  return localTime.toISOString().slice(0, 16)
 }
 
 watch(
@@ -73,8 +79,20 @@ watch(
 
 function handleSubmit() {
   const payload = { ...formState.value }
-  payload.ends_at = payload.starts_at // Maintain single-day boundary constraints
-
+  
+  if (payload.starts_at && payload.scheduled_hours) {
+    const startDate = new Date(payload.starts_at)
+    
+    // Add the fractional or whole scheduled hours to the starting timestamp
+    const millisecondsToAdd = payload.scheduled_hours * 60 * 60 * 1000
+    const endDate = new Date(startDate.getTime() + millisecondsToAdd)
+    payload.starts_at = startDate.toISOString()
+    payload.ends_at = endDate.toISOString()  
+  } else {
+    payload.starts_at = new Date(payload.starts_at).toISOString()
+    payload.ends_at = payload.starts_at
+  }
+  
   emit('save', props.engagement ? { ...payload, id: props.engagement.id } : payload)
 }
 </script>

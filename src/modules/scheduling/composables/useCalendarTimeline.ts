@@ -58,7 +58,7 @@ export function useCalendarTimeline() {
         date_from: activeFilters.value.dateFrom || undefined,
         date_to: activeFilters.value.dateTo || undefined,
         page: activeFilters.value.page || 1,
-        engageable_type: activeFilters.value.type,
+        type: activeFilters.value.type,
       })
 
       // Unpack data array from metadata shell
