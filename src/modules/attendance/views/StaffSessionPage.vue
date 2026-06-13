@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { Engagement } from '../types'
 import MySessionsList from '../components/MySessionsList.vue'
-import SessionRosterTable from '../components/SessionRosterTable.vue'
+import SessionAttendanceTable from '../components/SessionAttendanceTable.vue'
 import QrCodeDisplay from '../components/QrCodeDisplay.vue'
 
 const selected = ref<Engagement | null>(null)
@@ -16,11 +16,7 @@ const showQr = ref(false)
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Sessions list -->
       <div class="lg:col-span-1 space-y-3">
-        <p class="text-xs font-semibold uppercase tracking-widest text-zinc-400">Sessions</p>
-        <MySessionsList
-          :selected-id="selected?.id"
-          @select="(session) => { selected = session; showQr = false }"
-        />
+        <MySessionsList :selected-id="selected?.id" @select="(session) => { selected = session; showQr = false }" />
       </div>
 
       <!-- Right panel -->
@@ -38,10 +34,8 @@ const showQr = ref(false)
                   <i class="pi pi-clock mr-1" />{{ selected.scheduled_hours }}h
                 </p>
               </div>
-              <button
-                @click="showQr = !showQr"
-                :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition', showQr ? 'border-indigo-300 bg-indigo-50 text-indigo-600' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50']"
-              >
+              <button @click="showQr = !showQr"
+                :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition', showQr ? 'border-indigo-300 bg-indigo-50 text-indigo-600' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50']">
                 <i class="pi pi-qrcode" />
                 {{ showQr ? 'Hide QR' : 'Show QR' }}
               </button>
@@ -53,13 +47,14 @@ const showQr = ref(false)
 
           <!-- Roster -->
           <div class="space-y-3">
-            <p class="text-xs font-semibold uppercase tracking-widest text-zinc-400">Roster</p>
-            <SessionRosterTable :engagement-id="selected.id" />
+            <p class="text-xs font-semibold uppercase tracking-widest text-zinc-400">Attendance</p>
+            <SessionAttendanceTable :engagement-id="selected.id" />
           </div>
         </template>
 
         <!-- Empty state -->
-        <div v-else class="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-16 text-center text-sm text-zinc-400">
+        <div v-else
+          class="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-16 text-center text-sm text-zinc-400">
           <i class="pi pi-arrow-left block text-2xl mb-2 text-zinc-300" />
           Select a session to view its roster and QR code
         </div>

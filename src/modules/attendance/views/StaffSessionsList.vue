@@ -1,9 +1,4 @@
 <script setup lang="ts">
-/**
- * StaffSessionsList — lightweight list-only view (no roster panel).
- * Useful as a standalone route or mobile fallback.
- * Navigates to StaffSessionPage with a selected ID via route params.
- */
 import { useRouter } from 'vue-router'
 import type { Engagement } from '../types'
 import MySessionsList from '../components/MySessionsList.vue'
@@ -11,8 +6,7 @@ import MySessionsList from '../components/MySessionsList.vue'
 const router = useRouter()
 
 function onSelect(session: Engagement) {
-  // Adjust route name to match your router config
-  router.push({ name: 'StaffSessionPage', params: { id: session.id } })
+  router.push({ name: 'SessionAttendance', params: { engagementId: session.id } })
 }
 </script>
 
