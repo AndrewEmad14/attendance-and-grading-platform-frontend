@@ -184,7 +184,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'users',
         name: 'SystemUsers',
         component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
-        meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
+        meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin','branch_manager'] },
       },
       {
         path: 'grades/config/:cohortId?',

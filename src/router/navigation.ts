@@ -75,7 +75,7 @@ export const navigationConfig: NavigationItem[] = [
     label: 'System Users',
     path: '/users',
     icon: 'pi pi-users',
-    roles: ['track_admin'],
+    roles: ['track_admin','branch_manager'],
   },
   {
     label: 'Course Configuration',
