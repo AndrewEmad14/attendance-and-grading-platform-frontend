@@ -5,22 +5,28 @@ import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 // Student: their own data only.
 const cards = [
   {
-    label: 'My Deliverables',
-    description: 'Submit assignments and track late penalties.',
-    icon: 'pi pi-upload',
-    to: '/submissions',
+    label: 'Sessions Calendar',
+    description: 'See your upcoming sessions.',
+    icon: 'pi pi-calendar',
+    to: '/schedule',
   },
   {
-    label: 'Gradebook',
-    description: 'View your score breakdown by component.',
+    label: 'My Attendance',
+    description: 'View your attendance ledger and request excuses.',
     icon: 'pi pi-book',
     to: '/grades',
   },
   {
-    label: 'Engagement Calendar',
-    description: 'See your upcoming sessions.',
-    icon: 'pi pi-calendar',
-    to: '/schedule',
+    label: 'Gradebook',
+    description: 'View your score breakdown by course deliverable.',
+    icon: 'pi pi-book',
+    to: '/grades',
+  },
+  {
+    label: 'My Deliverables',
+    description: 'Submit assignments and track late penalties.',
+    icon: 'pi pi-upload',
+    to: '/submissions',
   },
   {
     label: 'Announcements',

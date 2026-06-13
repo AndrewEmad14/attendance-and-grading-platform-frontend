@@ -21,7 +21,7 @@ const config: Record<UserRole, { view: unknown; subtitle: string }> = {
   },
   instructor: {
     view: InstructorDashboardView,
-    subtitle: 'Everything scoped to your assigned lab group.',
+    subtitle: 'Everything scoped to your assigned sessions.',
   },
   student: {
     view: StudentDashboardView,

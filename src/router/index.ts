@@ -56,16 +56,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/dashboard/views/DashboardPage.vue'),
         meta: {
           title: 'Dashboard',
-
-          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
-        },
-      },
-      {
-        path: 'example',
-        name: 'ComponentPlayground',
-        component: () => import('@/modules/mock/views/Example.vue'),
-        meta: {
-          title: 'Component Blueprint Playground',
           allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
         },
       },

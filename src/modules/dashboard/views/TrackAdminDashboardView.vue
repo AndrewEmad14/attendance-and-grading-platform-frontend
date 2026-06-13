@@ -4,53 +4,43 @@ import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 
 // Track Admin: full control over their track's cohort.
 const cards = [
-  {
-    label: 'Cohort Settings',
-    description: 'Configure courses, grade weights, and lab groups.',
-    icon: 'pi pi-sliders-h',
-    to: '/cohorts',
-  },
+
   {
     label: 'Course Configuration',
-    description: 'Set component weights and deliverables per course.',
+    description: 'Configure courses, course deliverables, and grade weights.',
     icon: 'pi pi-cog',
+    roles: ['track_admin'],
     to: '/grades/config',
   },
   {
-    label: 'Gradebook',
-    description: 'Enter final grades and override evaluations.',
-    icon: 'pi pi-book',
-    to: '/grades',
+    label: 'Assign Labs & Sessions',
+    description: 'Configure lab groups and business sessions.',
+    icon: 'pi pi-sitemap',
+    to: '/assigned-cohorts',
   },
   {
-    label: 'Engagement Calendar',
+    label: 'Sessions Calendar',
     description: 'Schedule sessions and assign instructors.',
     icon: 'pi pi-calendar',
     to: '/schedule',
   },
   {
-    label: 'Attendance Ledger',
-    description: 'Review attendance and approve excuse requests.',
-    icon: 'pi pi-list',
+    label: 'Manage Attendance',
+    description: 'View assigned students attendance ledger & excuse requests.',
+    icon: 'pi pi-check-square',
     to: '/attendance',
   },
   {
-    label: 'Kiosk Simulator',
-    description: 'Open the QR/NFC check-in scanner.',
-    icon: 'pi pi-qrcode',
-    to: '/kiosk',
+    label: 'Gradebook',
+    description: 'Enter notes/tags, final grades and override evaluations.',
+    icon: 'pi pi-book',
+    to: '/grades',
   },
   {
     label: 'Announcements',
     description: 'Post announcements to your cohort anytime.',
     icon: 'pi pi-megaphone',
     to: '/announcements',
-  },
-  {
-    label: 'System Users',
-    description: 'Provision accounts and manage expiry.',
-    icon: 'pi pi-users',
-    to: '/users',
   },
 ]
 </script>
