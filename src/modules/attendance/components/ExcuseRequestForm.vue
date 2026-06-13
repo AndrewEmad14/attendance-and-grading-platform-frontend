@@ -108,7 +108,7 @@ async function submit() {
       <div v-if="isEdit && excuse?.attachment_url && !form.attachment && !clearedAttachment"
         class="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
         <a :href="excuse.attachment_url" target="_blank"
-          class="text-xs text-indigo-500 hover:underline flex items-center gap-1.5">
+          class="text-xs text-indigo-500 hover:underline flex items-center gap-1.5 cursor-pointer">
           <i class="pi pi-paperclip" /> Current attachment
         </a>
         <button @click="clearAttachment"
@@ -124,7 +124,7 @@ async function submit() {
         <p class="text-xs text-zinc-400">
           {{ form.attachment ? form.attachment.name : 'Click to attach a file' }}
         </p>
-        <p v-if="form.attachment" class="text-xs text-indigo-400 mt-1 hover:underline" @click.stop="clearAttachment">
+        <p v-if="form.attachment" class="text-xs text-indigo-400 mt-1 hover:underline cursor-pointer" @click.stop="clearAttachment">
           Remove
         </p>
       </div>

@@ -436,7 +436,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                 <td
                   class="px-4 py-1.5 text-sm text-surface-900 border-r border-surface-300 group-hover:border-transparent sticky left-0 bg-white group-hover:bg-info/90 shadow-[1px_0_0_#cbd5e1]">
                   <RouterLink :to="{ name: 'StudentTags', params: { studentId: student.id } }"
-                    class="text-primary-700 hover:underline font-medium">
+                    class="text-primary-700 hover:underline font-medium cursor-pointer">
                     {{ student.name }}
                   </RouterLink>
                 </td>
@@ -455,7 +455,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   " class="flex items-center justify-end gap-1">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
@@ -464,7 +464,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                         class="w-14 text-right border-b border-surface-400 bg-transparent focus:border-primary-500 focus:outline-none px-1 py-0.5 text-sm font-mono text-surface-900"
                         @keydown.enter="saveGrade(getSub(student.id, d.id)!, d.id)" />
                       <button
-                        class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors"
+                        class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors cursor-pointer"
                         title="Save" @click="saveGrade(getSub(student.id, d.id)!, d.id)">
                         <i class="pi pi-check text-[14px]"></i>
                       </button>
@@ -480,7 +480,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     class="flex items-center justify-end gap-1">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
@@ -490,7 +490,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       getSub(student.id, d.id)!.override_score
                       }}</span>
                     <button
-                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1"
+                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1 cursor-pointer"
                       title="Edit Override" @click="openOverride(getSub(student.id, d.id)!, d, student.name)">
                       <i class="pi pi-pencil text-[12px]"></i>
                     </button>
@@ -500,7 +500,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   <span v-else class="flex items-center justify-end gap-1 group/grade">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
@@ -512,7 +512,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       {{ getSub(student.id, d.id)!.raw_score }}
                     </span>
                     <button
-                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1"
+                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1 cursor-pointer"
                       title="Override Grade" @click="openOverride(getSub(student.id, d.id)!, d, student.name)">
                       <i class="pi pi-pencil text-[12px]"></i>
                     </button>
@@ -654,7 +654,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               <!-- Student name — links to StudentTagsPage (TASK-003 route) -->
               <td class="sticky left-0 bg-white group-hover:bg-info/90 font-medium text-xs">
                 <RouterLink :to="{ name: 'StudentTags', params: { studentId: sub.student_id } }"
-                  class="text-primary hover:underline">
+                  class="text-primary hover:underline cursor-pointer">
                   <!-- TODO: confirm field name from real SubmissionResource response -->
                   {{
                     (sub as any).student?.name ?? (sub as any).student_name ?? `#${sub.student_id}`
@@ -666,12 +666,12 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               <td class="text-xs">
                 <a v-if="sub.submission_type === 'link' || sub.submission_type === 'url'"
                   :href="sub.submission_path || '#'" target="_blank"
-                  class="text-info-content hover:underline truncate inline-block max-w-[150px]"
+                  class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
                   title="Open Submission Link">
                   <i class="pi pi-external-link text-[10px] mr-1"></i> View Link
                 </a>
                 <a v-else-if="sub.submission_type === 'file'" :href="`/api/submissions/${sub.id}/download`"
-                  target="_blank" class="text-info-content hover:underline truncate inline-block max-w-[150px]"
+                  target="_blank" class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
                   title="Download File">
                   <i class="pi pi-download text-[10px] mr-1"></i> Download
                 </a>
@@ -698,7 +698,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       class="w-14 text-right border-b border-gray-400 bg-transparent focus:border-primary focus:outline-none px-1 py-0.5 text-sm font-mono text-gray-900"
                       @keydown.enter="instrSaveGrade(sub)" />
                     <button
-                      class="inline-flex items-center justify-center text-primary hover:bg-primary/10 rounded p-1 transition-colors"
+                      class="inline-flex items-center justify-center text-primary hover:bg-primary/10 rounded p-1 transition-colors cursor-pointer"
                       title="Save" @click="instrSaveGrade(sub)">
                       <i class="pi pi-check text-[14px]"></i>
                     </button>

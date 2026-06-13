@@ -99,10 +99,10 @@ onMounted(async () => {
       <!-- QR Fullscreen overlay -->
       <Teleport to="body">
         <div v-if="qrFullscreen"
-          class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-6 min-h-screen"
+          class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-6 min-h-screen cursor-pointer"
           @click="qrFullscreen = false">
           <p class="text-white text-sm font-medium tracking-wide">{{ engagement.display_title }}</p>
-          <div class="bg-white rounded-2xl p-10 w-full max-w-sm" @click.stop>
+          <div class="bg-white rounded-2xl p-10 w-full max-w-sm cursor-pointer" @click.stop>
             <QrCodeDisplay :engagement-id="engagement.id" />
           </div>
           <button @click="qrFullscreen = false"

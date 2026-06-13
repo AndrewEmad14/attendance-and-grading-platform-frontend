@@ -101,7 +101,7 @@ const emit = defineEmits<{
     <template #footer>
       <button
         @click="emit('update:visible', false)"
-        class="px-4 py-2 rounded text-sm font-medium text-surface-500 hover:bg-surface-100 transition-colors"
+        class="px-4 py-2 rounded text-sm font-medium text-surface-500 hover:bg-surface-100 transition-colors cursor-pointer"
       >
         Done
       </button>

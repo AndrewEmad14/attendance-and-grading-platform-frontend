@@ -21,7 +21,7 @@ const emit = defineEmits<{
   <ContentCard :title="`Cohorts — ${track.name}`" subtitle="At most one active cohort per track.">
     <template #headerAction>
       <button @click="emit('create')"
-        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2">
+        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer">
         <i class="pi pi-plus text-[10px]"></i>
         New Cohort
       </button>
@@ -57,13 +57,13 @@ const emit = defineEmits<{
 
         <div class="flex items-center gap-2 shrink-0">
           <button @click="emit('manage-admins', cohort)"
-            class="px-2.5 py-1.5 rounded text-xs font-medium text-surface-700 border border-surface-200 hover:bg-surface-50 transition-colors flex items-center gap-1.5">
+            class="px-2.5 py-1.5 rounded text-xs font-medium text-surface-700 border border-surface-200 hover:bg-surface-50 transition-colors flex items-center gap-1.5 cursor-pointer">
             <i class="pi pi-user-edit text-[10px]"></i>
             Admins
           </button>
 
           <button @click="emit('edit', cohort)"
-            class="px-2.5 py-1.5 rounded text-xs font-medium text-surface-700 border border-surface-200 hover:bg-surface-50 transition-colors">
+            class="px-2.5 py-1.5 rounded text-xs font-medium text-surface-700 border border-surface-200 hover:bg-surface-50 transition-colors cursor-pointer">
             Edit
           </button>
 

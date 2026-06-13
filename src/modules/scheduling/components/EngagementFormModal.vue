@@ -327,7 +327,7 @@ function handleSubmit() {
       </FormRow>
 
       <div class="flex justify-end gap-2 pt-2">
-        <button type="button" @click="emit('update:visible', false)" class="btn btn-sm btn-ghost">
+        <button type="button" @click="emit('update:visible', false)" class="btn btn-sm btn-ghost cursor-pointer">
           Cancel
         </button>
         <button type="submit" class="btn btn-sm bg-primary text-white border-none" :disabled="scheduledHours > 12 || !startsAt || !selectedStaffId">

@@ -90,7 +90,7 @@ async function handleLogin() {
               class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
               :disabled="authStore.loading" />
             <button type="button" @click="showPassword = !showPassword"
-              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
               :aria-label="showPassword ? 'Hide password' : 'Show password'">
               <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
             </button>

@@ -129,7 +129,7 @@ onMounted(loadData)
         </div>
       </div>
       <button
-        class="text-surface-500 hover:text-surface-800 transition-colors flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-surface-200"
+        class="text-surface-500 hover:text-surface-800 transition-colors flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-surface-200 cursor-pointer"
         @click="$router.back()"
       >
         <i class="pi pi-arrow-left"></i>

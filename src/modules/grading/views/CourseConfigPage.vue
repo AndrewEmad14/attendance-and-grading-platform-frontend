@@ -208,7 +208,7 @@ watch(
               <option v-for="c in cohortOptions" :key="c.id" :value="c.id">{{ c.label }}</option>
             </select>
             <button v-if="currentCohortId" @click="showAddForm = !showAddForm"
-              class="text-xs text-primary-600 hover:text-primary-800 flex items-center gap-1 font-medium">
+              class="text-xs text-primary-600 hover:text-primary-800 flex items-center gap-1 font-medium cursor-pointer">
               <i class="pi pi-plus" style="font-size: 0.65rem" />
               New Course
             </button>
@@ -225,7 +225,8 @@ watch(
         <div v-if="showAddForm" class="p-3 border rounded-lg border-surface-200 bg-surface-50 mb-3">
           <InputText v-model="newCourseName" placeholder="Course name" size="small" class="w-full mb-2" autofocus />
           <div class="flex justify-end gap-2">
-            <Button label="Cancel" text size="small" severity="secondary" @click="showAddForm = false" />
+            <Button class="cursor-pointer" label="Cancel" text size="small" severity="secondary"
+              @click="showAddForm = false" />
             <Button label="Create" size="small" :disabled="!newCourseName.trim() || saving" :loading="saving"
               @click="handleAddCourse" />
           </div>
@@ -245,10 +246,10 @@ watch(
           </li>
           <li v-for="course in filtered" :key="course.id" class="group">
             <button @click="selectCourse(course)"
-              class="w-full text-left px-4 py-3 transition-colors flex items-center justify-between rounded-lg border border-transparent"
+              class="w-full text-left px-4 py-3 transition-colors flex items-center justify-between rounded-lg border border-transparent cursor-pointer"
               :class="selectedCourse?.id === course.id
-                ? 'bg-primary-50 border-primary-200 text-primary-900'
-                : 'hover:bg-surface-50 border-surface-100 text-surface-900'
+                  ? 'bg-primary-50 border-primary-200 text-primary-900'
+                  : 'hover:bg-surface-50 border-surface-100 text-surface-900'
                 ">
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium truncate">{{ course.name }}</p>
@@ -257,9 +258,9 @@ watch(
                   {{ course.deliverables?.length ?? 0 }} deliverable(s)
                 </p>
               </div>
-              <div class="flex items-center gap-2 ml-2 shrink-0">
+              <div class="flex items-center gap-2 ml-2 flex-shrink-0">
                 <button @click.stop="handleDeleteCourse(course.id)"
-                  class="opacity-0 group-hover:opacity-100 transition-opacity text-danger-content hover:text-danger-content"
+                  class="opacity-0 group-hover:opacity-100 transition-opacity text-danger-content hover:text-danger-content cursor-pointer"
                   title="Delete Course">
                   <i class="pi pi-trash" style="font-size: 0.85rem" />
                 </button>
@@ -356,7 +357,7 @@ watch(
 
                   <div v-if="!isLocked" class="col-span-1 flex justify-center pt-6">
                     <button @click="removeDeliverable(i)"
-                      class="text-danger-content hover:text-danger-content transition-colors"
+                      class="text-danger-content hover:text-danger-content transition-colors cursor-pointer"
                       title="Remove Deliverable">
                       <i class="pi pi-trash" style="font-size: 1rem" />
                     </button>
@@ -366,14 +367,15 @@ watch(
 
               <!-- Add Deliverable -->
               <button v-if="!isLocked" @click="addDeliverable"
-                class="w-full py-3 rounded-xl border-2 border-dashed border-surface-200 text-surface-400 hover:border-primary-400 hover:text-primary-500 transition-colors text-sm flex items-center justify-center gap-2">
+                class="w-full py-3 rounded-xl border-2 border-dashed border-surface-200 text-surface-400 hover:border-primary-400 hover:text-primary-500 transition-colors text-sm flex items-center justify-center gap-2 cursor-pointer">
                 <i class="pi pi-plus" style="font-size: 0.75rem" />
                 Add Deliverable
               </button>
             </div>
 
             <div v-if="!isLocked" class="flex justify-end gap-2 pt-4 mt-4 border-t border-surface-200">
-              <Button label="Revert" severity="secondary" outlined size="small" @click="revert" />
+              <Button class="cursor-pointer" label="Revert" severity="secondary" outlined size="small"
+                @click="revert" />
               <Button :label="saving ? 'Saving...' : 'Save Configuration'" icon="pi pi-save" size="small"
                 :disabled="!weightValid || saving" :loading="saving" @click="saveWeights" />
             </div>
