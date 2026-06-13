@@ -58,6 +58,34 @@ export async function getDeliverableSubmissions(deliverableId: number): Promise<
   }
 }
 
+export async function getMissingDeliverables(deliverableId: number): Promise<any[]> {
+  try {
+    const res = await api.get<{ data: any[] }>(`/deliverables/${deliverableId}/missing`)
+    return res.data
+  } catch (err: any) {
+    throw new Error('Failed to load missing students: ' + err.message)
+  }
+}
+
+export async function getStudentSubmissions(studentId: number): Promise<Submission[]> {
+  try {
+    const res = await api.get<{ data: Submission[] }>(`/students/${studentId}/submissions`)
+    return res.data
+  } catch (err: any) {
+    throw new Error('Failed to load student submissions: ' + err.message)
+  }
+}
+
+export async function getCohortStudents(cohortId: number): Promise<any[]> {
+  try {
+    const res = await api.get<{ data: any[] }>(`/cohorts/${cohortId}/students`)
+    return res.data
+  } catch (err: any) {
+    throw new Error('Failed to load students: ' + err.message)
+  }
+}
+
+
 export async function gradeSubmission(submissionId: number, rawScore: number): Promise<Submission> {
   try {
     const res = await api.patch<{ data: Submission }>(`/submissions/${submissionId}`, {
@@ -81,7 +109,8 @@ export async function overrideSubmission(
     })
     return res.data
   } catch (err: any) {
-    throw new Error('Failed to override submission: ' + err.message)
+    const msg = err.response?.data?.message || err.message
+    throw new Error('Failed to override submission: ' + msg)
   }
 }
 

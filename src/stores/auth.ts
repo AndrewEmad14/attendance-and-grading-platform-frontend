@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
     branch_manager: 'branch@example.com',
     track_admin: 'admin@example.com', // Track Admin for Cohort 2
     instructor: 'boehm.casper@example.net', // Instructor for Hilton Bosco's Lab Group
-    student: 'jaron22@example.com', // Hilton Bosco
+    student: 'lolita34@example.net', // Hilton Bosco
   }
 
   const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)

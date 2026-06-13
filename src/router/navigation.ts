@@ -70,7 +70,7 @@ export const navigationConfig: NavigationItem[] = [
   },
   {
     label: 'Course Configuration',
-    path: '/grades/config/1',
+    path: '/grades/config',
     icon: 'pi pi-cog',
     roles: ['track_admin'],
   },

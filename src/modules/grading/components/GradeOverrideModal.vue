@@ -9,6 +9,7 @@ const props = defineProps<{
   submissionId: number
   studentName: string
   deliverableName: string
+  deliverableType: string
   originalScore: number
   maxScore: number
   visible: boolean
@@ -36,8 +37,22 @@ watch(
   },
 )
 
+const isNoteInvalid = computed(() => {
+  // Notes are strictly mandatory ONLY when overriding instructor-graded labs
+  if (props.deliverableType === 'lab') {
+    return overrideNote.value.trim().length < 10
+  }
+  return false
+})
+
 const isSubmitDisabled = computed(() => {
-  return newScore.value === null || overrideNote.value.trim().length < 10 || saving.value
+  return (
+    newScore.value === null ||
+    newScore.value > props.maxScore ||
+    newScore.value < 0 ||
+    isNoteInvalid.value ||
+    saving.value
+  )
 })
 
 const close = () => {
@@ -71,7 +86,7 @@ const commitOverrideChange = async () => {
     :visible="visible"
     @update:visible="$emit('update:visible', $event)"
     modal
-    header="Manual Grade Override Authorization"
+    :header="deliverableType === 'lab' ? 'Manual Grade Override Authorization' : 'Enter Grade'"
     :style="{ width: '450px' }"
     class="text-surface-800"
   >
@@ -83,7 +98,7 @@ const commitOverrideChange = async () => {
         <p class="text-surface-500 font-medium">
           Deliverable: <span class="text-surface-900">{{ deliverableName }}</span>
         </p>
-        <p class="text-surface-500 font-medium">
+        <p class="text-surface-500 font-medium" v-if="deliverableType === 'lab'">
           Current Calculated Value:
           <span class="text-surface-900 font-mono font-bold">{{ originalScore }}</span> /
           {{ maxScore }}
@@ -95,21 +110,30 @@ const commitOverrideChange = async () => {
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-semibold text-surface-600"
-          >Authorized Score Adjustment Value</label
-        >
-        <InputNumber v-model="newScore" :min="0" :max="maxScore" fluid />
+        <label class="text-xs font-semibold text-surface-600">
+          {{ deliverableType === 'lab' ? 'Authorized Score Adjustment Value' : 'Grade Value' }}
+        </label>
+        <input
+          v-model.number="newScore"
+          type="number"
+          min="0"
+          :max="maxScore"
+          class="border border-surface-300 bg-surface-50 rounded px-3 py-2 text-surface-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full font-data-tabular text-sm"
+        />
+        <small v-if="newScore !== null && newScore > maxScore" class="text-red-500 mt-1">
+          Score cannot exceed deliverable maximum of {{ maxScore }}.
+        </small>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-semibold text-surface-600"
-          >Mandatory Administrative Justification Note</label
-        >
+        <label class="text-xs font-semibold text-surface-600">
+          {{ deliverableType === 'lab' ? 'Mandatory Administrative Justification Note' : 'Optional Note (Internal)' }}
+        </label>
         <Textarea
           v-model="overrideNote"
           rows="3"
           fluid
-          placeholder="State explicit educational reasons or context validating this manual entry logic... (Min 10 chars)"
+          :placeholder="deliverableType === 'lab' ? 'State explicit educational reasons or context validating this manual entry logic... (Min 10 chars)' : 'Any optional context for this grade...'"
           class="text-sm"
         />
       </div>
@@ -118,14 +142,14 @@ const commitOverrideChange = async () => {
         <button
           @click="close"
           :disabled="saving"
-          class="btn btn-sm btn-ghost text-surface-500 font-medium normal-case"
+          class="px-4 py-2 rounded text-sm font-medium text-surface-500 hover:bg-surface-100 transition-colors"
         >
           Cancel
         </button>
         <button
           @click="commitOverrideChange"
           :disabled="isSubmitDisabled"
-          class="btn btn-sm btn-primary text-white font-medium normal-case flex items-center gap-2"
+          class="px-4 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:bg-surface-dim disabled:text-secondary disabled:cursor-not-allowed disabled:opacity-70"
         >
           <i v-if="saving" class="pi pi-spinner pi-spin text-[10px]"></i>
           Apply Audit Adjustments
