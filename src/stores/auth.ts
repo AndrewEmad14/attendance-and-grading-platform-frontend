@@ -98,7 +98,17 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function forgotPassword(email: string): Promise<ApiResponse<null>> {
-    return api.post<ApiResponse<null>>('/auth/forgot-password', { email })
+    loading.value = true
+    error.value = null
+    try {
+      const res = await api.post<ApiResponse<null>>('/auth/forgot-password', { email })
+      return res
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Forgot password failed'
+      throw err
+    } finally {
+      loading.value = false
+    }
   }
 
   async function resetPassword(payload: {
@@ -107,7 +117,17 @@ export const useAuthStore = defineStore('auth', () => {
     password: string
     password_confirmation: string
   }): Promise<ApiResponse<null>> {
-    return api.post<ApiResponse<null>>('/auth/reset-password', payload)
+    loading.value = true
+    error.value = null
+    try {
+      const res = await api.post<ApiResponse<null>>('/auth/reset-password', payload)
+      return res
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Reset password failed'
+      throw err
+    } finally {
+      loading.value = false
+    }
   }
 
   function clearSession(): void {

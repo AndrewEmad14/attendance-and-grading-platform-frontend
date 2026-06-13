@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthRealStore } from '@/stores/auth-real'
+import { useAuthStore } from '@/stores/auth'
 import { resetPasswordSchema } from '@/modules/auth/validation'
 import type { ZodIssue } from 'zod'
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthRealStore()
+const authStore = useAuthStore()
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -104,8 +104,13 @@ function goBackToLogin() {
       <div v-else>
         <h2 class="text-lg font-bold text-zinc-900 mb-2 text-center">Reset Password</h2>
         <p class="text-xs text-zinc-500 mb-6 text-center leading-relaxed">
-          Please enter your email, the reset token, and your new password.
+          Please enter your new password to update your credentials.
         </p>
+
+        <div v-if="!form.token || !form.email" class="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-md flex items-center gap-2">
+          <i class="pi pi-exclamation-triangle text-base"></i>
+          <span>Invalid or missing reset token/email. Please request a new password reset link.</span>
+        </div>
 
         <div v-if="authStore.error" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md flex items-center gap-2">
           <i class="pi pi-exclamation-circle text-base"></i>
@@ -113,49 +118,6 @@ function goBackToLogin() {
         </div>
 
         <form @submit.prevent="handleResetPassword" novalidate class="space-y-5">
-          <!-- Email Input -->
-          <div class="flex flex-col gap-1.5">
-            <label for="email" class="text-xs font-bold text-zinc-800 tracking-wider uppercase">
-              Email Address
-            </label>
-            <div class="relative w-full">
-              <input 
-                id="email"
-                v-model="form.email"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="enter your email"
-                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
-                :class="{ 'border-red-500': errors.email }"
-                :disabled="authStore.loading"
-              />
-              <i class="pi pi-envelope absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"></i>
-            </div>
-            <p v-if="errors.email" class="text-xs text-red-600 mt-1">{{ errors.email }}</p>
-          </div>
-
-          <!-- Token Input -->
-          <div class="flex flex-col gap-1.5">
-            <label for="token" class="text-xs font-bold text-zinc-800 tracking-wider uppercase">
-              Reset Token
-            </label>
-            <div class="relative w-full">
-              <input 
-                id="token"
-                v-model="form.token"
-                type="text"
-                required
-                placeholder="Enter reset token"
-                class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800 font-mono"
-                :class="{ 'border-red-500': errors.token }"
-                :disabled="authStore.loading"
-              />
-              <i class="pi pi-key absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"></i>
-            </div>
-            <p v-if="errors.token" class="text-xs text-red-600 mt-1">{{ errors.token }}</p>
-          </div>
-
           <!-- New Password Input -->
           <div class="flex flex-col gap-1.5">
             <label for="password" class="text-xs font-bold text-zinc-800 tracking-wider uppercase">
@@ -171,13 +133,14 @@ function goBackToLogin() {
                 placeholder="Enter new password"
                 class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
                 :class="{ 'border-red-500': errors.password }"
-                :disabled="authStore.loading"
+                :disabled="authStore.loading || !form.token || !form.email"
               />
               <button
                 type="button"
                 @click="showPassword = !showPassword"
                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
                 :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                :disabled="!form.token || !form.email"
               >
                 <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
               </button>
@@ -200,13 +163,14 @@ function goBackToLogin() {
                 placeholder="Confirm new password"
                 class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
                 :class="{ 'border-red-500': errors.password_confirmation }"
-                :disabled="authStore.loading"
+                :disabled="authStore.loading || !form.token || !form.email"
               />
               <button
                 type="button"
                 @click="showConfirmPassword = !showConfirmPassword"
                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
                 :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'"
+                :disabled="!form.token || !form.email"
               >
                 <i :class="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
               </button>
@@ -217,7 +181,7 @@ function goBackToLogin() {
           <button 
             type="submit" 
             class="w-full bg-[#990011] hover:bg-[#7a000d] text-white font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed text-base mt-6 shadow-xs"
-            :disabled="authStore.loading"
+            :disabled="authStore.loading || !form.token || !form.email"
           >
             <template v-if="authStore.loading">
               <i class="pi pi-spin pi-spinner text-sm"></i>

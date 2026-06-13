@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthRealStore } from '@/stores/auth-real'
+import { useAuthStore } from '@/stores/auth'
 import { forgotPasswordSchema } from '@/modules/auth/validation'
 import type { ZodIssue } from 'zod'
 
 const router = useRouter()
-const authStore = useAuthRealStore()
+const authStore = useAuthStore()
 const success = ref(false)
 
 const form = reactive({
