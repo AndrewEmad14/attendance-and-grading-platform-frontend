@@ -49,10 +49,41 @@ export async function deleteCourse(courseId: number): Promise<void> {
   }
 }
 
+/**
+ * Helper to fetch all pages of a paginated API endpoint to ensure the UI
+ * has the complete dataset without relying on magic numbers or 'Next Page' buttons.
+ */
+async function fetchAllPages<T>(endpoint: string): Promise<T[]> {
+  let allData: T[] = []
+  let page = 1
+  let lastPage = 1
+
+  do {
+    const separator = endpoint.includes('?') ? '&' : '?'
+    // We still use a reasonable per_page so we don't spam the server with tiny 15-item requests
+    const res = await api.get<{ data: T[]; meta?: { current_page: number; last_page: number } }>(
+      `${endpoint}${separator}page=${page}&per_page=50`
+    )
+
+    if (res.data) {
+      allData = allData.concat(res.data)
+    }
+
+    if (res.meta && res.meta.last_page) {
+      lastPage = res.meta.last_page
+    } else {
+      break // Not paginated or no meta returned
+    }
+
+    page++
+  } while (page <= lastPage)
+
+  return allData
+}
+
 export async function getDeliverableSubmissions(deliverableId: number): Promise<Submission[]> {
   try {
-    const res = await api.get<{ data: Submission[] }>(`/deliverables/${deliverableId}/submissions`)
-    return res.data
+    return await fetchAllPages<Submission>(`/deliverables/${deliverableId}/submissions`)
   } catch (err: any) {
     throw new Error('Failed to load submissions: ' + err.message)
   }
@@ -60,8 +91,7 @@ export async function getDeliverableSubmissions(deliverableId: number): Promise<
 
 export async function getMissingDeliverables(deliverableId: number): Promise<any[]> {
   try {
-    const res = await api.get<{ data: any[] }>(`/deliverables/${deliverableId}/missing`)
-    return res.data
+    return await fetchAllPages<any>(`/deliverables/${deliverableId}/missing`)
   } catch (err: any) {
     throw new Error('Failed to load missing students: ' + err.message)
   }
@@ -69,8 +99,7 @@ export async function getMissingDeliverables(deliverableId: number): Promise<any
 
 export async function getStudentSubmissions(studentId: number): Promise<Submission[]> {
   try {
-    const res = await api.get<{ data: Submission[] }>(`/students/${studentId}/submissions`)
-    return res.data
+    return await fetchAllPages<Submission>(`/students/${studentId}/submissions`)
   } catch (err: any) {
     throw new Error('Failed to load student submissions: ' + err.message)
   }
@@ -78,8 +107,7 @@ export async function getStudentSubmissions(studentId: number): Promise<Submissi
 
 export async function getCohortStudents(cohortId: number): Promise<any[]> {
   try {
-    const res = await api.get<{ data: any[] }>(`/cohorts/${cohortId}/students`)
-    return res.data
+    return await fetchAllPages<any>(`/cohorts/${cohortId}/students`)
   } catch (err: any) {
     throw new Error('Failed to load students: ' + err.message)
   }
@@ -113,6 +141,7 @@ export async function overrideSubmission(
     throw new Error('Failed to override submission: ' + msg)
   }
 }
+
 
 export async function getCohortAnalytics(cohortId: number): Promise<CohortAnalytics> {
   try {

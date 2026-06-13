@@ -139,14 +139,18 @@ export const useGradingStore = defineStore('grading', () => {
     loading.value = true
     error.value = null
     try {
-      await gradeSubmission(submissionId, rawScore)
-      await loadSubmissions(deliverableId)
+      const updated = await overrideSubmission(submissionId, rawScore, 'Admin direct grade entry')
+      const index = submissions.value[deliverableId].findIndex((s) => s.id === submissionId)
+      if (index !== -1) {
+        submissions.value[deliverableId][index] = updated
+      }
     } catch (err: any) {
       error.value = err.message
     } finally {
       loading.value = false
     }
   }
+
 
   async function saveOverride(
     submissionId: number,

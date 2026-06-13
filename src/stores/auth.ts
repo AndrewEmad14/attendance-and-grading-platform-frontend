@@ -31,9 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
-    track_admin: 'admin@example.com', // Track Admin for Cohort 2
-    instructor: 'boehm.casper@example.net', // Instructor for Hilton Bosco's Lab Group
-    student: 'lolita34@example.net', // Hilton Bosco
+    track_admin: 'admin@example.com', // Track Admin for Cohort 1
+    instructor: 'dexter.erdman@example.net', // Instructor for Abbie's Lab Group
+    student: 'adeline.hansen@example.org', // Abbie Dietrich
   }
 
   const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)

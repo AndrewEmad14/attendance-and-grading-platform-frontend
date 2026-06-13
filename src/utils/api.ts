@@ -69,6 +69,21 @@ class ApiClient {
     return this.request<T>(endpoint, { ...options, method: 'GET' })
   }
 
+  public async getBlob(endpoint: string, options?: RequestInit): Promise<Blob> {
+    const auth = useAuthStore()
+    const headers = new Headers(options?.headers)
+    if (auth.isAuthenticated) {
+      headers.set('Authorization', `Bearer ${auth.token}`)
+    }
+    const config: RequestInit = { ...options, method: 'GET', headers }
+    
+    const response = await fetch(`${BASE_URL}${endpoint}`, config)
+    if (!response.ok) {
+      throw new Error(`HTTP Operational Error: ${response.status}`)
+    }
+    return await response.blob()
+  }
+
   public post<T>(endpoint: string, body: any, options?: RequestInit): Promise<T> {
     const isRaw = body instanceof FormData || body instanceof URLSearchParams
     return this.request<T>(endpoint, {
