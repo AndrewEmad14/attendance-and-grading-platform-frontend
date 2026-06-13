@@ -21,6 +21,12 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
+    label: 'At-Risk Students',
+    path: '/analytics/at-risk',
+    icon: 'pi pi-exclamation-triangle',
+    roles: ['branch_manager'],
+  },
+  {
     label: 'Finance',
     path: '/finance',
     icon: 'pi pi-wallet',
