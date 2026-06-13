@@ -16,6 +16,15 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/dashboard-dispatcher',
     children: [
       {
+        path: 'dashboard-dispatcher',
+        name: 'DashboardDispatcher',
+        component: () => import('@/components/DashboardDispatcher.vue'),
+        meta: {
+          title: 'Resolving Dashboard',
+          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+        },
+      },
+      {
         path: 'example',
         name: 'ComponentPlayground',
         component: () => import('@/modules/mock/views/Example.vue'),
