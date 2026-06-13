@@ -76,7 +76,7 @@ const themes: {
 } = {
   lecture: { icon: 'pi-desktop', bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
   lab: { icon: 'pi-code', bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-  business_session: { icon: 'pi-briefcase', bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  business_session: { icon: 'pi-briefcase', bg: 'bg-amber-50', text: 'text-amber-500', dot: 'bg-amber-500' },
   default: { icon: 'pi-calendar', bg: 'bg-zinc-50', text: 'text-zinc-600', dot: 'bg-zinc-400' }
 }
 const getTheme = (t: string) => themes[t] || themes.default

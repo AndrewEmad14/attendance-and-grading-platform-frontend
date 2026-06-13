@@ -12,7 +12,7 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 const color = computed(() => {
   if (props.balance >= 150) return { stroke: 'stroke-emerald-500', text: 'text-emerald-700' }
-  if (props.balance >= 40) return { stroke: 'stroke-amber-400', text: 'text-amber-700' }
+  if (props.balance >= 40) return { stroke: 'stroke-amber-500', text: 'text-amber-500' }
   return { stroke: 'stroke-red-500', text: 'text-red-700' }
 })
 

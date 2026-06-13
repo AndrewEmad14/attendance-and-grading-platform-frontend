@@ -2,13 +2,13 @@
 import { computed } from 'vue'
 import Tag from 'primevue/tag'
 import Paginator from 'primevue/paginator'
-import type { Engagement } from '../types'
-import type { PaginatedResponse } from '@/types'
 import { useRouter } from 'vue-router'
+import type { Engagement } from '../types'
+import type { PaginatedMeta } from '@/modules/attendance/types'
 
 interface Props {
   engagements: Engagement[]
-  meta?: PaginatedResponse<any>['meta'] | null
+  meta?: PaginatedMeta | null
   showActions?: boolean
 }
 
@@ -96,7 +96,7 @@ function handlePageChange(event: any) {
           class="flex items-center justify-between p-3 bg-white border border-surface-200 rounded-xl shadow-xs hover:border-surface-300 hover:shadow-sm transition-colors cursor-pointer"
           @click="router.push({ name: 'EngagementDetail', params: { engagementId: session.id } })">
           <div class="flex items-start gap-4 min-w-0">
-            <div class="text-center bg-surface-50 px-2.5 py-1.5 rounded-lg border border-surface-100 min-w-[75px]">
+            <div class="text-center bg-surface-50 px-2.5 py-1.5 rounded-lg border border-surface-100 min-w-19">
               <div class="text-xs font-bold text-surface-900">
                 {{ formatTime(session.starts_at) }}
               </div>
@@ -127,13 +127,14 @@ function handlePageChange(event: any) {
 
           <div v-if="showActions" class="flex items-center gap-1 shrink-0">
 
-            <button v-if="true || session.type !== 'business_session'" type="button" @click="$emit('edit', session)"
+            <button v-if="true || session.type !== 'business_session'" type="button"
+              @click.stop="$emit('edit', session)"
               class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0"
               title="Edit Session">
               <i class="pi pi-pencil text-xs"></i>
             </button>
 
-            <button type="button" @click="$emit('cancel', session.id)"
+            <button type="button" @click.stop="$emit('cancel', session.id)"
               class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
               title="Cancel Session">
               <i class="pi pi-trash text-xs"></i>

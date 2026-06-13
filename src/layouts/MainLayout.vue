@@ -52,7 +52,7 @@ async function handleLogout() {
         <i class="pi pi-graduation-cap text-primary text-xl"></i>
         <span class="font-bold text-lg tracking-wide text-white">AcademyOS</span>
       </div>
-      <nav class="flex-1 p-4 overflow-y-auto space-y-1">
+      <nav class="flex-1 p-4 overflow-y-auto space-y-3">
         <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
           class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200" :class="isNavActive(item.path)
             ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'

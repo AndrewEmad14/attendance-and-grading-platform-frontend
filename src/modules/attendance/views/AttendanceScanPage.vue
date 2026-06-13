@@ -17,7 +17,7 @@ const outcomeConfig: Record<CheckInResult['outcome'], { icon: string; color: str
   idempotent: { icon: 'pi pi-info-circle', color: 'text-sky-600 bg-sky-50 border-sky-200', title: 'Already Recorded' },
   rejected: { icon: 'pi pi-times-circle', color: 'text-red-600 bg-red-50 border-red-200', title: 'Rejected' },
   not_found: { icon: 'pi pi-question-circle', color: 'text-zinc-500 bg-zinc-50 border-zinc-200', title: 'Session Not Found' },
-  session_ended: { icon: 'pi pi-clock', color: 'text-amber-600 bg-amber-50 border-amber-200', title: 'Session Ended' },
+  session_ended: { icon: 'pi pi-clock', color: 'text-amber-500 bg-amber-50 border-amber-200', title: 'Session Ended' },
 }
 
 async function run() {
