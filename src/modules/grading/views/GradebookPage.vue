@@ -272,6 +272,10 @@ if (auth.hasRole('student')) {
     studentLoading.value = true
     await gradingStore.loadCourses(studentCohortId.value)
     
+    if (gradingStore.courses.length > 0) {
+      studentSelectedCourseId.value = gradingStore.courses[0].id
+    }
+    
     // Instead of loading all deliverables (which throws 403 for students),
     // we fetch the student's personal tracker data all at once.
     const studentId = auth.currentUser?.student_profile?.id
@@ -316,12 +320,16 @@ function courseTotal(course: Course): number {
 const overallCoursesTotal = computed(() => {
   if (gradingStore.courses.length === 0) return 0
   const coursesSum = gradingStore.courses.reduce((sum, c) => sum + courseTotal(c), 0)
-  
+<<<<<<< HEAD
+  return coursesSum / gradingStore.courses.length
+=======
+
   // Grand Total = Attendance Ledger (out of 250) + Sum of Course Scores (each out of 100)
-  const maxPossible = 250 + (gradingStore.courses.length * 100)
+  const maxPossible = 250 + gradingStore.courses.length * 100
   if (maxPossible === 0) return 0
-  
+
   return ((attendanceBalance + coursesSum) / maxPossible) * 100
+>>>>>>> 1344f186966c21478328665495af9765790f68a6
 })
 const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) < 60))
 </script>
@@ -626,21 +634,66 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
     class="flex flex-col gap-4 p-6 h-full overflow-hidden"
   >
     <!-- Header Controls -->
+<<<<<<< HEAD
     <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+      <div class="flex flex-col md:flex-row gap-4 w-full">
+        <!-- Cohort Selector -->
+        <div class="flex flex-col gap-1 w-full md:w-64">
+          <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-2">
+            <i class="pi pi-check-square text-primary"></i>
+            Lab Grading
+          </h2>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Cohort</label>
+          <div class="relative">
+            <select
+              v-model="instrCohortId"
+              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer"
+              :disabled="!instrCohorts.length"
+            >
+              <option value="" disabled>
+                {{ instrCohorts.length ? 'Select Cohort' : 'No cohorts assigned' }}
+              </option>
+              <option v-for="cohort in instrCohorts" :key="cohort.id" :value="cohort.id">
+                Cohort {{ cohort.number }} ({{ cohort.track?.name ?? 'Unknown Track' }})
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <i class="pi pi-chevron-down text-[10px]"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deliverable selector grouped by course -->
+        <div class="flex flex-col gap-1 flex-1 md:mt-9">
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Lab Deliverable</label>
+=======
+    <div
+      class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0"
+    >
       <div>
         <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
           <i class="pi pi-check-square text-primary"></i>
           Lab Grading Matrix
         </h2>
-        
+
         <!-- Deliverable selector grouped by course -->
         <div class="flex flex-col gap-1">
-          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Lab Deliverable</label>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide"
+            >Select Lab Deliverable</label
+          >
+>>>>>>> 1344f186966c21478328665495af9765790f68a6
           <div class="relative">
             <select
               class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer"
               :disabled="!gradingStore.courses.length"
+<<<<<<< HEAD
+              :value="instrDeliverableId"
               @change="(e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))"
+=======
+              @change="
+                (e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))
+              "
+>>>>>>> 1344f186966c21478328665495af9765790f68a6
             >
               <option value="">
                 {{
@@ -943,8 +996,15 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
+<<<<<<< HEAD
+              <span class="text-surface-500 text-sm">Overall Courses Total</span>
+              <span class="font-mono font-bold text-primary-700 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
+=======
               <span class="text-surface-500 text-sm">Overall Score</span>
-              <span class="font-mono font-bold text-primary-700 text-base">{{ grandTotal.toFixed(1) }}%</span>
+              <span class="font-mono font-bold text-primary-700 text-base"
+                >{{ grandTotal.toFixed(1) }}%</span
+              >
+>>>>>>> 1344f186966c21478328665495af9765790f68a6
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Courses Status</span>
@@ -958,14 +1018,45 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
       <!-- Main Content Area -->
       <div class="md:col-span-9 flex flex-col gap-6">
-        <div class="mb-2">
-          <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">My Grades Breakdown</h1>
-          <p class="text-surface-500 text-sm">Detailed view of your performance across current courses.</p>
+<<<<<<< HEAD
+        <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">My Grades Breakdown</h1>
+            <p class="text-surface-500 text-sm">Detailed view of your performance across current courses.</p>
+          </div>
+          <div class="w-full md:w-64 relative">
+            <select
+              v-model="studentSelectedCourseId"
+              class="appearance-none bg-white text-surface-900 border border-surface-300 rounded-lg py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 shadow-sm w-full transition-all cursor-pointer font-medium"
+            >
+              <option value="all">All Courses</option>
+              <option v-for="course in gradingStore.courses" :key="course.id" :value="course.id">
+                {{ course.name }}
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-surface-500">
+              <i class="pi pi-chevron-down text-xs"></i>
+            </div>
+          </div>
         </div>
 
         <!-- Course Cards -->
         <div 
-          v-for="course in gradingStore.courses" 
+          v-for="course in studentDisplayedCourses" 
+=======
+        <div class="mb-2">
+          <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">
+            My Grades Breakdown
+          </h1>
+          <p class="text-surface-500 text-sm">
+            Detailed view of your performance across current courses.
+          </p>
+        </div>
+
+        <!-- Course Cards -->
+        <div
+          v-for="course in gradingStore.courses"
+>>>>>>> 1344f186966c21478328665495af9765790f68a6
           :key="course.id"
           class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group"
         >
