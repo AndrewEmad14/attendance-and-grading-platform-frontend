@@ -2,8 +2,7 @@
 import { onMounted, computed } from 'vue'
 import { useCalendarTimeline } from '../composables/useCalendarTimeline'
 import { useAuthStore } from '@/stores/auth.ts'
-//if you want to use the real auth store, uncomment the following line and comment out the above line
-//import { useAuthRealStore } from '@/stores/auth-real.ts'
+
 import TimelineCalendar from './TimelineCalendar.vue'
 import StatCard from '@/components/structural/StatCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'

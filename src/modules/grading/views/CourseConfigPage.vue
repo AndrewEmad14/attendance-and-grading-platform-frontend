@@ -18,8 +18,7 @@ import FormRow from '@/components/structural/FormRow.vue'
 
 import { useGradingStore } from '@/stores/grading'
 import { useAuthStore } from '@/stores/auth.ts'
-//if you want to use the real auth store, uncomment the following line and comment out the above line
-//import { useAuthRealStore } from '@/stores/auth-real.ts'
+
 import {
   createCourse,
   updateCourse,
