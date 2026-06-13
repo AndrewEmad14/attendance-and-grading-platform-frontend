@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth-real.ts'
 import SchedulingAdminPanel from '../components/SchedulingAdminPanel.vue'
 import InstructorTimelineView from '../components/InstructorTimelineView.vue'
 import StudentTimelineView from '../components/StudentTimelineView.vue'

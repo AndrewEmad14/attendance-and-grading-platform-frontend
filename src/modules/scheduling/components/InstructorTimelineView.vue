@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
 import { useCalendarTimeline } from '../composables/useCalendarTimeline'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth-real.ts'
 import TimelineCalendar from './TimelineCalendar.vue'
 import StatCard from '@/components/structural/StatCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'

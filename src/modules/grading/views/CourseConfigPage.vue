@@ -17,7 +17,7 @@ import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 import FormRow from '@/components/structural/FormRow.vue'
 
 import { useGradingStore } from '@/stores/grading'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth-real'
 import {
   createCourse,
   updateCourse,

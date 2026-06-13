@@ -2,6 +2,8 @@
 import { ref, computed, watchEffect, onMounted } from 'vue'
 import { useGradingStore } from '@/stores/grading'
 import { useAuthStore } from '@/stores/auth'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthStore } from '@/stores/auth-real'
 import GradeOverrideModal from '@/modules/grading/components/GradeOverrideModal.vue'
 import ContentCard from '@/components/structural/ContentCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'

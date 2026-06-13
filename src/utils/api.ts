@@ -1,5 +1,7 @@
 import router from '@/router'
 import { useAuthStore } from '@/stores/auth'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthStore } from '@/stores/auth-real'
 
 // Base structural interface for uniform server response payloads
 export interface ApiResponse<T = any> {

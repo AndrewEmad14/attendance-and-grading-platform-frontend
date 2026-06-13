@@ -1,20 +1,60 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore, type UserRole } from '@/stores/auth'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthStore, type UserRole } from '@/stores/auth-real'
 import MainLayout from '@/layouts/MainLayout.vue'
-
 declare module 'vue-router' {
   interface RouteMeta {
     title: string
     allowedRoles?: UserRole[]
+    /** Routes that do NOT require authentication (login, password reset, etc.) */
+    public?: boolean
   }
 }
 
 const routes: Array<RouteRecordRaw> = [
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/modules/auth/views/LoginPage.vue'),
+    meta: { title: 'Sign In', public: true },
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/modules/auth/views/ForgotPasswordPage.vue'),
+    meta: { title: 'Forgot Password', public: true },
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('@/modules/auth/views/ResetPasswordPage.vue'),
+    meta: { title: 'Reset Password', public: true },
+  },
+  {
+    // Fallback 403 Page inside the App
+    path: '/unauthorized',
+    name: 'Unauthorized',
+    component: () => import('@/components/UnauthorizedPage.vue'),
+    meta: { title: 'Access Denied', public: true },
+  },
+
+
   {
     path: '/',
     component: MainLayout,
-    redirect: '/dashboard-dispatcher',
+   // redirect: '/dashboard-dispatcher',
     children: [
+      {
+        path: 'profile',
+        name: 'MyProfile',
+        component: () => import('@/modules/auth/views/ProfilePage.vue'),
+        meta: {
+          title: 'My Profile',
+          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+        },
+      },
       {
         path: 'example',
         name: 'ComponentPlayground',
@@ -72,7 +112,8 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'submissions',
         name: 'MyDeliverables',
-        component: () => import('@/modules/submission/views/deliverable-page/DeliverablesPage.vue'),
+        component: () =>
+          import('@/modules/submission/views/deliverable-page/DeliverablesPage.vue'),
         meta: { title: 'My Homework Deliverables', allowedRoles: ['student'] },
       },
       {
@@ -87,7 +128,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'users',
         name: 'SystemUsers',
-        component: () => import('@/modules/auth/views/UserLifecyclePage.vue'),
+        component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
         meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
       },
       {
@@ -104,13 +145,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  {
-    // Fallback 403 Page inside the App
-    path: '/unauthorized',
-    name: 'Unauthorized',
-    component: () => import('@/components/UnauthorizedPage.vue'),
-    meta: { title: 'Access Denied' },
-  },
+  
 ]
 
 const router = createRouter({
@@ -118,10 +153,42 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
-  const allowedRoles = to.meta.allowedRoles
 
+  // Allowed routes that dont require auth , the user is redirected tho if he is logged in
+  if (to.meta.public) {
+    if (to.name === 'Login' && auth.isAuthenticated) {
+      return next({ path: '/' })
+    }
+    return next()
+  }
+
+  // 2. Not authenticated at all -> bounce to login, remember intended destination
+  if (!auth.isAuthenticated) {
+    return next({ name: 'Login', query: { redirect: to.fullPath } })
+  }
+
+  // 3. Session expired (client-side hint; server also enforces via 401)
+  if (auth.isExpired) {
+    await auth.logout()
+    return next({ name: 'Login', query: { redirect: to.fullPath } })
+  }
+
+  // 4. Ensures that the full profile (staff_profile/student_profile etc.) is loaded
+  //    before any guarded route renders, so components can rely on
+  //    auth.profile / auth.staffProfileId / auth.studentProfileId being ready.
+  if (!auth.currentUser) {
+    try {
+      await auth.fetchMe()
+    } catch {
+      // fetchMe failed redirect to login
+      return next({ name: 'Login', query: { redirect: to.fullPath } })
+    }
+  }
+
+  // 5. Role-based access check
+  const allowedRoles = to.meta.allowedRoles
   if (allowedRoles && !auth.hasRole(allowedRoles)) {
     return next({ name: 'Unauthorized' })
   }

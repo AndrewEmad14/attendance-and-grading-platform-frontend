@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth-real'
 import { useGradingStore } from '@/stores/grading'
 import { getStudentSubmissions } from '@/modules/submission/services/submissionService'
 import type { Course, CourseDeliverable, Submission } from '@/modules/grading/types'
