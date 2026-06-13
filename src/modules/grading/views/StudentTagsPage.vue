@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth.ts'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthRealStore } from '@/stores/auth-real.ts'
 import {
   getStudentTags,
   getTags,
@@ -110,19 +112,24 @@ onMounted(loadData)
 
 <template>
   <div class="flex flex-col gap-6 p-8 max-w-5xl mx-auto h-full overflow-y-auto bg-surface-50">
-    
     <!-- Page Header -->
     <header class="flex items-center justify-between pb-4 border-b border-surface-200">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center shadow-sm border border-blue-200">
+        <div
+          class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center shadow-sm border border-blue-200"
+        >
           <i class="pi pi-user text-xl font-bold"></i>
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-surface-900 tracking-tight">Student Profile &amp; Records</h1>
-          <p class="text-sm font-medium text-surface-500 mt-0.5">Managing notes and tags for Student #{{ studentId }}</p>
+          <h1 class="text-2xl font-bold text-surface-900 tracking-tight">
+            Student Profile &amp; Records
+          </h1>
+          <p class="text-sm font-medium text-surface-500 mt-0.5">
+            Managing notes and tags for Student #{{ studentId }}
+          </p>
         </div>
       </div>
-      <button 
+      <button
         class="text-surface-500 hover:text-surface-800 transition-colors flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-surface-200"
         @click="$router.back()"
       >
@@ -132,24 +139,32 @@ onMounted(loadData)
     </header>
 
     <!-- State Overlays -->
-    <div v-if="loading" class="flex items-center gap-3 text-sm text-surface-600 bg-white p-4 rounded-lg shadow-sm border border-surface-200">
-      <span class="loading loading-spinner loading-sm text-primary-500"></span> 
+    <div
+      v-if="loading"
+      class="flex items-center gap-3 text-sm text-surface-600 bg-white p-4 rounded-lg shadow-sm border border-surface-200"
+    >
+      <span class="loading loading-spinner loading-sm text-primary-500"></span>
       <span class="font-medium">Retrieving student records…</span>
     </div>
 
-    <div v-if="error" class="bg-red-50 text-red-700 border border-red-200 p-4 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+    <div
+      v-if="error"
+      class="bg-red-50 text-red-700 border border-red-200 p-4 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2"
+    >
       <i class="pi pi-exclamation-triangle"></i>
       {{ error }}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" v-if="!loading">
-      
       <!-- Tags Panel -->
-      <ContentCard title="Classification Tags" class="h-full flex flex-col shadow-sm border-surface-200">
+      <ContentCard
+        title="Classification Tags"
+        class="h-full flex flex-col shadow-sm border-surface-200"
+      >
         <div class="flex flex-wrap gap-2 mb-6 min-h-[40px]">
-          <span 
-            v-for="tag in studentTags" 
-            :key="tag.id" 
+          <span
+            v-for="tag in studentTags"
+            :key="tag.id"
             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm transition-all"
           >
             <i class="pi pi-tag text-[10px] text-blue-500"></i>
@@ -164,7 +179,10 @@ onMounted(loadData)
               <i class="pi pi-times text-[10px]"></i>
             </button>
           </span>
-          <span v-if="!studentTags.length" class="text-sm text-surface-400 italic flex items-center h-full">
+          <span
+            v-if="!studentTags.length"
+            class="text-sm text-surface-400 italic flex items-center h-full"
+          >
             No tags currently assigned.
           </span>
         </div>
@@ -172,10 +190,12 @@ onMounted(loadData)
         <div class="space-y-4 mt-auto">
           <!-- Assign Existing Tag -->
           <div>
-            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider mb-2">Assign Tag</label>
+            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider mb-2"
+              >Assign Tag</label
+            >
             <div class="flex items-stretch gap-2">
-              <select 
-                v-model="selectedTagId" 
+              <select
+                v-model="selectedTagId"
                 class="flex-1 border border-surface-300 rounded-lg px-3 py-2 text-sm text-surface-900 bg-surface-50 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-200 transition-all shadow-sm"
               >
                 <option :value="null">Select a tag from library…</option>
@@ -195,7 +215,9 @@ onMounted(loadData)
 
           <!-- Create New Tag -->
           <div v-if="auth.hasRole('track_admin')" class="pt-4 border-t border-surface-200">
-            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider mb-2">Create New Tag</label>
+            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider mb-2"
+              >Create New Tag</label
+            >
             <div class="flex items-stretch gap-2">
               <input
                 v-model="newTagText"
@@ -217,7 +239,10 @@ onMounted(loadData)
       </ContentCard>
 
       <!-- Notes Panel -->
-      <ContentCard title="Administrative Notes" class="h-full flex flex-col shadow-sm border-surface-200">
+      <ContentCard
+        title="Administrative Notes"
+        class="h-full flex flex-col shadow-sm border-surface-200"
+      >
         <div class="flex-1 flex flex-col">
           <div
             v-if="notes"
@@ -225,13 +250,20 @@ onMounted(loadData)
           >
             {{ notes }}
           </div>
-          <div v-else class="h-64 flex flex-col items-center justify-center border-2 border-dashed border-surface-200 rounded-xl mb-5 bg-surface-50/50">
+          <div
+            v-else
+            class="h-64 flex flex-col items-center justify-center border-2 border-dashed border-surface-200 rounded-xl mb-5 bg-surface-50/50"
+          >
             <i class="pi pi-align-left text-3xl text-surface-300 mb-2"></i>
-            <span class="text-sm text-surface-400 font-medium">No administrative notes recorded yet.</span>
+            <span class="text-sm text-surface-400 font-medium"
+              >No administrative notes recorded yet.</span
+            >
           </div>
 
           <div class="flex flex-col gap-3 mt-auto">
-            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider">Append to Ledger</label>
+            <label class="block text-xs font-bold text-surface-600 uppercase tracking-wider"
+              >Append to Ledger</label
+            >
             <Textarea
               v-model="noteText"
               rows="3"
@@ -240,7 +272,10 @@ onMounted(loadData)
               class="w-full border border-surface-300 rounded-lg p-3 text-sm text-surface-900 bg-surface-50 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-200 transition-all shadow-sm resize-none"
             />
             <div class="flex items-center justify-between">
-              <span class="text-xs font-medium" :class="noteText.length > 950 ? 'text-red-500 font-bold' : 'text-surface-500'">
+              <span
+                class="text-xs font-medium"
+                :class="noteText.length > 950 ? 'text-red-500 font-bold' : 'text-surface-500'"
+              >
                 {{ noteText.length }} / 1000 characters
               </span>
               <button
@@ -255,7 +290,6 @@ onMounted(loadData)
           </div>
         </div>
       </ContentCard>
-
     </div>
   </div>
 </template>

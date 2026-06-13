@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
 import { useCalendarTimeline } from '../composables/useCalendarTimeline'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth.ts'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthRealStore } from '@/stores/auth-real.ts'
 import TimelineCalendar from './TimelineCalendar.vue'
 import StatCard from '@/components/structural/StatCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 import ContentCard from '@/components/structural/ContentCard.vue'
 
 const auth = useAuthStore()
-const { engagements, paginationMeta, isLoading, error, loadTimeline, changePage } = useCalendarTimeline()
+const { engagements, paginationMeta, isLoading, error, loadTimeline, changePage } =
+  useCalendarTimeline()
 
 const totalHours = computed(() => {
   return engagements.value.reduce((sum, item) => sum + item.scheduled_hours, 0)
@@ -24,34 +27,34 @@ onMounted(async () => {
 <template>
   <div class="space-y-6 w-full">
     <DashboardGrid variant="uniform-four">
-      <StatCard 
-        label="Total Delivered Scope" 
-        :value="`${totalHours} Hours`" 
+      <StatCard
+        label="Total Delivered Scope"
+        :value="`${totalHours} Hours`"
         trend-text="Current Engagement window metrics"
         trend-type="neutral"
       />
-      <StatCard 
-        label="Booked Sessions" 
-        :value="paginationMeta?.total ?? engagements.length" 
+      <StatCard
+        label="Booked Sessions"
+        :value="paginationMeta?.total ?? engagements.length"
         trend-text="Total track blocks"
         trend-type="neutral"
       />
     </DashboardGrid>
 
-    <ContentCard 
-      title="My Teaching Engagements" 
+    <ContentCard
+      title="My Teaching Engagements"
       subtitle="Chronological log of lecture allocations, lab tracks, and operations"
     >
       <div v-if="isLoading" class="flex justify-center py-6">
         <i class="pi pi-spin pi-spinner text-surface-400 text-xl"></i>
       </div>
-      
+
       <div v-else-if="error" class="p-3 bg-danger/10 text-danger rounded-lg text-xs">
         {{ error }}
       </div>
 
-      <TimelineCalendar 
-        v-else 
+      <TimelineCalendar
+        v-else
         :engagements="engagements"
         :meta="paginationMeta"
         @page-change="changePage"

@@ -113,7 +113,6 @@ export async function getCohortStudents(cohortId: number): Promise<any[]> {
   }
 }
 
-
 export async function gradeSubmission(submissionId: number, rawScore: number): Promise<Submission> {
   try {
     const res = await api.patch<{ data: Submission }>(`/submissions/${submissionId}`, {
