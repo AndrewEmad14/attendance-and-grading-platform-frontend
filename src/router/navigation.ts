@@ -83,6 +83,7 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-cog',
     roles: ['track_admin'],
   },
+   
 ]
 
 export const accountNavigationConfig = {

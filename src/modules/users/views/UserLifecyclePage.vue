@@ -2,5 +2,5 @@
   <div>Coming soon</div>
 </template>
 
-<script >
+<script setup lang="ts">
 </script>

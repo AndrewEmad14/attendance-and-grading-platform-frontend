@@ -180,12 +180,12 @@ const routes: Array<RouteRecordRaw> = [
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },
-      // {
-      //   path: 'users',
-      //   name: 'SystemUsers',
-      //   component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
-      //   meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
-      // },
+      {
+        path: 'users',
+        name: 'SystemUsers',
+        component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
+        meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
+      },
       {
         path: 'grades/config/:cohortId?',
         name: 'CourseConfig',
@@ -198,6 +198,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/grading/views/StudentTagsPage.vue'),
         meta: { title: 'Student Tags & Notes', allowedRoles: ['track_admin', 'instructor'] },
       },
+      {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/modules/users/views/ProfilePage.vue'),
+        meta: { title: 'My Profile', allowedRoles: ['track_admin', 'instructor', 'student'] },
+      }
     ],
   },
 ]
