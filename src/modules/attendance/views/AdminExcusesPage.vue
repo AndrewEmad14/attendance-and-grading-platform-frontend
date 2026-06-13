@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { attendanceApi } from '../services/attendanceApi'
+import { attendanceApi } from '../api.ts'
 import type { ExcuseRequest, ExcuseStatus } from '../types'
-import type { PaginatedMeta } from '../types'
 import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
 
 const excuses = ref<ExcuseRequest[]>([])
-const meta = ref<PaginatedMeta | null>(null)
+const meta = ref<any>(null)
 const page = ref(1)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -92,7 +91,10 @@ const formatDate = (iso: string) =>
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!excuses.length" class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400">
+    <div
+      v-else-if="!excuses.length"
+      class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400"
+    >
       No excuse requests found.
     </div>
 
@@ -101,11 +103,31 @@ const formatDate = (iso: string) =>
       <table class="w-full text-sm">
         <thead class="bg-zinc-50 border-b border-zinc-200">
           <tr>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Student</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Session</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Submitted</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Status</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Reason</th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Student
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Session
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Submitted
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Status
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Reason
+            </th>
             <th class="px-4 py-3" />
           </tr>
         </thead>
@@ -120,7 +142,12 @@ const formatDate = (iso: string) =>
             <td class="px-4 py-3"><ExcuseStatusTag :status="excuse.status" /></td>
             <td class="px-4 py-3 text-zinc-600 max-w-xs">
               <p class="line-clamp-2 text-xs">{{ excuse.reason }}</p>
-              <a v-if="excuse.attachment_url" :href="excuse.attachment_url" target="_blank" class="text-xs text-indigo-500 hover:underline mt-0.5 flex items-center gap-1">
+              <a
+                v-if="excuse.attachment_url"
+                :href="excuse.attachment_url"
+                target="_blank"
+                class="text-xs text-indigo-500 hover:underline mt-0.5 flex items-center gap-1"
+              >
                 <i class="pi pi-paperclip" /> Attachment
               </a>
             </td>
@@ -151,12 +178,23 @@ const formatDate = (iso: string) =>
     </div>
 
     <!-- Pagination -->
-    <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between text-xs text-zinc-500">
-      <button :disabled="page === 1" @click="load(page - 1)" class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+    <div
+      v-if="meta && meta.last_page > 1"
+      class="flex items-center justify-between text-xs text-zinc-500"
+    >
+      <button
+        :disabled="page === 1"
+        @click="load(page - 1)"
+        class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition"
+      >
         <i class="pi pi-chevron-left" />
       </button>
       <span>Page {{ meta.current_page }} of {{ meta.last_page }}</span>
-      <button :disabled="page === meta.last_page" @click="load(page + 1)" class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+      <button
+        :disabled="page === meta.last_page"
+        @click="load(page + 1)"
+        class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition"
+      >
         <i class="pi pi-chevron-right" />
       </button>
     </div>

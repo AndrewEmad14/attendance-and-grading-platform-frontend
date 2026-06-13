@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { Engagement } from '../types'
-import type { PaginatedMeta } from '../types'
 import { attendanceApi } from '../api'
 import SessionListItem from './SessionListItem.vue'
 
@@ -9,7 +8,7 @@ const props = defineProps<{ selectedId?: number }>()
 const emit = defineEmits<{ (e: 'select', session: Engagement): void }>()
 
 const sessions = ref<Engagement[]>([])
-const meta = ref<PaginatedMeta | null>(null)
+const meta = ref<any>(null)
 const page = ref(1)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -36,16 +35,26 @@ onMounted(() => load(1))
   <div class="flex flex-col gap-2">
     <!-- Loading skeleton -->
     <template v-if="loading">
-      <div v-for="n in 5" :key="n" class="rounded-lg border border-zinc-200 bg-zinc-50 h-20 animate-pulse" />
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="rounded-lg border border-zinc-200 bg-zinc-50 h-20 animate-pulse"
+      />
     </template>
 
     <!-- Error -->
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div
+      v-else-if="error"
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+    >
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!sessions.length" class="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center text-sm text-zinc-400">
+    <div
+      v-else-if="!sessions.length"
+      class="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center text-sm text-zinc-400"
+    >
       No sessions found.
     </div>
 
@@ -61,7 +70,10 @@ onMounted(() => load(1))
     </template>
 
     <!-- Pagination -->
-    <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between pt-2 text-xs text-zinc-500">
+    <div
+      v-if="meta && meta.last_page > 1"
+      class="flex items-center justify-between pt-2 text-xs text-zinc-500"
+    >
       <button
         :disabled="page === 1"
         @click="load(page - 1)"

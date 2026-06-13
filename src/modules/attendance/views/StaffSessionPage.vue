@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import type { Engagement } from '../types'
 import MySessionsList from '../components/MySessionsList.vue'
-import SessionRosterTable from '../components/SessionRosterTable.vue'
 import QrCodeDisplay from '../components/QrCodeDisplay.vue'
+import SessionAttendanceTable from '../components/SessionAttendanceTable.vue'
 
 const selected = ref<Engagement | null>(null)
 const showQr = ref(false)
@@ -19,7 +19,12 @@ const showQr = ref(false)
         <p class="text-xs font-semibold uppercase tracking-widest text-zinc-400">Sessions</p>
         <MySessionsList
           :selected-id="selected?.id"
-          @select="(session) => { selected = session; showQr = false }"
+          @select="
+            (session) => {
+              selected = session
+              showQr = false
+            }
+          "
         />
       </div>
 
@@ -30,7 +35,9 @@ const showQr = ref(false)
           <div class="rounded-xl border border-zinc-200 bg-white p-5">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">{{ selected.display_context }}</p>
+                <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">
+                  {{ selected.display_context }}
+                </p>
                 <h2 class="text-lg font-semibold text-zinc-800">{{ selected.display_title }}</h2>
                 <p class="text-sm text-zinc-500 mt-1">
                   <i class="pi pi-user mr-1" />{{ selected.staff_name }}
@@ -40,7 +47,12 @@ const showQr = ref(false)
               </div>
               <button
                 @click="showQr = !showQr"
-                :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition', showQr ? 'border-indigo-300 bg-indigo-50 text-indigo-600' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50']"
+                :class="[
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition',
+                  showQr
+                    ? 'border-indigo-300 bg-indigo-50 text-indigo-600'
+                    : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50',
+                ]"
               >
                 <i class="pi pi-qrcode" />
                 {{ showQr ? 'Hide QR' : 'Show QR' }}
@@ -54,12 +66,15 @@ const showQr = ref(false)
           <!-- Roster -->
           <div class="space-y-3">
             <p class="text-xs font-semibold uppercase tracking-widest text-zinc-400">Roster</p>
-            <SessionRosterTable :engagement-id="selected.id" />
+            <SessionAttendanceTable :engagement-id="selected.id" />
           </div>
         </template>
 
         <!-- Empty state -->
-        <div v-else class="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-16 text-center text-sm text-zinc-400">
+        <div
+          v-else
+          class="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-16 text-center text-sm text-zinc-400"
+        >
           <i class="pi pi-arrow-left block text-2xl mb-2 text-zinc-300" />
           Select a session to view its roster and QR code
         </div>

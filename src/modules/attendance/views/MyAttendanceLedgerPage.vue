@@ -13,11 +13,11 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 
 async function load() {
-  if (!auth.user?.id) return
+  if (!auth.currentUser!.id) return
   loading.value = true
   error.value = null
   try {
-    const res = await attendanceApi.studentLedger(auth.user.id)
+    const res = await attendanceApi.studentLedger(auth.currentUser!.id)
     ledger.value = res.data
   } catch (e: any) {
     error.value = e.message || 'Failed to load ledger'
@@ -42,7 +42,10 @@ const MAX_BALANCE = 10
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-6">
     <div class="flex items-center justify-between">
       <h1 class="text-xl font-semibold text-zinc-800">My Attendance</h1>
-      <button @click="load" class="text-xs text-zinc-400 hover:text-zinc-600 flex items-center gap-1 transition">
+      <button
+        @click="load"
+        class="text-xs text-zinc-400 hover:text-zinc-600 flex items-center gap-1 transition"
+      >
         <i class="pi pi-refresh" /> Refresh
       </button>
     </div>
@@ -66,11 +69,31 @@ const MAX_BALANCE = 10
       <table class="w-full text-sm">
         <thead class="bg-zinc-50 border-b border-zinc-200">
           <tr>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Session</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Date</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Status</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Excuse</th>
-            <th class="text-right px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Deduction</th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Session
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Date
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Status
+            </th>
+            <th
+              class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Excuse
+            </th>
+            <th
+              class="text-right px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Deduction
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
@@ -81,11 +104,15 @@ const MAX_BALANCE = 10
           >
             <td class="px-4 py-3">
               <p class="font-medium text-zinc-800">{{ entry.name }}</p>
-              <p class="text-xs text-zinc-400 capitalize">{{ entry.engagement_type.replace('_', ' ') }}</p>
+              <p class="text-xs text-zinc-400 capitalize">
+                {{ entry.engagement_type.replace('_', ' ') }}
+              </p>
             </td>
             <td class="px-4 py-3 text-zinc-500 text-xs">
               <p>{{ formatDate(entry.date) }}</p>
-              <p v-if="entry.arrived_at" class="text-zinc-400">In: {{ formatTime(entry.arrived_at) }}</p>
+              <p v-if="entry.arrived_at" class="text-zinc-400">
+                In: {{ formatTime(entry.arrived_at) }}
+              </p>
             </td>
             <td class="px-4 py-3">
               <AttendanceStatusBadge :status="entry.absence_status" />
@@ -94,9 +121,7 @@ const MAX_BALANCE = 10
               <ExcuseStatusTag :status="entry.excuse_status" />
             </td>
             <td class="px-4 py-3 text-right">
-              <span
-                :class="entry.deduction > 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'"
-              >
+              <span :class="entry.deduction > 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'">
                 {{ entry.deduction > 0 ? `-${entry.deduction}h` : '—' }}
               </span>
             </td>
@@ -105,7 +130,10 @@ const MAX_BALANCE = 10
       </table>
     </div>
 
-    <div v-else-if="!loading && ledger" class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400">
+    <div
+      v-else-if="!loading && ledger"
+      class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400"
+    >
       No attendance records yet.
     </div>
   </div>
