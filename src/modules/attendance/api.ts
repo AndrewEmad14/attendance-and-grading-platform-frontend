@@ -2,7 +2,7 @@ import { api } from '@/utils/api'
 import { buildQuery } from '@/utils/query'
 import type {
   AttendanceRecord,
-  AttendanceLedger,
+  LedgerEntry,
   ExcuseRequest,
   ExcuseStatus,
   CheckInResult,
@@ -25,8 +25,8 @@ export const attendanceApi = {
     api.post<{ data: CheckInResult }>('/attendance', { engagement_id: engagementId, token }),
 
   studentLedger: (studentId: number, params: Record<string, string> = {}) =>
-    api.get<{ data: AttendanceLedger }>(`/students/${studentId}/attendance-ledger${buildQuery(params)}`),
-  
+    api.get<Paginated<LedgerEntry>>(`/students/${studentId}/attendance-ledger${buildQuery(params)}`),
+
   studentLedgerMeta: (studentId: number) =>
     api.get<{ data: { id: number; name: string; current_balance: number } }>(`/students/${studentId}/attendance-ledger/meta`),
   
@@ -48,7 +48,7 @@ export const attendanceApi = {
     return api.post<{ data: ExcuseRequest }>('/excuse-requests', payload)
   },
 
-  updateExcuse: (id: number, payload: { reason: string; attachment?: File | null }) => {
+  updateExcuse: (id: number, payload: { reason: string; attachment?: File | null; remove_attachment?: boolean }) => {
     if (payload.attachment) {
       const form = new FormData()
       form.set('reason', payload.reason)
@@ -56,8 +56,14 @@ export const attendanceApi = {
       form.set('_method', 'PATCH')
       return api.post<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, form)
     }
-    return api.patch<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, payload)
+    return api.patch<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, {
+      reason: payload.reason,
+      ...(payload.remove_attachment ? { remove_attachment: true } : {}),
+    })
   },
+
+  absentEngagements: (studentId: number) =>
+    api.get<{ data: { id: number; name: string; date: string }[] }>(`/students/${studentId}/absent-engagements`),
 
   // Instructor APIs
   mySessions: (params: ListParams & { date_from?: string; date_to?: string } = {}) =>

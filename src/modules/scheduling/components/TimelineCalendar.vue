@@ -4,6 +4,7 @@ import Tag from 'primevue/tag'
 import Paginator from 'primevue/paginator'
 import type { Engagement } from '../types'
 import type { PaginatedResponse } from '@/types'
+import { useRouter } from 'vue-router'
 
 interface Props {
   engagements: Engagement[]
@@ -21,6 +22,8 @@ const emit = defineEmits<{
   (e: 'edit', session: Engagement): void
   (e: 'page-change', pageNumber: number): void
 }>()
+
+const router = useRouter()
 
 function formatDateHeader(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -77,31 +80,23 @@ function handlePageChange(event: any) {
 
 <template>
   <div class="space-y-6">
-    <div
-      v-if="engagements.length === 0"
-      class="text-center p-8 border border-dashed border-surface-200 rounded-xl text-surface-400 text-sm"
-    >
+    <div v-if="engagements.length === 0"
+      class="text-center p-8 border border-dashed border-surface-200 rounded-xl text-surface-400 text-sm">
       No scheduled sessions found for the current window parameter.
     </div>
 
     <div v-for="(sessions, day) in groupedEngagements" :key="day" class="space-y-3">
-      <div
-        v-if="sessions[0]"
-        class="text-xs font-bold text-surface-500 tracking-wider uppercase border-b border-surface-100 pb-1"
-      >
+      <div v-if="sessions[0]"
+        class="text-xs font-bold text-surface-500 tracking-wider uppercase border-b border-surface-100 pb-1">
         {{ formatDateHeader(sessions[0].starts_at) }}
       </div>
 
       <div class="grid grid-cols-1 gap-3">
-        <div
-          v-for="session in sessions"
-          :key="session.id"
-          class="flex items-center justify-between p-3 bg-white border border-surface-200 rounded-xl shadow-xs hover:border-surface-300 transition-colors"
-        >
+        <div v-for="session in sessions" :key="session.id"
+          class="flex items-center justify-between p-3 bg-white border border-surface-200 rounded-xl shadow-xs hover:border-surface-300 hover:shadow-sm transition-colors cursor-pointer"
+          @click="router.push({ name: 'EngagementDetail', params: { engagementId: session.id } })">
           <div class="flex items-start gap-4 min-w-0">
-            <div
-              class="text-center bg-surface-50 px-2.5 py-1.5 rounded-lg border border-surface-100 min-w-[75px]"
-            >
+            <div class="text-center bg-surface-50 px-2.5 py-1.5 rounded-lg border border-surface-100 min-w-[75px]">
               <div class="text-xs font-bold text-surface-900">
                 {{ formatTime(session.starts_at) }}
               </div>
@@ -115,11 +110,8 @@ function handlePageChange(event: any) {
                 <h4 class="text-sm font-semibold text-surface-900 truncate">
                   {{ session.display_title }}
                 </h4>
-                <Tag
-                  :value="session.type.replace('_', ' ')"
-                  :severity="getSeverity(session.type)"
-                  style="font-size: 10px; padding: 2px 6px"
-                />
+                <Tag :value="session.type.replace('_', ' ')" :severity="getSeverity(session.type)"
+                  style="font-size: 10px; padding: 2px 6px" />
               </div>
               <p class="text-xs text-surface-500 mt-0.5 flex items-center gap-1.5 truncate">
                 <span v-if="(session as any).staff_name" class="font-medium text-surface-700">
@@ -134,38 +126,28 @@ function handlePageChange(event: any) {
           </div>
 
           <div v-if="showActions" class="flex items-center gap-1 shrink-0">
-            
-          <button v-if="true || session.type !== 'business_session'"
-            type="button"
-            @click="$emit('edit', session)"
-            class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0"
-            title="Edit Session"
-          >
-            <i class="pi pi-pencil text-xs"></i>
-          </button>
-          
-          <button 
-            type="button"
-            @click="$emit('cancel', session.id)"
-            class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
-            title="Cancel Session"
-          >
-            <i class="pi pi-trash text-xs"></i>
-          </button>
-        </div>
+
+            <button v-if="true || session.type !== 'business_session'" type="button" @click="$emit('edit', session)"
+              class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0"
+              title="Edit Session">
+              <i class="pi pi-pencil text-xs"></i>
+            </button>
+
+            <button type="button" @click="$emit('cancel', session.id)"
+              class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
+              title="Cancel Session">
+              <i class="pi pi-trash text-xs"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <div v-if="meta && meta.last_page > 1" class="pt-4 border-t border-surface-100">
-      <Paginator
-        :rows="meta.per_page"
-        :totalRecords="meta.total"
-        :first="(meta.current_page - 1) * meta.per_page"
+      <Paginator :rows="meta.per_page" :totalRecords="meta.total" :first="(meta.current_page - 1) * meta.per_page"
         @page="handlePageChange"
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} engagements"
-        :pt="{
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} engagements" :pt="{
           root: {
             class: 'bg-transparent border-none p-0 flex justify-between items-center text-xs',
           },
@@ -182,8 +164,7 @@ function handlePageChange(event: any) {
             class:
               'w-8 h-8 rounded-lg flex items-center justify-center text-surface-500 hover:bg-surface-50 border border-surface-200 transition-colors text-xs',
           },
-        }"
-      />
+        }" />
     </div>
   </div>
 </template>

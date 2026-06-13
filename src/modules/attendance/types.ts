@@ -61,6 +61,7 @@ export interface ExcuseRequest {
   engagement: {
     id: number
     type: EngagementType
+    name: string
     starts_at: string
     ends_at: string
     instructor?: string | null
@@ -97,11 +98,6 @@ export interface AttendanceLedgerMeta {
   id: number
   name: string
   current_balance: number
-}
-
-export interface AttendanceLedger {
-  student: AttendanceLedgerMeta
-  entries: LedgerEntry[]
 }
 
 export interface AttendanceBalance {
