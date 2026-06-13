@@ -6,7 +6,7 @@ const props = defineProps<{ status: AttendanceStatus }>()
 const config: Record<AttendanceStatus, { label: string; classes: string }> = {
   present: { label: 'Present', classes: 'bg-success text-success-content border-success-border' },
   absent: { label: 'Absent', classes: 'bg-danger text-danger-content border-danger-border' },
-  excused: { label: 'Excused', classes: 'bg-sky-100 text-sky-800 border-sky-200' },
+  excused: { label: 'Excused', classes: 'bg-info text-info-content border-info-border' },
   upcoming: { label: 'Upcoming', classes: 'bg-zinc-100 text-zinc-500 border-zinc-200' },
 }
 </script>

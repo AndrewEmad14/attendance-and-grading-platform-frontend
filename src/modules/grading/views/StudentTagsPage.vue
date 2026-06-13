@@ -115,7 +115,7 @@ onMounted(loadData)
     <header class="flex items-center justify-between pb-4 border-b border-surface-200">
       <div class="flex items-center gap-4">
         <div
-          class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center shadow-sm border border-blue-200"
+          class="w-12 h-12 bg-info text-info-content rounded-xl flex items-center justify-center shadow-sm border border-info-border"
         >
           <i class="pi pi-user text-xl font-bold"></i>
         </div>
@@ -148,7 +148,7 @@ onMounted(loadData)
 
     <div
       v-if="error"
-      class="bg-red-50 text-red-700 border border-red-200 p-4 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2"
+      class="bg-danger text-danger-content border border-danger-border p-4 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2"
     >
       <i class="pi pi-exclamation-triangle"></i>
       {{ error }}
@@ -164,13 +164,13 @@ onMounted(loadData)
           <span
             v-for="tag in studentTags"
             :key="tag.id"
-            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm transition-all"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-info text-info-content border border-info-border shadow-sm transition-all"
           >
-            <i class="pi pi-tag text-[10px] text-blue-500"></i>
+            <i class="pi pi-tag text-[10px] text-info-content"></i>
             {{ tag.tag }}
             <button
               v-if="auth.hasRole('track_admin')"
-              class="w-5 h-5 rounded-full flex items-center justify-center text-blue-400 hover:text-red-600 hover:bg-red-100 transition-colors focus:outline-none"
+              class="w-5 h-5 rounded-full flex items-center justify-center text-info-content hover:text-danger-content hover:bg-danger/90 transition-colors focus:outline-none"
               @click="removeTag(tag.id)"
               :disabled="saving"
               title="Remove tag"
@@ -245,7 +245,7 @@ onMounted(loadData)
         <div class="flex-1 flex flex-col">
           <div
             v-if="notes"
-            class="bg-yellow-50/50 border border-yellow-200/50 rounded-xl p-4 mb-5 text-sm whitespace-pre-wrap font-mono text-surface-800 h-64 overflow-y-auto shadow-inner leading-relaxed"
+            class="bg-warning border border-warning-border rounded-xl p-4 mb-5 text-sm whitespace-pre-wrap font-mono text-surface-800 h-64 overflow-y-auto shadow-inner leading-relaxed"
           >
             {{ notes }}
           </div>
@@ -273,7 +273,7 @@ onMounted(loadData)
             <div class="flex items-center justify-between">
               <span
                 class="text-xs font-medium"
-                :class="noteText.length > 950 ? 'text-red-500 font-bold' : 'text-surface-500'"
+                :class="noteText.length > 950 ? 'text-danger-content font-bold' : 'text-surface-500'"
               >
                 {{ noteText.length }} / 1000 characters
               </span>

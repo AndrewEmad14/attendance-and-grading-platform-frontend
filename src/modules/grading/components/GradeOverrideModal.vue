@@ -105,7 +105,7 @@ const commitOverrideChange = async () => {
         </p>
       </div>
 
-      <div v-if="errorMsg" class="p-2 bg-red-50 text-red-600 text-xs rounded border border-red-200">
+      <div v-if="errorMsg" class="p-2 bg-danger text-danger-content text-xs rounded border border-danger-border">
         {{ errorMsg }}
       </div>
 
@@ -120,7 +120,7 @@ const commitOverrideChange = async () => {
           :max="maxScore"
           class="border border-surface-300 bg-surface-50 rounded px-3 py-2 text-surface-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 w-full font-data-tabular text-sm"
         />
-        <small v-if="newScore !== null && newScore > maxScore" class="text-red-500 mt-1">
+        <small v-if="newScore !== null && newScore > maxScore" class="text-danger-content mt-1">
           Score cannot exceed deliverable maximum of {{ maxScore }}.
         </small>
       </div>

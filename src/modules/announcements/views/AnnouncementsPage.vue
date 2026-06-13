@@ -325,7 +325,7 @@ onMounted(async () => {
         <!-- Cohort display badge for student -->
         <span
           v-else-if="studentCohortId"
-          class="px-2.5 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-extrabold"
+          class="px-2.5 py-1 bg-success text-success-content border border-success-border rounded-full text-xs font-extrabold"
         >
           Assigned Cohort #{{ studentCohortId }}
         </span>
@@ -333,7 +333,7 @@ onMounted(async () => {
         <!-- Unassigned student state -->
         <span
           v-else
-          class="text-xs text-red-650 font-bold italic"
+          class="text-xs text-danger-content font-bold italic"
         >
           No Assigned Cohort — Contact Registrar Administration
         </span>
@@ -394,14 +394,14 @@ onMounted(async () => {
             <div v-if="isStaff" class="flex gap-1.5">
               <button
                 @click="openEditModal(ann)"
-                class="p-1.5 text-surface-500 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-md transition-all cursor-pointer"
+                class="p-1.5 text-surface-500 hover:text-info-content hover:bg-info/90 border border-transparent hover:border-info-border rounded-md transition-all cursor-pointer"
                 title="Edit Announcement"
               >
                 <i class="pi pi-pencil text-xs"></i>
               </button>
               <button
                 @click="triggerDelete(ann)"
-                class="p-1.5 text-surface-500 hover:text-red-650 hover:bg-red-50 border border-transparent hover:border-red-150 rounded-md transition-all cursor-pointer"
+                class="p-1.5 text-surface-500 hover:text-danger-content hover:bg-danger/90 border border-transparent hover:border-danger-border rounded-md transition-all cursor-pointer"
                 title="Delete Announcement"
               >
                 <i class="pi pi-trash text-xs"></i>
@@ -463,7 +463,7 @@ onMounted(async () => {
         <!-- Scroll Form Body -->
         <form @submit.prevent="handleFormSubmit" class="flex flex-col flex-1 min-h-0 text-zinc-900 bg-white">
           <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs text-zinc-800">
-            <div v-if="formErrors.general" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-center gap-2 font-medium">
+            <div v-if="formErrors.general" class="p-3 bg-danger border border-danger-border text-danger-content rounded-md flex items-center gap-2 font-medium">
               <i class="pi pi-exclamation-circle text-sm"></i>
               <span>{{ formErrors.general }}</span>
             </div>
@@ -477,9 +477,9 @@ onMounted(async () => {
                 type="text"
                 placeholder="Enter title text (min 3 characters)"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                :class="{ 'border-red-500': formErrors.title }"
+                :class="{ 'border-danger-border': formErrors.title }"
               />
-              <p v-if="formErrors.title" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.title }}</p>
+              <p v-if="formErrors.title" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.title }}</p>
             </div>
 
             <!-- Body Content -->
@@ -491,9 +491,9 @@ onMounted(async () => {
                 rows="6"
                 placeholder="Write detailed cohort announcements notice content here... (min 10 characters)"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white text-xs leading-relaxed"
-                :class="{ 'border-red-500': formErrors.body }"
+                :class="{ 'border-danger-border': formErrors.body }"
               ></textarea>
-              <p v-if="formErrors.body" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.body }}</p>
+              <p v-if="formErrors.body" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.body }}</p>
             </div>
           </div>
 
@@ -538,14 +538,14 @@ onMounted(async () => {
         <!-- Scroll Form Body -->
         <form @submit.prevent="handleBroadcastSubmit" class="flex flex-col flex-1 min-h-0 text-zinc-900 bg-white">
           <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs text-zinc-800">
-            <div v-if="broadcastErrors.general" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-center gap-2 font-medium">
+            <div v-if="broadcastErrors.general" class="p-3 bg-danger border border-danger-border text-danger-content rounded-md flex items-center gap-2 font-medium">
               <i class="pi pi-exclamation-circle text-sm"></i>
               <span>{{ broadcastErrors.general }}</span>
             </div>
 
             <!-- Warning Notice Alert -->
             <div class="p-3 bg-zinc-100 border border-zinc-300 text-zinc-800 rounded-md flex items-start gap-2.5 leading-relaxed">
-              <i class="pi pi-exclamation-triangle text-amber-600 mt-0.5 text-sm"></i>
+              <i class="pi pi-exclamation-triangle text-warning-content mt-0.5 text-sm"></i>
               <p>
                 <strong>Megaphone Broadcast:</strong> This notice will immediately broadcast globally across all system cohorts. Everyone enrolled or assigned across any track will receive this update.
               </p>
@@ -560,9 +560,9 @@ onMounted(async () => {
                 type="text"
                 placeholder="Enter title text (min 3 characters)"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                :class="{ 'border-red-500': broadcastErrors.title }"
+                :class="{ 'border-danger-border': broadcastErrors.title }"
               />
-              <p v-if="broadcastErrors.title" class="text-[10px] text-red-650 mt-0.5">{{ broadcastErrors.title }}</p>
+              <p v-if="broadcastErrors.title" class="text-[10px] text-danger-content mt-0.5">{{ broadcastErrors.title }}</p>
             </div>
 
             <!-- Body Content -->
@@ -574,9 +574,9 @@ onMounted(async () => {
                 rows="6"
                 placeholder="Write detailed announcements broadcast content here... (min 10 characters)"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white text-xs leading-relaxed"
-                :class="{ 'border-red-500': broadcastErrors.body }"
+                :class="{ 'border-danger-border': broadcastErrors.body }"
               ></textarea>
-              <p v-if="broadcastErrors.body" class="text-[10px] text-red-650 mt-0.5">{{ broadcastErrors.body }}</p>
+              <p v-if="broadcastErrors.body" class="text-[10px] text-danger-content mt-0.5">{{ broadcastErrors.body }}</p>
             </div>
           </div>
 
@@ -609,7 +609,7 @@ onMounted(async () => {
     >
       <div class="bg-white border border-surface-200 text-zinc-900 rounded-xl shadow-lg max-w-sm w-full overflow-hidden flex flex-col p-6 space-y-4">
         <div class="flex items-start gap-3 text-xs text-zinc-800">
-          <div class="w-8 h-8 rounded-full bg-red-50 border border-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
+          <div class="w-8 h-8 rounded-full bg-danger border border-danger-border text-danger-content flex items-center justify-center flex-shrink-0">
             <i class="pi pi-exclamation-triangle text-sm"></i>
           </div>
           <div class="space-y-1.5">
@@ -629,7 +629,7 @@ onMounted(async () => {
           </button>
           <button
             @click="confirmDeleteAnnouncement"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+            class="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
             :disabled="deletingAnnouncement"
           >
             <i v-if="deletingAnnouncement" class="pi pi-spin pi-spinner text-xs"></i>

@@ -64,7 +64,7 @@ async function handleLogin() {
 
       <div
         v-if="authStore.error"
-        class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md flex items-center gap-2"
+        class="mb-4 p-3 bg-danger border border-danger-border text-danger-content text-sm rounded-md flex items-center gap-2"
       >
         <i class="pi pi-exclamation-circle text-base"></i>
         <span>{{ authStore.error }}</span>
@@ -83,14 +83,14 @@ async function handleLogin() {
               required
               autocomplete="email"
               placeholder="enter your email"
-              class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
+              class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
               :disabled="authStore.loading"
             />
             <i
               class="pi pi-envelope absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"
             ></i>
           </div>
-          <p v-if="errors.email" class="text-xs text-red-600 mt-1">{{ errors.email }}</p>
+          <p v-if="errors.email" class="text-xs text-danger-content mt-1">{{ errors.email }}</p>
         </div>
 
         <div class="flex flex-col gap-1.5">
@@ -110,8 +110,8 @@ async function handleLogin() {
               required
               autocomplete="current-password"
               placeholder="Enter your password"
-              :class="{ 'border-red-500': errors.password }"
-              class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-red-700 transition-colors placeholder:text-zinc-300 text-zinc-800"
+              :class="{ 'border-danger-border': errors.password }"
+              class="w-full text-sm pl-4 pr-10 py-3 border border-zinc-200 rounded-md focus:outline-none focus:border-danger-border transition-colors placeholder:text-zinc-300 text-zinc-800"
               :disabled="authStore.loading"
             />
             <button
@@ -123,7 +123,7 @@ async function handleLogin() {
               <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
             </button>
           </div>
-          <p v-if="errors.password" class="text-xs text-red-600 mt-1">{{ errors.password }}</p>
+          <p v-if="errors.password" class="text-xs text-danger-content mt-1">{{ errors.password }}</p>
         </div>
 
         <button

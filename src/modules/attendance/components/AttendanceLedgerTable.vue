@@ -58,7 +58,7 @@ const formatTime = (iso: string | null) =>
 
 <template>
   <div class="space-y-3">
-    <div v-if="tableError" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-if="tableError" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ tableError }}
     </div>
 
@@ -123,7 +123,7 @@ const formatTime = (iso: string | null) =>
                   <AttendanceStatusBadge :status="entry.absence_status" />
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <span :class="entry.deduction < 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'">
+                  <span :class="entry.deduction < 0 ? 'text-danger-content font-semibold' : 'text-zinc-400'">
                     {{ entry.deduction < 0 ? entry.deduction : '—' }} </span>
                 </td>
               </tr>

@@ -100,11 +100,11 @@ const paginationLabel = computed(() => {
     <!-- ── Initial Load Error State ────────────────────────── -->
     <template v-else-if="error && !summary">
       <div
-        class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
+        class="flex items-center gap-3 p-4 bg-danger border border-danger-border text-danger-content rounded-lg text-sm"
       >
-        <i class="pi pi-exclamation-triangle text-lg text-red-500"></i>
+        <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
-        <button class="ml-auto btn btn-xs btn-outline border-red-300 text-red-600" @click="loadPage(currentPage, perPage)">
+        <button class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content" @click="loadPage(currentPage, perPage)">
           Retry
         </button>
       </div>
@@ -184,11 +184,11 @@ const paginationLabel = computed(() => {
         <!-- Localized error alert inside the table card if sub-page load fails -->
         <div
           v-if="error && summary"
-          class="mx-4 mt-3 alert alert-error bg-red-50 border border-red-200 text-red-700 text-xs py-2 px-3 rounded flex items-center gap-2"
+          class="mx-4 mt-3 alert alert-error bg-danger border border-danger-border text-danger-content text-xs py-2 px-3 rounded flex items-center gap-2"
         >
           <i class="pi pi-exclamation-triangle"></i>
           <span>{{ error }}</span>
-          <button class="btn btn-xs btn-outline border-red-300 text-red-600 ml-auto font-semibold" @click="loadPage(currentPage, perPage)">
+          <button class="btn btn-xs btn-outline border-danger-border text-danger-content ml-auto font-semibold" @click="loadPage(currentPage, perPage)">
             Retry
           </button>
         </div>
@@ -238,8 +238,8 @@ const paginationLabel = computed(() => {
                     class="badge badge-xs font-semibold uppercase tracking-wider px-2 py-1"
                     :class="
                       row.compensation_type === 'internal'
-                        ? 'bg-blue-100 text-blue-700 border-blue-200'
-                        : 'bg-amber-100 text-amber-700 border-amber-200'
+                        ? 'bg-info text-info-content border-info-border'
+                        : 'bg-warning text-warning-content border-warning-border'
                     "
                   >
                     {{ row.compensation_type }}
@@ -256,9 +256,9 @@ const paginationLabel = computed(() => {
                   <span
                     :class="
                       variance(row) > 0
-                        ? 'text-emerald-600'
+                        ? 'text-success-content'
                         : variance(row) < 0
-                          ? 'text-red-600'
+                          ? 'text-danger-content'
                           : 'text-surface-400'
                     "
                   >

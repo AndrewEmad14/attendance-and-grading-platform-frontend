@@ -46,7 +46,7 @@ onMounted(async () => {
       <div v-for="n in 3" :key="n" class="h-16 rounded-xl bg-zinc-100 animate-pulse" />
     </div>
 
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-else-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 

@@ -71,7 +71,7 @@ async function submit() {
 
 <template>
   <div class="rounded-xl border border-zinc-200 bg-white p-6 space-y-4">
-    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    <div v-if="error" class="rounded-lg border border-danger-border bg-danger px-3 py-2 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-1.5" />{{ error }}
     </div>
 
@@ -92,7 +92,7 @@ async function submit() {
     <!-- Reason -->
     <div class="space-y-1">
       <label class="block text-xs font-medium text-zinc-600">
-        Reason <span class="text-red-500">*</span>
+        Reason <span class="text-danger-content">*</span>
       </label>
       <textarea v-model="form.reason" rows="4" placeholder="Explain why you couldn't attend..."
         class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 resize-none" />
@@ -112,7 +112,7 @@ async function submit() {
           <i class="pi pi-paperclip" /> Current attachment
         </a>
         <button @click="clearAttachment"
-          class="cursor-pointer flex items-center justify-center  gap-1 text-xs text-zinc-400 hover:text-red-500 transition">
+          class="cursor-pointer flex items-center justify-center  gap-1 text-xs text-zinc-400 hover:text-danger-content transition">
           Remove<i class="pi pi-times" style="font-size: smaller;" />
         </button>
       </div>
