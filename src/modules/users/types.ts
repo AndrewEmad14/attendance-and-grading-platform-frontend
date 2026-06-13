@@ -1,4 +1,4 @@
-import type { UserRole } from '@/stores/auth-real'
+import type { UserRole } from '@/stores/auth'
 
 //Shared
 
@@ -23,7 +23,7 @@ export interface UserPaginatedData<T> {
   total: number
 }
 
-//  Staff / Instructor 
+//  Staff / Instructor
 
 export interface StaffProfileSummary {
   id: number
@@ -33,7 +33,7 @@ export interface StaffProfileSummary {
   fixed_salary: number | null
 }
 
-//Student 
+//Student
 
 export interface StudentProfileSummary {
   id: number
@@ -43,7 +43,7 @@ export interface StudentProfileSummary {
   attendance_balance?: number | null
 }
 
-//  Track Admin 
+//  Track Admin
 
 export interface TrackSummary {
   id: number
@@ -94,7 +94,7 @@ export interface UserListItem {
   student_profile?: StudentProfileSummary | null
 }
 
-//  Payloads 
+//  Payloads
 
 export interface CreateStaffPayload {
   name: string
@@ -127,7 +127,7 @@ export interface UpdateUserPayload {
   fixed_salary?: number
 }
 
-//  List Endpoint Params 
+//  List Endpoint Params
 
 export interface ListStudentsParams {
   name?: string

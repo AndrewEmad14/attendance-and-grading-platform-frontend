@@ -12,7 +12,16 @@ async function handleIdentitySwitch(role: UserRole) {
   internalLoading.value = true
   try {
     // 1. Await the full round-trip network response safely
-    await auth.loginAs(role)
+    const testCredentials: Record<UserRole, string> = {
+      branch_manager: 'branch@example.com',
+      track_admin: 'admin@example.com', // Track Admin for Cohort 1
+      instructor: 'dexter.erdman@example.net', // Instructor for Abbie's Lab Group
+      student: 'adeline.hansen@example.org', // Abbie Dietrich
+    }
+    await auth.login({
+      email: testCredentials[role],
+      password: 'password',
+    })
 
     // 2. Clear out any hanging application operational errors
     auth.error = null
@@ -42,7 +51,7 @@ async function handleIdentitySwitch(role: UserRole) {
     >
       <span>Dev Sandbox Identity</span>
       <span
-        v-if="internalLoading || auth.isLoading"
+        v-if="internalLoading || auth.loading"
         class="loading loading-spinner loading-xs text-primary"
       ></span>
     </div>

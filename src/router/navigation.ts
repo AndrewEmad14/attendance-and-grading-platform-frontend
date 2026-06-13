@@ -1,4 +1,4 @@
-import { type UserRole } from '@/stores/auth-real'
+import { type UserRole } from '@/stores/auth'
 
 export interface NavigationItem {
   label: string
@@ -84,7 +84,6 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['track_admin'],
   },
 ]
-
 
 export const accountNavigationConfig = {
   profile: {

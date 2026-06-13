@@ -2,8 +2,6 @@
 import { ref, computed, watchEffect, onMounted } from 'vue'
 import { useGradingStore } from '@/stores/grading'
 import { useAuthStore } from '@/stores/auth'
-//if you want to use the real auth store, uncomment the following line and comment out the above line
-//import { useAuthStore } from '@/stores/auth-real'
 import GradeOverrideModal from '@/modules/grading/components/GradeOverrideModal.vue'
 import ContentCard from '@/components/structural/ContentCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'
@@ -164,7 +162,6 @@ async function onOverrideSuccess() {
   overrideTarget.value = null
 }
 
-
 // Instructor state
 const instrCohorts = ref<any[]>([])
 const instrCohortId = ref<number | null>(null)
@@ -264,7 +261,7 @@ const studentDisplayedCourses = computed(() => {
   if (studentSelectedCourseId.value === 'all') {
     return gradingStore.courses
   }
-  return gradingStore.courses.filter(c => c.id === studentSelectedCourseId.value)
+  return gradingStore.courses.filter((c) => c.id === studentSelectedCourseId.value)
 })
 
 if (auth.hasRole('student')) {
@@ -275,7 +272,7 @@ if (auth.hasRole('student')) {
     if (firstCourse) {
       studentSelectedCourseId.value = firstCourse.id
     }
-    
+
     // Instead of loading all deliverables (which throws 403 for students),
     // we fetch the student's personal tracker data all at once.
     const studentId = auth.currentUser?.student_profile?.id
@@ -305,14 +302,14 @@ function componentScore(sub: Submission | undefined, d: CourseDeliverable): numb
 function courseTotal(course: Course): number {
   const deliverables = course.deliverables ?? []
   if (deliverables.length === 0) return 0
-  
+
   const totalWeight = deliverables.reduce((sum, d) => sum + d.course_weight, 0)
   if (totalWeight === 0) return 0
-  
+
   const weightedScore = deliverables.reduce((sum, d) => {
     return sum + componentScore(studentSub(d.id), d)
   }, 0)
-  
+
   // Normalize the score relative to the actual total weight, capping at 100%
   return Math.min((weightedScore / totalWeight) * 100, 100)
 }
@@ -625,7 +622,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
     class="flex flex-col gap-4 p-6 h-full overflow-hidden"
   >
     <!-- Header Controls -->
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+    <div
+      class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0"
+    >
       <div class="flex flex-col md:flex-row gap-4 w-full">
         <!-- Cohort Selector -->
         <div class="flex flex-col gap-1 w-full md:w-64">
@@ -633,7 +632,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
             <i class="pi pi-check-square text-primary"></i>
             Lab Grading
           </h2>
-          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Cohort</label>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide"
+            >Select Cohort</label
+          >
           <div class="relative">
             <select
               v-model="instrCohortId"
@@ -647,7 +648,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                 Cohort {{ cohort.number }} ({{ cohort.track?.name ?? 'Unknown Track' }})
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+            >
               <i class="pi pi-chevron-down text-[10px]"></i>
             </div>
           </div>
@@ -655,13 +658,17 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
         <!-- Deliverable selector grouped by course -->
         <div class="flex flex-col gap-1 flex-1 md:mt-9">
-          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Lab Deliverable</label>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide"
+            >Select Lab Deliverable</label
+          >
           <div class="relative">
             <select
               class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer"
               :disabled="!gradingStore.courses.length"
               :value="instrDeliverableId"
-              @change="(e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))"
+              @change="
+                (e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))
+              "
             >
               <option value="">
                 {{
@@ -965,7 +972,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Overall Courses Total</span>
-              <span class="font-mono font-bold text-primary-700 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
+              <span class="font-mono font-bold text-primary-700 text-base"
+                >{{ overallCoursesTotal.toFixed(1) }}%</span
+              >
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Courses Status</span>
@@ -981,8 +990,12 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
       <div class="md:col-span-9 flex flex-col gap-6">
         <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">My Grades Breakdown</h1>
-            <p class="text-surface-500 text-sm">Detailed view of your performance across current courses.</p>
+            <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">
+              My Grades Breakdown
+            </h1>
+            <p class="text-surface-500 text-sm">
+              Detailed view of your performance across current courses.
+            </p>
           </div>
           <div class="w-full md:w-64 relative">
             <select
@@ -994,15 +1007,17 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                 {{ course.name }}
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-surface-500">
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-surface-500"
+            >
               <i class="pi pi-chevron-down text-xs"></i>
             </div>
           </div>
         </div>
 
         <!-- Course Cards -->
-        <div 
-          v-for="course in studentDisplayedCourses" 
+        <div
+          v-for="course in studentDisplayedCourses"
           :key="course.id"
           class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group"
         >
