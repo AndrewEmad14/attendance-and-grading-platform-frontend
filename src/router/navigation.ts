@@ -21,6 +21,12 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
+    label: 'Finance',
+    path: '/finance',
+    icon: 'pi pi-wallet',
+    roles: ['branch_manager'],
+  },
+  {
     label: 'Cohort Settings',
     path: '/cohorts',
     icon: 'pi pi-sliders-h',
