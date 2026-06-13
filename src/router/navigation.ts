@@ -88,7 +88,7 @@ export const navigationConfig: NavigationItem[] = [
     label: 'System Users',
     path: '/users',
     icon: 'pi pi-users',
-    roles: ['track_admin'],
+    roles: ['track_admin','branch_manager'],
   },
   {
     label: 'Course Configuration',
@@ -96,6 +96,7 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-cog',
     roles: ['track_admin'],
   },
+   
 ]
 
 export const accountNavigationConfig = {
