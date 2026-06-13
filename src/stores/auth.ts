@@ -1,166 +1,171 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { useCohortContextStore } from './cohortContext' // Import context to clear it
+import { api, type ApiResponse } from '@/utils/api'
+
+import type { StaffProfile, StudentProfile } from '@/modules/auth/types'
 
 export type UserRole = 'branch_manager' | 'track_admin' | 'instructor' | 'student'
 
-export interface UserProfile {
+export interface AuthUser {
   id: number
   name: string
   email: string
   role: UserRole
-  expires_at?: string | null
-  email_verified_at?: string | null
-  // role-specific profile; key/shape depends on role
-  student_profile?: Record<string, any> | null
-  staff_profile?: Record<string, any> | null
+  expires_at: string | null
+  staff_profile?: StaffProfile | null
+  student_profile?: StudentProfile | null
 }
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api'
+interface LoginPayload {
+  email: string
+  password: string
+}
+
+interface LoginData {
+  access_token: string
+}
+
+const TOKEN_KEY = 'auth_token'
 
 export const useAuthStore = defineStore('auth', () => {
-  const cohortContext = useCohortContextStore() // Instantiate store reference
+  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
+  const currentUser = ref<AuthUser | null>(null)
+  const loading = ref<boolean>(false)
+  const error = ref<string | null>(null)
 
-  const token = ref<string | null>(localStorage.getItem('auth_token'))
-  const currentUser = ref<UserProfile | null>(
-    localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
+  const isAuthenticated = computed((): boolean => !!token.value)
+
+  const userRole = computed((): UserRole | null => currentUser.value?.role ?? null)
+
+  const staffProfileId = computed((): number | null => currentUser.value?.staff_profile?.id ?? null)
+
+  const studentProfileId = computed(
+    (): number | null => currentUser.value?.student_profile?.id ?? null,
   )
+
   const isExpired = computed((): boolean => {
     const expiresAt = currentUser.value?.expires_at
     if (!expiresAt) return false
     return new Date(expiresAt).getTime() < Date.now()
   })
 
-  const error = ref<string | null>(null)
-  const isLoading = ref(false)         
-
-  const testCredentials: Record<UserRole, string> = {
-    branch_manager: 'branch@example.com',
-    track_admin: 'admin@example.com', // Track Admin for Cohort 1
-    instructor: 'dexter.erdman@example.net', // Instructor for Abbie's Lab Group
-    student: 'adeline.hansen@example.org', // Abbie Dietrich
-  }
-
-  const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null && !isExpired.value)
-  const userRole = computed(() => currentUser.value?.role ?? null)
-
-  function authHeaders(): HeadersInit {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    }
-    if (token.value) headers.Authorization = `Bearer ${token.value}`
-    return headers
-  }
-
-  // Fetch the authenticated profile from /auth/me (flat user + role-specific profile)
-  async function fetchMe(): Promise<UserProfile | null> {
-    if (!token.value) return null
-
-    const response = await fetch(`${BASE_URL}/auth/me`, {
-      method: 'POST',
-      headers: authHeaders(),
-    })
-
-    const result = await response.json()
-
-    if (!response.ok) {
-      // Expired/invalid token returns 401 (SEC-2) — clear session
-      if (response.status === 401) {
-        clearSession()
-      }
-      throw new Error(result.message || 'Failed to fetch profile')
-    }
-
-    currentUser.value = result.data as UserProfile
-    localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
-    return currentUser.value
-  }
-
-  async function loginAs(role: UserRole) {
-    isLoading.value = true
+  async function login(payload: LoginPayload): Promise<void> {
+    loading.value = true
     error.value = null
-
     try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          email: testCredentials[role],
-          password: 'password',
-        }),
-      })
+      const res = await api.post<ApiResponse<LoginData>>('/auth/login', payload)
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Authentication operation failed')
-      }
-
-      // Login returns the token; profile comes from /auth/me
-      // Always reset admin selection states when a fresh login occurs
-      cohortContext.clearContext()
-
-      token.value = result.data.access_token
-      localStorage.setItem('auth_token', token.value!)
-
+      token.value = res.data.access_token
+      localStorage.setItem(TOKEN_KEY, token.value)
       await fetchMe()
-    } catch (err: any) {
-      error.value = err.message
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Login failed'
       clearSession()
       throw err
     } finally {
-      isLoading.value = false
-    }
-  }
-  
-  async function logout() {
-    isLoading.value = true
-    try {
-      if (token.value) {
-        await fetch(`${BASE_URL}/auth/logout`, {
-          method: 'POST',
-          headers: authHeaders(),
-        })
-      }
-    } catch (err) {
-      console.error('Logout request failed, clearing local session regardless:', err)
-    } finally {
-      clearSession()
-      isLoading.value = false
+      loading.value = false
     }
   }
 
-  function clearSession() {
-    currentUser.value = null
-    token.value = null
+  // Loads the full profile (incl. staff_profile/student_profile).
+  // Called by the router guard before any guarded route renders.
+  async function fetchMe(): Promise<AuthUser> {
+    const res = await api.post<ApiResponse<AuthUser>>('/auth/me', {})
+    currentUser.value = res.data
+    return res.data
+  }
+
+  async function logout(): Promise<void> {
+    try {
+      if (token.value) {
+        await api.post('/auth/logout', {})
+      }
+    } catch {
+      // ignore network errors on logout, clear local state regardless
+    } finally {
+      clearSession()
+    }
+  }
+
+  async function logoutAll(): Promise<void> {
+    try {
+      if (token.value) {
+        await api.post('/auth/logout-all', {})
+      }
+    } finally {
+      clearSession()
+    }
+  }
+
+  async function forgotPassword(email: string): Promise<ApiResponse<null>> {
+    loading.value = true
     error.value = null
-    localStorage.removeItem('auth_token')
-    localStorage.removeItem('auth_user')
+    try {
+      const res = await api.post<ApiResponse<null>>('/auth/forgot-password', { email })
+      return res
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Forgot password failed'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function resetPassword(payload: {
+    email: string
+    token: string
+    password: string
+    password_confirmation: string
+  }): Promise<ApiResponse<null>> {
+    loading.value = true
+    error.value = null
+    try {
+      const res = await api.post<ApiResponse<null>>('/auth/reset-password', payload)
+      return res
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Reset password failed'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  function clearSession(): void {
+    token.value = null
+    currentUser.value = null
+    localStorage.removeItem(TOKEN_KEY)
   }
 
   function hasRole(allowedRoles: UserRole | UserRole[]): boolean {
-    if (!currentUser.value) return false
+    if (!userRole.value) return false
     if (Array.isArray(allowedRoles)) {
-      return allowedRoles.includes(currentUser.value.role)
+      return allowedRoles.includes(userRole.value)
     }
-    return currentUser.value.role === allowedRoles
+    return userRole.value === allowedRoles
   }
 
   return {
-    currentUser,
+    // State properties
     token,
-    isLoading,
+    currentUser,
+    loading,
     error,
+
+    // Getter properties
     isAuthenticated,
     userRole,
+    staffProfileId,
+    studentProfileId,
     isExpired,
-    loginAs,
-    logout,
+
+    // Action functions
+    login,
     fetchMe,
+    logout,
+    logoutAll,
+    forgotPassword,
+    resetPassword,
+    clearSession,
     hasRole,
   }
 })

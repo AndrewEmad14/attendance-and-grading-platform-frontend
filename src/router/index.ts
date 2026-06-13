@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore, type UserRole } from '@/stores/auth'
-//if you want to use the real auth store, uncomment the following line and comment out the above line
-//import { useAuthStore, type UserRole } from '@/stores/auth-real'
 import MainLayout from '@/layouts/MainLayout.vue'
 declare module 'vue-router' {
   interface RouteMeta {
@@ -13,7 +11,6 @@ declare module 'vue-router' {
 }
 
 const routes: Array<RouteRecordRaw> = [
-
   {
     path: '/login',
     name: 'Login',
@@ -40,7 +37,6 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: 'Access Denied', public: true },
   },
 
-
   {
     path: '/',
     component: MainLayout,
@@ -54,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
       //     title: 'My Profile',
       //   },
       // },
-    {
+      {
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/modules/dashboard/views/DashboardPage.vue'),
@@ -172,8 +168,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'submissions',
         name: 'MyDeliverables',
-        component: () =>
-          import('@/modules/submission/views/deliverable-page/DeliverablesPage.vue'),
+        component: () => import('@/modules/submission/views/deliverable-page/DeliverablesPage.vue'),
         meta: { title: 'My Homework Deliverables', allowedRoles: ['student'] },
       },
       {
@@ -205,7 +200,6 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  
 ]
 
 const router = createRouter({

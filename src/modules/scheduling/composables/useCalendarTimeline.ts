@@ -79,13 +79,14 @@ export function useCalendarTimeline() {
   }
 
   /**
-   * Synchronize the master list of standalone global cross-track business event blocks
+   * Synchronize the master list of standalone global cross-track business event blocks.
+   * Leverages server inclusion matrices to append core engagement cell blocks.
    */
-  async function loadBusinessSessions() {
+  async function loadBusinessSessions(filters: { with_engagements?: boolean } = {}) {
     isLoading.value = true
     error.value = null
     try {
-      businessSessions.value = await getBusinessSessions()
+      businessSessions.value = await getBusinessSessions(filters)
     } catch (err: any) {
       error.value = err.message
     } finally {

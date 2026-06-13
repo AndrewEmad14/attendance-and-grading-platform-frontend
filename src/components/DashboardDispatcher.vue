@@ -2,8 +2,6 @@
 import { watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-//if you want to use the real auth store ,uncomment
-//import { useAuthRealStore } from '@/stores/auth-real'
 
 const auth = useAuthStore()
 const router = useRouter()
