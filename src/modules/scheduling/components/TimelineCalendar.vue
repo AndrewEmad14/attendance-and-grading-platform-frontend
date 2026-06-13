@@ -129,13 +129,13 @@ function handlePageChange(event: any) {
 
             <button v-if="true || session.type !== 'business_session'" type="button"
               @click.stop="$emit('edit', session)"
-              class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0"
+              class="btn btn-sm btn-ghost text-surface-500 hover:bg-surface-100 border-none px-2 h-8 min-h-0 cursor-pointer"
               title="Edit Session">
               <i class="pi pi-pencil text-xs"></i>
             </button>
 
             <button type="button" @click.stop="$emit('cancel', session.id)"
-              class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0"
+              class="btn btn-sm btn-ghost text-error hover:bg-error/10 border-none px-2 h-8 min-h-0 cursor-pointer"
               title="Cancel Session">
               <i class="pi pi-trash text-xs"></i>
             </button>

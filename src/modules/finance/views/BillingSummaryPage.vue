@@ -104,7 +104,7 @@ const paginationLabel = computed(() => {
       >
         <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
-        <button class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content" @click="loadPage(currentPage, perPage)">
+        <button class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content cursor-pointer" @click="loadPage(currentPage, perPage)">
           Retry
         </button>
       </div>
@@ -188,7 +188,7 @@ const paginationLabel = computed(() => {
         >
           <i class="pi pi-exclamation-triangle"></i>
           <span>{{ error }}</span>
-          <button class="btn btn-xs btn-outline border-danger-border text-danger-content ml-auto font-semibold" @click="loadPage(currentPage, perPage)">
+          <button class="btn btn-xs btn-outline border-danger-border text-danger-content ml-auto font-semibold cursor-pointer" @click="loadPage(currentPage, perPage)">
             Retry
           </button>
         </div>
@@ -311,7 +311,7 @@ const paginationLabel = computed(() => {
             <button
               v-for="p in staffPagination.last_page"
               :key="p"
-              class="btn btn-xs"
+              class="btn btn-xs cursor-pointer"
               :class="
                 p === currentPage
                   ? 'btn-primary text-white'

@@ -12,7 +12,7 @@
       Your current user role profile does not possess clear permissions to inspect this operational
       module matrix.
     </p>
-    <RouterLink to="/" class="btn btn-primary btn-sm px-6 text-white">
+    <RouterLink to="/" class="btn btn-primary btn-sm px-6 text-white cursor-pointer">
       Return to Safety
     </RouterLink>
   </div>

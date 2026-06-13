@@ -117,7 +117,7 @@ async function handleLogin() {
             <button
               type="button"
               @click="showPassword = !showPassword"
-              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
               :aria-label="showPassword ? 'Hide password' : 'Show password'"
             >
               <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>

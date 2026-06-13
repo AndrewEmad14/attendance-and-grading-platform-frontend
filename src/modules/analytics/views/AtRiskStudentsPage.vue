@@ -114,7 +114,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
     <!-- Back link + breadcrumb -->
     <div>
       <button
-        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3"
+        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3 cursor-pointer"
         @click="router.push('/analytics/at-risk')"
       >
         <i class="pi pi-chevron-left text-[10px]"></i>
@@ -150,7 +150,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
         <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
         <button
-          class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content"
+          class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content cursor-pointer"
           @click="loadStudents(cohortId)"
         >
           Retry
@@ -296,7 +296,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                     <!-- +N more / collapse toggle -->
                     <button
                       v-if="student.failing_courses.length > 2"
-                      class="text-xs font-semibold text-primary hover:underline whitespace-nowrap"
+                      class="text-xs font-semibold text-primary hover:underline whitespace-nowrap cursor-pointer"
                       @click.stop="toggleCourses(student.student_id)"
                     >
                       {{
@@ -353,7 +353,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
             <button
               v-for="p in totalPages"
               :key="p"
-              class="btn btn-xs"
+              class="btn btn-xs cursor-pointer"
               :class="
                 p === currentPage
                   ? 'btn-primary text-white'
