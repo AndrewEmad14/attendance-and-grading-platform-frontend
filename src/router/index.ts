@@ -46,14 +46,14 @@ const routes: Array<RouteRecordRaw> = [
     component: MainLayout,
     redirect: '/dashboard',
     children: [
-      {
-        path: 'profile',
-        name: 'MyProfile',
-        component: () => import('@/modules/auth/views/ProfilePage.vue'),
-        meta: {
-          title: 'My Profile',
-        },
-      },
+      // {
+      //   path: 'profile',
+      //   name: 'MyProfile',
+      //   component: () => import('@/modules/auth/views/ProfilePage.vue'),
+      //   meta: {
+      //     title: 'My Profile',
+      //   },
+      // },
     {
         path: 'dashboard',
         name: 'Dashboard',
@@ -185,12 +185,12 @@ const routes: Array<RouteRecordRaw> = [
           allowedRoles: ['track_admin', 'instructor', 'student'],
         },
       },
-      {
-        path: 'users',
-        name: 'SystemUsers',
-        component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
-        meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
-      },
+      // {
+      //   path: 'users',
+      //   name: 'SystemUsers',
+      //   component: () => import('@/modules/users/views/UserLifecyclePage.vue'),
+      //   meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
+      // },
       {
         path: 'grades/config/:cohortId?',
         name: 'CourseConfig',

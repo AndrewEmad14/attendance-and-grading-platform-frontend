@@ -1,5 +1,6 @@
-<script>
+<script setup lang="ts">
 </script>
+
 <template>
   <div class="not-found-page">
     <h1>404 - Page Not Found</h1>
