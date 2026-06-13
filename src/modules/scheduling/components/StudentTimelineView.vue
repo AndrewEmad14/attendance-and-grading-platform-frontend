@@ -6,7 +6,9 @@ import ContentCard from '@/components/structural/ContentCard.vue'
 import type { Engagement } from '../types'
 
 const router = useRouter()
-const { engagements, isLoading, error, loadTimeline } = useCalendarTimeline()
+// cohortContext removed completely; we rely purely on token scoping
+const { engagements, isLoading, error, loadTimeline } =
+  useCalendarTimeline()
 
 const today = new Date()
 const viewYear = ref(today.getFullYear())

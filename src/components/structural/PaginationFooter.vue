@@ -13,13 +13,21 @@ defineEmits<{
 </script>
 
 <template>
-  <div v-if="last > 1" class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-100 bg-white">
+  <div
+    v-if="last > 1"
+    class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-100 bg-white"
+  >
     <div class="text-xs text-surface-500">
-      Showing page <span class="font-semibold text-surface-900">{{ current }}</span> of <span class="font-semibold text-surface-900">{{ last }}</span> (<span class="font-semibold text-surface-900">{{ total }}</span> items)
+      Showing page <span class="font-semibold text-surface-900">{{ current }}</span> of
+      <span class="font-semibold text-surface-900">{{ last }}</span> (<span
+        class="font-semibold text-surface-900"
+        >{{ total }}</span
+      >
+      items)
     </div>
 
     <div class="join">
-      <button 
+      <button
         type="button"
         class="join-item btn btn-xs min-h-8 h-8 px-3 bg-white border border-surface-200 text-surface-700 hover:bg-surface-50 disabled:bg-surface-50 disabled:text-surface-300"
         :disabled="current === 1"
@@ -27,7 +35,7 @@ defineEmits<{
       >
         Previous
       </button>
-      <button 
+      <button
         type="button"
         class="join-item btn btn-xs min-h-8 h-8 px-3 bg-white border border-surface-200 text-surface-700 hover:bg-surface-50 disabled:bg-surface-50 disabled:text-surface-300"
         :disabled="current === last"

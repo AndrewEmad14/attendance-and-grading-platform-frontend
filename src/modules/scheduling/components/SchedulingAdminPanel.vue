@@ -8,7 +8,16 @@ import SchedulingFilters from './SchedulingFilters.vue'
 import EngagementFormModal from './EngagementFormModal.vue'
 import ContentCard from '@/components/structural/ContentCard.vue'
 
-const { engagements, paginationMeta, isLoading, error, loadTimeline, changePage, bookSession, cancelSession } = useCalendarTimeline()
+const {
+  engagements,
+  paginationMeta,
+  isLoading,
+  error,
+  loadTimeline,
+  changePage,
+  bookSession,
+  cancelSession,
+} = useCalendarTimeline()
 
 const isModalOpen = ref(false)
 const targetEditRecord = ref<Engagement | null>(null)
@@ -16,13 +25,13 @@ const targetEditRecord = ref<Engagement | null>(null)
 // Current filtration layer tracking metrics
 const filterState = ref<{ type: string | null; staffId: number | null }>({
   type: null,
-  staffId: null
+  staffId: null,
 })
 
 async function syncTimelineMatrix() {
   await loadTimeline({
     type: filterState.value.type || undefined,
-    staffId: filterState.value.staffId || undefined
+    staffId: filterState.value.staffId || undefined,
   })
 }
 
@@ -31,7 +40,7 @@ watch(
   async () => {
     await syncTimelineMatrix()
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 )
 
 function openCreateModal() {
@@ -77,13 +86,13 @@ function handleFilterChange(newFilters: any) {
   <div class="space-y-4 w-full">
     <SchedulingFilters @filter-change="handleFilterChange" />
 
-    <ContentCard 
-      title="Cohort Timeline Matrix" 
+    <ContentCard
+      title="Cohort Timeline Matrix"
       subtitle="Manage scheduled allocations and session parameters for the active tracking window"
     >
       <template #headerAction>
-        <button 
-          type="button" 
+        <button
+          type="button"
           @click="openCreateModal"
           class="btn btn-sm bg-primary text-white hover:bg-primary-hover border-none"
         >
@@ -94,24 +103,25 @@ function handleFilterChange(newFilters: any) {
       <div v-if="isLoading" class="flex justify-center py-6">
         <i class="pi pi-spin pi-spinner text-surface-400 text-xl"></i>
       </div>
-      
+
       <div v-else-if="error" class="p-3 bg-danger/10 text-danger rounded-lg text-xs">
         {{ error }}
       </div>
 
-      <TimelineCalendar 
-        v-else 
-        :engagements="engagements" 
+      <TimelineCalendar
+        v-else
+        :engagements="engagements"
         :meta="paginationMeta"
-        :show-actions="true" 
+        :show-actions="true"
         @cancel="handleCancel"
+        @edit="openEditModal"
         @page-change="changePage"
       >
-        </TimelineCalendar>
+      </TimelineCalendar>
     </ContentCard>
 
-    <EngagementFormModal 
-      v-model:visible="isModalOpen" 
+    <EngagementFormModal
+      v-model:visible="isModalOpen"
       :engagement="targetEditRecord"
       @save="handleSaveEngagement"
     />

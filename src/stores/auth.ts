@@ -25,18 +25,23 @@ export const useAuthStore = defineStore('auth', () => {
   const currentUser = ref<UserProfile | null>(
     localStorage.getItem('auth_user') ? JSON.parse(localStorage.getItem('auth_user')!) : null,
   )
+  const isExpired = computed((): boolean => {
+    const expiresAt = currentUser.value?.expires_at
+    if (!expiresAt) return false
+    return new Date(expiresAt).getTime() < Date.now()
+  })
 
   const error = ref<string | null>(null)
-  const isLoading = ref(false)
+  const isLoading = ref(false)         
 
   const testCredentials: Record<UserRole, string> = {
     branch_manager: 'branch@example.com',
-    track_admin: 'admin@example.com', // Track Admin for Cohort 2
-    instructor: 'boehm.casper@example.net', // Instructor for Hilton Bosco's Lab Group
-    student: 'lolita34@example.net', // Hilton Bosco
+    track_admin: 'admin@example.com', // Track Admin for Cohort 1
+    instructor: 'dexter.erdman@example.net', // Instructor for Abbie's Lab Group
+    student: 'adeline.hansen@example.org', // Abbie Dietrich
   }
 
-  const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null)
+  const isAuthenticated = computed(() => token.value !== null && currentUser.value !== null && !isExpired.value)
   const userRole = computed(() => currentUser.value?.role ?? null)
 
   function authHeaders(): HeadersInit {
@@ -57,17 +62,17 @@ export const useAuthStore = defineStore('auth', () => {
       headers: authHeaders(),
     })
 
-    const data = await response.json()
+    const result = await response.json()
 
     if (!response.ok) {
       // Expired/invalid token returns 401 (SEC-2) — clear session
       if (response.status === 401) {
         clearSession()
       }
-      throw new Error(data.message || 'Failed to fetch profile')
+      throw new Error(result.message || 'Failed to fetch profile')
     }
 
-    currentUser.value = data as UserProfile
+    currentUser.value = result.data as UserProfile
     localStorage.setItem('auth_user', JSON.stringify(currentUser.value))
     return currentUser.value
   }
@@ -89,17 +94,17 @@ export const useAuthStore = defineStore('auth', () => {
         }),
       })
 
-      const data = await response.json()
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Authentication operation failed')
+        throw new Error(result.message || 'Authentication operation failed')
       }
 
       // Login returns the token; profile comes from /auth/me
       // Always reset admin selection states when a fresh login occurs
       cohortContext.clearContext()
 
-      token.value = data.access_token
+      token.value = result.data.access_token
       localStorage.setItem('auth_token', token.value!)
 
       await fetchMe()
@@ -111,7 +116,7 @@ export const useAuthStore = defineStore('auth', () => {
       isLoading.value = false
     }
   }
-
+  
   async function logout() {
     isLoading.value = true
     try {
@@ -152,6 +157,7 @@ export const useAuthStore = defineStore('auth', () => {
     error,
     isAuthenticated,
     userRole,
+    isExpired,
     loginAs,
     logout,
     fetchMe,

@@ -4,6 +4,7 @@ import type { Engagement } from '../types'
 import MySessionsList from '../components/MySessionsList.vue'
 import SessionAttendanceTable from '../components/SessionAttendanceTable.vue'
 import QrCodeDisplay from '../components/QrCodeDisplay.vue'
+import SessionAttendanceTable from '../components/SessionAttendanceTable.vue'
 
 const selected = ref<Engagement | null>(null)
 const showQr = ref(false)
@@ -26,7 +27,9 @@ const showQr = ref(false)
           <div class="rounded-xl border border-zinc-200 bg-white p-5">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">{{ selected.display_context }}</p>
+                <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">
+                  {{ selected.display_context }}
+                </p>
                 <h2 class="text-lg font-semibold text-zinc-800">{{ selected.display_title }}</h2>
                 <p class="text-sm text-zinc-500 mt-1">
                   <i class="pi pi-user mr-1" />{{ selected.staff_name }}

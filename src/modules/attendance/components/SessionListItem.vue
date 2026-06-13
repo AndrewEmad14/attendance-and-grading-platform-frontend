@@ -34,7 +34,9 @@ const typeIcon: Record<string, string> = {
         <i :class="typeIcon[props.session.type] || 'pi pi-calendar'" style="font-size: 0.9rem" />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold text-zinc-800 truncate">{{ props.session.display_title }}</p>
+        <p class="text-sm font-semibold text-zinc-800 truncate">
+          {{ props.session.display_title }}
+        </p>
         <p class="text-xs text-zinc-500 mt-0.5">{{ props.session.display_context }}</p>
         <div class="flex items-center gap-3 mt-1.5 text-xs text-zinc-400">
           <span><i class="pi pi-calendar mr-1" />{{ formatDate(props.session.starts_at) }}</span>

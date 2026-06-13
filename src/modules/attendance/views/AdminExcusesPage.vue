@@ -2,11 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { attendanceApi } from "../api";
 import type { ExcuseRequest, ExcuseStatus } from '../types'
-import type { PaginatedMeta } from '../types'
 import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
 
 const excuses = ref<ExcuseRequest[]>([])
-const meta = ref<PaginatedMeta | null>(null)
+const meta = ref<any>(null)
 const page = ref(1)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -99,11 +98,21 @@ const formatDate = (iso: string) =>
       <table class="w-full text-sm">
         <thead class="bg-zinc-50 border-b border-zinc-200">
           <tr>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Student</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Session</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Submitted</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Status</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Reason</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              Student
+            </th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              Session
+            </th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              Submitted
+            </th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              Status
+            </th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              Reason
+            </th>
             <th class="px-4 py-3" />
           </tr>
         </thead>

@@ -15,7 +15,6 @@ import {
   getTags,
   getCohortAnalytics,
   getLabGroupAnalytics,
-
   gradeSubmission,
   overrideSubmission,
 } from '@/modules/grading/services/gradingService'
@@ -77,16 +76,16 @@ export const useGradingStore = defineStore('grading', () => {
     error.value = null
     try {
       const studentSubs = await getStudentSubmissions(studentId)
-      
+
       // Group submissions by deliverable_id so the Gradebook UI logic works
       const grouped: Record<number, Submission[]> = {}
-      studentSubs.forEach(sub => {
+      studentSubs.forEach((sub) => {
         if (!grouped[sub.deliverable_id]) {
           grouped[sub.deliverable_id] = []
         }
         grouped[sub.deliverable_id]!.push(sub)
       })
-      
+
       // Assign the grouped submissions to the store state
       for (const [delivId, subs] of Object.entries(grouped)) {
         submissions.value[Number(delivId)] = subs
@@ -165,7 +164,6 @@ export const useGradingStore = defineStore('grading', () => {
       loading.value = false
     }
   }
-
 
   return {
     selectedCohortId,

@@ -12,10 +12,10 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 
 const stats = computed(() => ({
-  present: roster.value.filter(r => r.attendance_status === 'present').length,
-  absent:  roster.value.filter(r => r.attendance_status === 'absent').length,
-  excused: roster.value.filter(r => r.attendance_status === 'excused').length,
-  total:   roster.value.length,
+  present: roster.value.filter((r) => r.attendance_status === 'present').length,
+  absent: roster.value.filter((r) => r.attendance_status === 'absent').length,
+  excused: roster.value.filter((r) => r.attendance_status === 'excused').length,
+  total: roster.value.length,
 }))
 
 async function load() {
@@ -64,7 +64,10 @@ import { computed } from 'vue'
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div
+      v-else-if="error"
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+    >
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
@@ -73,11 +76,31 @@ import { computed } from 'vue'
       <table class="w-full text-sm">
         <thead class="bg-zinc-50 border-b border-zinc-200">
           <tr>
-            <th class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Student</th>
-            <th class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Status</th>
-            <th class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Arrived</th>
-            <th class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Left</th>
-            <th class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Excuse</th>
+            <th
+              class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Student
+            </th>
+            <th
+              class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Status
+            </th>
+            <th
+              class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Arrived
+            </th>
+            <th
+              class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Left
+            </th>
+            <th
+              class="text-left px-4 py-2.5 text-xs font-semibold text-zinc-500 uppercase tracking-wide"
+            >
+              Excuse
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
@@ -90,7 +113,9 @@ import { computed } from 'vue'
             <td class="px-4 py-2.5">
               <AttendanceStatusBadge :status="entry.attendance_status" />
             </td>
-            <td class="px-4 py-2.5 text-zinc-500 tabular-nums">{{ formatTime(entry.arrived_at) }}</td>
+            <td class="px-4 py-2.5 text-zinc-500 tabular-nums">
+              {{ formatTime(entry.arrived_at) }}
+            </td>
             <td class="px-4 py-2.5 text-zinc-500 tabular-nums">{{ formatTime(entry.left_at) }}</td>
             <td class="px-4 py-2.5">
               <ExcuseStatusTag :status="entry.excuse_status" />
@@ -100,7 +125,10 @@ import { computed } from 'vue'
       </table>
     </div>
 
-    <div v-else class="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center text-sm text-zinc-400">
+    <div
+      v-else
+      class="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center text-sm text-zinc-400"
+    >
       No roster data for this session.
     </div>
   </div>

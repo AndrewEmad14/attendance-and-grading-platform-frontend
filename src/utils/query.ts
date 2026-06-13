@@ -3,7 +3,9 @@
  * buildQuery({ cohort_id: 5, status: undefined }) => '?cohort_id=5'
  * buildQuery({}) => ''
  */
-export function buildQuery(params: Record<string, string | number | boolean | undefined | null>): string {
+export function buildQuery(
+  params: Record<string, string | number | boolean | undefined | null>,
+): string {
   const entries = Object.entries(params).filter(
     ([, value]) => value !== undefined && value !== null && value !== '',
   )
