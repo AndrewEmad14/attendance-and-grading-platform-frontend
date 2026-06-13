@@ -36,7 +36,7 @@ export async function getEngagements(
     const queryString = queryParams.toString()
     const endpoint = queryString ? `/engagements?${queryString}` : '/engagements'
 
-    // We pass PaginatedResponse directly. The api.get helper treats the root JSON 
+    // We pass PaginatedResponse directly. The api.get helper treats the root JSON
     // object as the type argument, mapping perfectly to your network response.
     const response = await api.get<PaginatedResponse<Engagement>>(endpoint)
     return response

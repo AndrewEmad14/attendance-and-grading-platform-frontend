@@ -12,7 +12,9 @@ const secondsLeft = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
 const qrUrl = computed(() =>
-  token.value ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(token.value)}` : null
+  token.value
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(token.value)}`
+    : null,
 )
 
 const expiryColor = computed(() => {
@@ -47,7 +49,9 @@ async function fetchQr() {
 }
 
 onMounted(fetchQr)
-onUnmounted(() => { if (timer) clearInterval(timer) })
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
 
 const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 </script>
@@ -57,12 +61,18 @@ const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSta
     <p class="text-xs uppercase tracking-widest text-zinc-400 font-medium">Session QR Code</p>
 
     <!-- Loading -->
-    <div v-if="loading" class="w-48 h-48 rounded-lg bg-zinc-100 animate-pulse flex items-center justify-center">
+    <div
+      v-if="loading"
+      class="w-48 h-48 rounded-lg bg-zinc-100 animate-pulse flex items-center justify-center"
+    >
       <i class="pi pi-spin pi-spinner text-zinc-300 text-2xl" />
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 text-center">
+    <div
+      v-else-if="error"
+      class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 text-center"
+    >
       <i class="pi pi-exclamation-triangle block text-xl mb-1" />
       {{ error }}
     </div>
@@ -77,12 +87,16 @@ const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSta
           :class="{ 'opacity-30 grayscale': secondsLeft === 0 }"
         />
         <div v-if="secondsLeft === 0" class="absolute inset-0 flex items-center justify-center">
-          <span class="text-xs font-semibold text-zinc-500 bg-white/90 px-2 py-1 rounded">Expired</span>
+          <span class="text-xs font-semibold text-zinc-500 bg-white/90 px-2 py-1 rounded"
+            >Expired</span
+          >
         </div>
       </div>
 
       <div class="text-center">
-        <p :class="['text-2xl font-bold tabular-nums', expiryColor]">{{ formatTime(secondsLeft) }}</p>
+        <p :class="['text-2xl font-bold tabular-nums', expiryColor]">
+          {{ formatTime(secondsLeft) }}
+        </p>
         <p class="text-xs text-zinc-400 mt-0.5">until expiry</p>
       </div>
 

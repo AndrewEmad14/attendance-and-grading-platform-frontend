@@ -83,10 +83,7 @@ async function handleCohortChange() {
       labGroups.value = groups
       poolStudents.value = students
 
-
-
       // NOTE: I changes from schedule to schedule.data because schedule is a paginated response not engagment
-
 
       engagements.value = schedule.data
       logOutput('Cohort Context Fully Hydrated (Admin)', { groups, students, schedule })
@@ -100,7 +97,7 @@ async function handleCohortChange() {
         labGroups.value = await cohortApi.getLabGroups(contextStore.selectedCohortId, false)
       }
       // NOTE: I changes from schedule to schedule.data because schedule is a paginated response not engagment
-      
+
       engagements.value = schedule.data
       logOutput(`Cohort Context Hydrated for Role: ${currentRole.value}`, { schedule })
     }

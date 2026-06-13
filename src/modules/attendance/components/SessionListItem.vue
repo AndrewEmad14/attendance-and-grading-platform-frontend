@@ -33,15 +33,25 @@ const typeIcon: Record<string, string> = {
     ]"
   >
     <div class="flex items-start gap-3">
-      <div :class="['mt-0.5 flex-shrink-0 rounded-md p-2', props.active ? 'bg-indigo-100 text-indigo-600' : 'bg-zinc-100 text-zinc-500']">
+      <div
+        :class="[
+          'mt-0.5 flex-shrink-0 rounded-md p-2',
+          props.active ? 'bg-indigo-100 text-indigo-600' : 'bg-zinc-100 text-zinc-500',
+        ]"
+      >
         <i :class="typeIcon[props.session.type] || 'pi pi-calendar'" style="font-size: 0.9rem" />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold text-zinc-800 truncate">{{ props.session.display_title }}</p>
+        <p class="text-sm font-semibold text-zinc-800 truncate">
+          {{ props.session.display_title }}
+        </p>
         <p class="text-xs text-zinc-500 mt-0.5">{{ props.session.display_context }}</p>
         <div class="flex items-center gap-3 mt-1.5 text-xs text-zinc-400">
           <span><i class="pi pi-calendar mr-1" />{{ formatDate(props.session.starts_at) }}</span>
-          <span><i class="pi pi-clock mr-1" />{{ formatTime(props.session.starts_at) }} – {{ formatTime(props.session.ends_at) }}</span>
+          <span
+            ><i class="pi pi-clock mr-1" />{{ formatTime(props.session.starts_at) }} –
+            {{ formatTime(props.session.ends_at) }}</span
+          >
         </div>
       </div>
       <span class="text-xs text-zinc-400 flex-shrink-0">{{ props.session.scheduled_hours }}h</span>

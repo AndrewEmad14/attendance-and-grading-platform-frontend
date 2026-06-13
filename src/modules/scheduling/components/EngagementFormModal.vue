@@ -68,21 +68,21 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function handleSubmit() {
   const payload = { ...formState.value }
   payload.ends_at = payload.starts_at // Maintain single-day boundary constraints
-  
+
   emit('save', props.engagement ? { ...payload, id: props.engagement.id } : payload)
 }
 </script>
 
 <template>
-  <BaseModal 
-    :visible="visible" 
-    @update:visible="emit('update:visible', $event)" 
+  <BaseModal
+    :visible="visible"
+    @update:visible="emit('update:visible', $event)"
     :title="engagement ? 'Modify Active Engagement Parameters' : 'Book New Cohort Engagement'"
   >
     <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -99,9 +99,9 @@ function handleSubmit() {
       </FormRow>
 
       <FormRow label="Session Date & Starting Time">
-        <input 
-          type="datetime-local" 
-          v-model="formState.starts_at" 
+        <input
+          type="datetime-local"
+          v-model="formState.starts_at"
           required
           class="input input-bordered bg-white border border-surface-300 rounded-lg p-2 text-sm w-full focus:outline-none focus:border-primary"
         />
@@ -112,7 +112,9 @@ function handleSubmit() {
       </FormRow>
 
       <div class="flex justify-end gap-2 pt-2">
-        <button type="button" @click="emit('update:visible', false)" class="btn btn-sm btn-ghost">Cancel</button>
+        <button type="button" @click="emit('update:visible', false)" class="btn btn-sm btn-ghost">
+          Cancel
+        </button>
         <button type="submit" class="btn btn-sm bg-primary text-white border-none">
           {{ engagement ? 'Apply Shift Overrides' : 'Commit Engagement' }}
         </button>

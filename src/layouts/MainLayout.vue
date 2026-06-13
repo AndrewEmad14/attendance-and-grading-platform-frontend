@@ -7,7 +7,7 @@ import { navigationConfig } from '@/router/navigation'
 const auth = useAuthStore()
 const route = useRoute()
 
-const pageTitle = computed(() => (route.meta.title) || 'Dashboard')
+const pageTitle = computed(() => route.meta.title || 'Dashboard')
 
 const userInitials = computed(() => {
   if (!auth.currentUser) return '??'

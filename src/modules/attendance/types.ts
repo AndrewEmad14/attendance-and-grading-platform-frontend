@@ -1,7 +1,13 @@
 export type AttendanceStatus = 'present' | 'absent' | 'excused' | 'upcoming'
 export type ExcuseStatus = 'pending' | 'approved' | 'rejected' | 'none'
 export type EngagementType = 'lecture' | 'lab' | 'business_session'
-export type CheckInOutcome = 'checked_in' | 'checked_out' | 'idempotent' | 'rejected' | 'not_found' | 'session_ended'
+export type CheckInOutcome =
+  | 'checked_in'
+  | 'checked_out'
+  | 'idempotent'
+  | 'rejected'
+  | 'not_found'
+  | 'session_ended'
 
 export interface AttendanceRecord {
   id: number

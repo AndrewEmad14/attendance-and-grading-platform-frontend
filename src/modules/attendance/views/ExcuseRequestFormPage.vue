@@ -16,7 +16,10 @@ function onFileChange(e: Event) {
 }
 
 async function submit() {
-  if (!form.reason.trim()) { error.value = 'Reason is required'; return }
+  if (!form.reason.trim()) {
+    error.value = 'Reason is required'
+    return
+  }
   loading.value = true
   error.value = null
   try {
@@ -38,12 +41,17 @@ async function submit() {
   <div class="rounded-xl border border-zinc-200 bg-white p-6 space-y-4">
     <h3 class="text-sm font-semibold text-zinc-800">Submit Excuse Request</h3>
 
-    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    <div
+      v-if="error"
+      class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+    >
       <i class="pi pi-exclamation-triangle mr-1.5" />{{ error }}
     </div>
 
     <div class="space-y-1">
-      <label class="block text-xs font-medium text-zinc-600">Reason <span class="text-red-500">*</span></label>
+      <label class="block text-xs font-medium text-zinc-600"
+        >Reason <span class="text-red-500">*</span></label
+      >
       <textarea
         v-model="form.reason"
         rows="4"
@@ -53,7 +61,9 @@ async function submit() {
     </div>
 
     <div class="space-y-1">
-      <label class="block text-xs font-medium text-zinc-600">Attachment <span class="text-zinc-400">(optional)</span></label>
+      <label class="block text-xs font-medium text-zinc-600"
+        >Attachment <span class="text-zinc-400">(optional)</span></label
+      >
       <div
         @click="fileInput?.click()"
         class="cursor-pointer rounded-lg border border-dashed border-zinc-300 px-4 py-4 text-center hover:border-indigo-400 hover:bg-indigo-50/30 transition"
