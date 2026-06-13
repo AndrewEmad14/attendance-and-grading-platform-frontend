@@ -36,6 +36,10 @@ const isNavActive = (itemPath: string) => {
   if (itemPath === '/grades' && route.path.startsWith('/grades/config')) {
     return false
   }
+  // Prevent Branch Insights (/analytics) from highlighting when we are on At-Risk pages
+  if (itemPath === '/analytics' && (route.path === '/analytics/at-risk' || route.path.endsWith('/at-risk'))) {
+    return false
+  }
   return route.path.startsWith(itemPath)
 }
 

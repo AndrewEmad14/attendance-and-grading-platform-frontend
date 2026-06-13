@@ -125,6 +125,8 @@ export interface UpdateUserPayload {
   compensation_type?: 'internal' | 'external'
   hourly_rate?: number
   fixed_salary?: number
+  cohort_id?: number
+  lab_group_id?: number | null
 }
 
 //  List Endpoint Params
@@ -159,4 +161,5 @@ export interface ListTrackAdminsParams {
   cohort?: number | string
   track_id?: number | string
   is_active?: boolean
+  sort?: string
 }

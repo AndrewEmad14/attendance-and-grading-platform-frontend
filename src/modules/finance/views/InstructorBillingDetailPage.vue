@@ -280,8 +280,10 @@ const STATUS_LABELS: Record<string, string> = {
         </div>
 
         <!-- Pagination Footer -->
-        <div v-if="detail.engagements.last_page > 1"
-          class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50">
+        <div
+          v-if="detail.engagements.last_page > 1"
+          class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50"
+        >
           <span class="text-xs text-surface-500">{{ paginationLabel }}</span>
           <div class="flex items-center gap-1">
             <button class="btn btn-xs btn-outline border-surface-300 text-surface-600" :disabled="currentPage <= 1"

@@ -278,12 +278,12 @@ const paginationLabel = computed(() => {
         <!-- Pagination Footer -->
         <div
           v-if="staffPagination"
-          class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50"
+          class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-t border-surface-100 bg-surface-50"
         >
           <!-- Left side info & perPage control -->
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div class="flex flex-wrap items-center gap-3">
             <span class="text-xs text-surface-500">{{ paginationLabel }}</span>
-            <div class="flex items-center gap-1 text-xs text-surface-500">
+            <div class="flex items-center gap-1 text-xs text-surface-500 whitespace-nowrap">
               <span>Show</span>
               <select
                 v-model="perPage"

@@ -21,6 +21,12 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
+    label: 'At-Risk Students',
+    path: '/analytics/at-risk',
+    icon: 'pi pi-exclamation-triangle',
+    roles: ['branch_manager'],
+  },
+  {
     label: 'Finance',
     path: '/finance',
     icon: 'pi pi-wallet',
@@ -90,12 +96,13 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-megaphone',
     roles: ['track_admin', 'instructor', 'student'],
   },
-  // {
-  //   label: 'System Users',
-  //   path: '/users',
-  //   icon: 'pi pi-users',
-  //   roles: ['track_admin'],
-  // },
+  {
+    label: 'System Users',
+    path: '/users',
+    icon: 'pi pi-users',
+    roles: ['track_admin','branch_manager'],
+  },
+   
 ]
 
 export const accountNavigationConfig = {
