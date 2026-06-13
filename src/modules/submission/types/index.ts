@@ -18,4 +18,6 @@ export interface MissingStudent {
  * otherwise. Field names (`submission_type`, `url`, `file`) are the
  * working contract — confirm with the backend dev before relying on them.
  */
-export type CreateSubmissionPayload = { type: 'url'; url: string } | { type: 'file'; file: File }
+export type CreateSubmissionPayload =
+  | { submission_type: 'link'; url: string }
+  | { submission_type: 'file'; file: File }

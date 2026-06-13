@@ -49,7 +49,7 @@ export async function submitDeliverable(
 ): Promise<Submission> {
   const endpoint = `/deliverables/${deliverableId}/submissions`
 
-  if (payload.type === 'file') {
+  if (payload.submission_type === 'file') {
     const form = new FormData()
     form.append('submission_type', 'file')
     form.append('file', payload.file)
@@ -59,8 +59,8 @@ export async function submitDeliverable(
   }
 
   const body = new URLSearchParams()
-  body.append('submission_type', 'url')
-  body.append('url', payload.url)
+  body.append('submission_type', 'link')
+  body.append('link', payload.url)
   const res = await api.post<{ data: Submission }>(endpoint, body, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })

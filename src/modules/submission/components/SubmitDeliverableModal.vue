@@ -31,8 +31,13 @@ const ACCEPTED_MIME = [
 ]
 const ACCEPT_ATTR = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.zip'
 
-type Mode = 'url' | 'file'
-const mode = ref<Mode>('url')
+/* Backend discriminator. The two submission methods map to these literals:
+ *   URL  → 'link'
+ *   File → 'file'
+ * This is the single source of truth for the submission_type field. */
+type SubmissionType = 'link' | 'file'
+
+const mode = ref<SubmissionType>('link')
 const url = ref('')
 const file = ref<File | null>(null)
 const saving = ref(false)
@@ -43,7 +48,7 @@ watch(
   () => props.visible,
   (open) => {
     if (open) {
-      mode.value = 'url'
+      mode.value = 'link'
       url.value = ''
       file.value = null
       errorMsg.value = ''
@@ -87,9 +92,14 @@ function isLikelyUrl(v: string): boolean {
 
 const canSubmit = computed(() => {
   if (saving.value) return false
-  if (mode.value === 'url') return isLikelyUrl(url.value)
+  if (mode.value === 'link') return isLikelyUrl(url.value)
   return file.value !== null
 })
+
+function setMode(next: SubmissionType) {
+  mode.value = next
+  errorMsg.value = ''
+}
 
 function close() {
   emit('update:visible', false)
@@ -101,9 +111,9 @@ async function handleSubmit() {
   errorMsg.value = ''
 
   const payload: CreateSubmissionPayload =
-    mode.value === 'url'
-      ? { type: 'url', url: url.value.trim() }
-      : { type: 'file', file: file.value as File }
+    mode.value === 'link'
+      ? { submission_type: 'link', url: url.value.trim() }
+      : { submission_type: 'file', file: file.value as File }
 
   try {
     await submitDeliverable(props.deliverable.id, payload)
@@ -121,63 +131,56 @@ async function handleSubmit() {
     :visible="visible"
     @update:visible="emit('update:visible', $event)"
     modal
-    :header="`Submit: ${deliverable.name}`"
+    :header="`Submit Deliverable: ${deliverable.name}`"
     :style="{ width: '480px' }"
     class="text-surface-800"
   >
-    <div class="space-y-4 pt-1">
+    <div class="space-y-4 pt-2">
       <!-- Deliverable context + live penalty preview -->
       <div class="p-3 bg-surface-50 rounded-lg border border-surface-200 text-xs space-y-1">
-        <p class="text-surface-500">
+        <p class="text-surface-500 font-medium">
           Type:
-          <span class="text-surface-900 font-medium capitalize">{{ deliverable.type }}</span> · Max
-          score: <span class="text-surface-900 font-medium">{{ deliverable.max_score }}</span>
+          <span class="text-surface-900 font-bold capitalize">{{ deliverable.type }}</span>
+          · Max score:
+          <span class="text-surface-900 font-mono font-bold">{{ deliverable.max_score }}</span>
         </p>
-        <p class="text-surface-500">
+        <p class="text-surface-500 font-medium">
           Due:
-          <span class="text-surface-900 font-medium">{{
+          <span class="text-surface-900 font-bold">{{
             deliverable.due_date ?? 'No deadline'
           }}</span>
         </p>
-        <p v-if="preview.isLate" class="font-medium text-amber-600 flex items-center gap-1 pt-1">
+        <p v-if="preview.isLate" class="font-medium text-warning flex items-center gap-1 pt-1">
           <i class="pi pi-exclamation-triangle text-[11px]"></i>
           Submitting now is {{ preview.daysLate }}
           {{ preview.daysLate === 1 ? 'day' : 'days' }} late — {{ preview.penaltyPct }}% penalty
           applies.
         </p>
-        <p v-else class="text-green-600 font-medium pt-1">On time — no penalty.</p>
+        <p v-else class="text-success font-medium pt-1 flex items-center gap-1">
+          <i class="pi pi-check-circle text-[11px]"></i> On time — no penalty.
+        </p>
       </div>
 
-      <!-- Mode toggle -->
+      <!-- Mode toggle: link | file -->
       <div class="flex gap-1 p-1 bg-surface-100 rounded-lg">
         <button
-          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors"
-          :class="mode === 'url' ? 'bg-white shadow-sm text-surface-900' : 'text-surface-500'"
-          @click="
-            () => {
-              mode = 'url'
-              errorMsg = ''
-            }
-          "
+          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case"
+          :class="mode === 'link' ? 'bg-white shadow-sm text-surface-900' : 'text-surface-500'"
+          @click="setMode('link')"
         >
           <i class="pi pi-link text-[11px] mr-1"></i> Link
         </button>
         <button
-          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors"
+          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case"
           :class="mode === 'file' ? 'bg-white shadow-sm text-surface-900' : 'text-surface-500'"
-          @click="
-            () => {
-              mode = 'file'
-              errorMsg = ''
-            }
-          "
+          @click="setMode('file')"
         >
           <i class="pi pi-upload text-[11px] mr-1"></i> File
         </button>
       </div>
 
       <!-- URL input -->
-      <div v-if="mode === 'url'" class="flex flex-col gap-1">
+      <div v-if="mode === 'link'" class="flex flex-col gap-1">
         <label class="text-xs font-semibold text-surface-600">Repository or drive link</label>
         <input
           v-model="url"
@@ -185,7 +188,7 @@ async function handleSubmit() {
           placeholder="https://github.com/you/project"
           class="input input-bordered input-sm w-full"
         />
-        <p v-if="url && !isLikelyUrl(url)" class="text-xs text-red-500">
+        <p v-if="url && !isLikelyUrl(url)" class="text-xs text-danger">
           Enter a valid http(s) URL.
         </p>
       </div>
@@ -199,24 +202,31 @@ async function handleSubmit() {
           class="file-input file-input-bordered file-input-sm w-full"
           @change="onFileChange"
         />
-        <p class="text-xs text-surface-400">PDF, image, or ZIP · max 25 MB.</p>
+        <p class="text-[11px] text-surface-400">PDF, image, or ZIP · max 25 MB.</p>
         <p v-if="file" class="text-xs text-surface-600">
           {{ file.name }} ({{ (file.size / 1024 / 1024).toFixed(1) }} MB)
         </p>
       </div>
 
       <!-- Error -->
-      <div v-if="errorMsg" class="p-2 bg-red-50 text-red-600 text-xs rounded border border-red-200">
+      <div
+        v-if="errorMsg"
+        class="p-2 bg-danger/10 text-danger text-xs rounded border border-danger/20"
+      >
         {{ errorMsg }}
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end gap-2 pt-1">
-        <button class="btn btn-sm btn-ghost text-surface-500" :disabled="saving" @click="close">
+      <div class="flex justify-end gap-2 pt-2">
+        <button
+          class="btn btn-sm btn-ghost text-surface-500 font-medium normal-case"
+          :disabled="saving"
+          @click="close"
+        >
           Cancel
         </button>
         <button
-          class="btn btn-sm btn-primary flex items-center gap-2"
+          class="btn btn-sm btn-primary text-white font-medium normal-case flex items-center gap-2"
           :disabled="!canSubmit"
           @click="handleSubmit"
         >
