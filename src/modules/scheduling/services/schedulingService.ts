@@ -16,7 +16,7 @@ export async function getEngagements(
   filters: {
     cohort_id?: number
     staff_id?: number
-    engageable_type?: string
+    type?: string
     engageable_id?: number
     date_from?: string
     date_to?: string
