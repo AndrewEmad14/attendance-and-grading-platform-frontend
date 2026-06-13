@@ -11,28 +11,16 @@ const cards = [
     to: '/analytics',
   },
   {
+    label: 'Finance',
+    description: 'View branch billing rollup.',
+    icon: 'pi pi-wallet',
+    to: '/finance',
+  },
+  {
     label: 'Cohort Settings',
     description: 'Inspect cohort configuration across every track.',
     icon: 'pi pi-sliders-h',
     to: '/cohorts',
-  },
-  {
-    label: 'Gradebook',
-    description: 'Drill into performance for any cohort.',
-    icon: 'pi pi-book',
-    to: '/grades',
-  },
-  {
-    label: 'Attendance Ledger',
-    description: 'Review attendance records branch-wide.',
-    icon: 'pi pi-list',
-    to: '/attendance',
-  },
-  {
-    label: 'Announcements',
-    description: 'See what is being posted to cohorts.',
-    icon: 'pi pi-megaphone',
-    to: '/announcements',
   },
 ]
 </script>

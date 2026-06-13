@@ -75,7 +75,7 @@ const themes: {
   default: { icon: string; bg: string; text: string; dot: string }
 } = {
   lecture: { icon: 'pi-desktop', bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
-  lab: { icon: 'pi-code', bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  lab: { icon: 'pi-code', bg: 'bg-emerald-50', text: 'text-success', dot: 'bg-emerald-500' },
   business_session: { icon: 'pi-briefcase', bg: 'bg-amber-50', text: 'text-amber-500', dot: 'bg-amber-500' },
   default: { icon: 'pi-calendar', bg: 'bg-zinc-50', text: 'text-zinc-600', dot: 'bg-zinc-400' }
 }
@@ -189,7 +189,7 @@ function closeScanner() {
               <p class="text-xs text-zinc-500 mt-0.5 truncate">{{ s.display_context }}</p>
               <div class="flex items-center gap-3 mt-2 text-xs text-zinc-400">
                 <span class="flex justify-center items-center "><i class="pi pi-clock mr-1" />{{ formatTime(s.starts_at)
-                  }}–{{ formatTime(s.ends_at) }}</span>
+                }}–{{ formatTime(s.ends_at) }}</span>
                 <span class="flex justify-center items-centertruncate"><i class="pi pi-id-card mr-1" />{{ s.staff_name
                   || 'Unassigned' }}</span>
               </div>
@@ -208,7 +208,7 @@ function closeScanner() {
             class="cursor-pointer text-zinc-400 hover:text-zinc-600"><i class="pi pi-times" /></button>
         </div>
         <div v-if="scanError" class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">{{ scanError
-          }}</div>
+        }}</div>
         <video v-else id="qr-video" class="w-full rounded-lg bg-zinc-950 aspect-square object-cover" muted
           playsinline />
         <p class="text-xs text-zinc-400 text-center">Center the QR code in the frame to record attendance</p>

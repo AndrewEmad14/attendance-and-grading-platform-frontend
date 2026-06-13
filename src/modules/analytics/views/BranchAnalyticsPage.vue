@@ -272,7 +272,7 @@ const trendLineOptions = {
     y: {
       min: 70,
       // 2. Change max to suggestedMax so data points can breathe
-      suggestedMax: 100, 
+      suggestedMax: 100,
       ticks: { color: TICK_COLOR, callback: (v: any) => `${v}%` },
       grid: { color: LIGHT_GRID },
       border: { color: LIGHT_GRID },
@@ -361,11 +361,7 @@ const outcomesBarOptions = {
     <!-- ── Loading State ──────────────────────────────── -->
     <template v-if="isLoading">
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
-        <div
-          v-for="i in 4"
-          :key="i"
-          class="h-24 bg-white border border-slate-200 animate-pulse rounded-lg"
-        ></div>
+        <div v-for="i in 4" :key="i" class="h-24 bg-white border border-slate-200 animate-pulse rounded-lg"></div>
       </div>
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
         <div class="h-80 bg-white border border-slate-200 animate-pulse rounded-lg"></div>
@@ -378,8 +374,7 @@ const outcomesBarOptions = {
     <!-- ── Error State ────────────────────────────────── -->
     <template v-else-if="error">
       <div
-        class="alert alert-error bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-center gap-3"
-      >
+        class="alert alert-error bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-center gap-3">
         <i class="pi pi-exclamation-triangle text-xl text-red-600"></i>
         <span>{{ error }}</span>
       </div>
@@ -429,45 +424,29 @@ const outcomesBarOptions = {
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
         <!-- Attendance by Track (Dropdown Filter without Clipping) -->
         <div class="card bg-white border border-slate-200 shadow-sm w-full min-w-0">
-          <div
-            class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2"
-          >
+          <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
             <h3 class="font-bold text-slate-900 text-sm tracking-tight">
               Attendance % by Track Module
             </h3>
             <div class="relative filter-dropdown-container">
-              <button
-                @click="isDropdownOpen = !isDropdownOpen"
-                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none"
-              >
+              <button @click="isDropdownOpen = !isDropdownOpen"
+                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none">
                 <i class="pi pi-filter text-[10px]"></i>
                 Filter Tracks ({{ selectedTrackIds.length }}/3) &nbsp;▾
               </button>
 
               <!-- Dropdown Menu -->
-              <div
-                v-if="isDropdownOpen"
-                class="absolute right-0 z-30 mt-1 bg-white border border-slate-200 shadow-lg rounded-md p-2 w-64 max-h-56 overflow-y-auto space-y-1"
-              >
+              <div v-if="isDropdownOpen"
+                class="absolute right-0 z-30 mt-1 bg-white border border-slate-200 shadow-lg rounded-md p-2 w-64 max-h-56 overflow-y-auto space-y-1">
                 <div
-                  class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100"
-                >
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">
                   Select up to 3 Tracks:
                 </div>
-                <div
-                  v-for="t in analyticsData.tracks"
-                  :key="t.track_id"
+                <div v-for="t in analyticsData.tracks" :key="t.track_id"
                   class="flex items-center gap-2 px-1 py-1 hover:bg-slate-50 rounded cursor-pointer"
-                  @click.stop="toggleTrackSelection(t.track_id)"
-                >
-                  <input
-                    type="checkbox"
-                    :checked="selectedTrackIds.includes(t.track_id)"
-                    :disabled="
-                      !selectedTrackIds.includes(t.track_id) && selectedTrackIds.length >= 3
-                    "
-                    class="checkbox checkbox-xs checkbox-primary pointer-events-none"
-                  />
+                  @click.stop="toggleTrackSelection(t.track_id)">
+                  <input type="checkbox" :checked="selectedTrackIds.includes(t.track_id)" :disabled="!selectedTrackIds.includes(t.track_id) && selectedTrackIds.length >= 3
+                    " class="checkbox checkbox-xs checkbox-primary pointer-events-none" />
                   <span class="text-xs text-slate-600 font-medium select-none truncate">
                     {{ t.track_name }}
                   </span>
@@ -477,11 +456,7 @@ const outcomesBarOptions = {
           </div>
           <div class="p-4">
             <div class="h-64 relative">
-              <Bar
-                :data="attendanceBarData"
-                :options="attendanceBarOptions"
-                :plugins="[datalabelsPlugin]"
-              />
+              <Bar :data="attendanceBarData" :options="attendanceBarOptions" :plugins="[datalabelsPlugin]" />
             </div>
           </div>
         </div>
@@ -489,17 +464,14 @@ const outcomesBarOptions = {
         <!-- Dynamic Track Metrics comparison graph -->
         <div class="card bg-white border border-slate-200 shadow-sm w-full min-w-0">
           <div
-            class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
-          >
+            class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <h3 class="font-bold text-slate-900 text-sm tracking-tight truncate">
               {{ metricTitle }}
             </h3>
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
               <!-- Metric Selector -->
-              <select
-                v-model="selectedMetric"
-                class="select select-bordered select-xs bg-white text-slate-700 border-slate-300 font-semibold max-w-[140px] sm:max-w-none"
-              >
+              <select v-model="selectedMetric"
+                class="select select-bordered select-xs bg-white text-slate-700 border-slate-300 font-semibold max-w-[140px] sm:max-w-none">
                 <option value="student_count">Active Students</option>
                 <option value="total_delivered_hours">Delivered Hours</option>
                 <option value="at_risk_count">At-Risk Count</option>
@@ -507,10 +479,8 @@ const outcomesBarOptions = {
 
               <!-- Track selector dropdown -->
               <div class="relative metric-track-dropdown-container">
-                <button
-                  @click="isMetricTrackDropdownOpen = !isMetricTrackDropdownOpen"
-                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap"
-                >
+                <button @click="isMetricTrackDropdownOpen = !isMetricTrackDropdownOpen"
+                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap">
                   <i class="pi pi-filter text-[10px]"></i>
                   <span class="hidden sm:inline">Filter Tracks</span>
                   <span class="sm:hidden">Tracks</span>
@@ -518,30 +488,18 @@ const outcomesBarOptions = {
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div
-                  v-if="isMetricTrackDropdownOpen"
-                  class="absolute right-0 z-30 mt-1 bg-white border border-slate-200 shadow-lg rounded-md p-2 w-64 max-h-56 overflow-y-auto space-y-1"
-                >
+                <div v-if="isMetricTrackDropdownOpen"
+                  class="absolute right-0 z-30 mt-1 bg-white border border-slate-200 shadow-lg rounded-md p-2 w-64 max-h-56 overflow-y-auto space-y-1">
                   <div
-                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100"
-                  >
+                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">
                     Select up to 3 Tracks:
                   </div>
-                  <div
-                    v-for="t in analyticsData.tracks"
-                    :key="t.track_id"
+                  <div v-for="t in analyticsData.tracks" :key="t.track_id"
                     class="flex items-center gap-2 px-1 py-1 hover:bg-slate-50 rounded cursor-pointer"
-                    @click.stop="toggleMetricTrackSelection(t.track_id)"
-                  >
-                    <input
-                      type="checkbox"
-                      :checked="selectedMetricTrackIds.includes(t.track_id)"
-                      :disabled="
-                        !selectedMetricTrackIds.includes(t.track_id) &&
-                        selectedMetricTrackIds.length >= 3
-                      "
-                      class="checkbox checkbox-xs checkbox-primary pointer-events-none"
-                    />
+                    @click.stop="toggleMetricTrackSelection(t.track_id)">
+                    <input type="checkbox" :checked="selectedMetricTrackIds.includes(t.track_id)" :disabled="!selectedMetricTrackIds.includes(t.track_id) &&
+                      selectedMetricTrackIds.length >= 3
+                      " class="checkbox checkbox-xs checkbox-primary pointer-events-none" />
                     <span class="text-xs text-slate-600 font-medium select-none truncate">
                       {{ t.track_name }}
                     </span>

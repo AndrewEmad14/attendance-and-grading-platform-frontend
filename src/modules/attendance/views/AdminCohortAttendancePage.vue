@@ -150,7 +150,7 @@ onMounted(async () => {
           </div>
           <span :class="[
             'text-xs font-medium px-2 py-0.5 rounded-full border',
-            avgBalance >= 70 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+            avgBalance >= 70 ? 'bg-emerald-50 text-success border-emerald-200' :
               avgBalance >= 40 ? 'bg-amber-50 text-amber-500 border-amber-200' :
                 'bg-red-50 text-red-700 border-red-200'
           ]">
@@ -164,7 +164,7 @@ onMounted(async () => {
         <div class="w-full h-1.5 rounded-full bg-zinc-100 overflow-hidden">
           <div :class="[
             'h-full rounded-full transition-all',
-            avgBalance >= 70 ? 'bg-emerald-700' : avgBalance >= 40 ? 'bg-amber-500' : 'bg-red-700'
+            avgBalance >= 70 ? 'bg-success' : avgBalance >= 40 ? 'bg-amber-500' : 'bg-red-700'
           ]" :style="{ width: `${avgBalance}%` }" />
         </div>
       </div>
@@ -190,7 +190,7 @@ onMounted(async () => {
         </div>
         <div class="text-xs font-semibold text-red-700 flex items-center gap-2 transition-all">
           Review Now <i class="pi pi-arrow-right group-hover:translate-x-0.5 transition-transform"
-            style="font-size: 0.7rem;" />
+            style="font-size: 0.6rem;" />
         </div>
       </div>
 
@@ -229,18 +229,28 @@ onMounted(async () => {
         <div class="flex flex-wrap items-center gap-2">
           <!-- Cohort select (moved here from above) -->
           <div v-if="cohortsLoading" class="h-8 w-32 rounded-lg bg-zinc-100 animate-pulse" />
-          <select v-else v-model="selectedCohortId"
-            class="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs text-zinc-700 focus:outline-none focus:ring-1 focus:ring-indigo-300">
-            <option v-for="c in cohorts" :key="c.id" :value="c.id">Cohort #{{ c.number }}</option>
-          </select>
+          <div v-else class="relative">
+            <select v-model="selectedCohortId"
+              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-7 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer">
+              <option v-for="c in cohorts" :key="c.id" :value="c.id">Cohort #{{ c.number }}</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <i class="pi pi-chevron-down text-[10px]"></i>
+            </div>
+          </div>
 
-          <select v-model="studentStatusFilter"
-            class="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs text-zinc-700 focus:outline-none focus:ring-1 focus:ring-indigo-300">
-            <option value="all">All Students</option>
-            <option value="good">Good Standing</option>
-            <option value="risk">At Risk</option>
-            <option value="critical">Critical</option>
-          </select>
+          <div class="relative">
+            <select v-model="studentStatusFilter"
+              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-7 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer">
+              <option value="all">All Students</option>
+              <option value="good">Good Standing</option>
+              <option value="risk">At Risk</option>
+              <option value="critical">Critical</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <i class="pi pi-chevron-down text-[10px]"></i>
+            </div>
+          </div>
 
           <div class="relative">
             <i class="pi pi-search absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-700 text-xs" />
@@ -287,7 +297,7 @@ onMounted(async () => {
               <td class="px-4 py-3">
                 <span :class="[
                   'text-sm font-semibold',
-                  student.attendance_balance >= 150 ? 'text-emerald-700' :
+                  student.attendance_balance >= 150 ? 'text-success' :
                     student.attendance_balance >= 40 ? 'text-amber-500' : 'text-red-700'
                 ]">{{ student.attendance_balance }}</span>
                 <span class="text-xs text-zinc-300 ml-1">/ 250</span>
@@ -295,7 +305,7 @@ onMounted(async () => {
               <td class="px-4 py-3">
                 <span :class="[
                   'text-xs font-medium px-2 py-0.5 rounded-full border',
-                  student.attendance_balance >= 150 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  student.attendance_balance >= 150 ? 'bg-emerald-50 text-success border-emerald-200' :
                     student.attendance_balance >= 40 ? 'bg-amber-50 text-amber-500 border-amber-200' :
                       'bg-red-50 text-red-700 border-red-200'
                 ]">
@@ -314,12 +324,12 @@ onMounted(async () => {
       <div v-if="totalStudentPages > 1" class="flex items-center justify-between text-xs text-zinc-700">
         <button :disabled="studentPage === 1" @click="studentPage--"
           class="cursor-pointer disabled:cursor-not-allowed px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
-          <i class="pi pi-chevron-left" />
+          <i class="pi pi-chevron-left" style="font-size: 0.6rem;" />
         </button>
         <span>Page {{ studentPage }} of {{ totalStudentPages }}</span>
         <button :disabled="studentPage === totalStudentPages" @click="studentPage++"
           class="cursor-pointer disabled:cursor-not-allowed px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
-          <i class="pi pi-chevron-right" />
+          <i class="pi pi-chevron-right" style="font-size: 0.6rem;" />
         </button>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { navigationConfig } from '@/router/navigation'
+import MockIdentitySwitchWidget from '@/components/MockIdentitySwitchWidget.vue'
 
 const auth = useAuthStore()
 const route = useRoute()
@@ -54,7 +55,7 @@ async function handleLogout() {
       class="w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0 sticky top-0 h-screen">
       <div class="h-16 flex items-center px-6 border-b border-surface-800 gap-2">
         <i class="pi pi-graduation-cap text-primary text-xl"></i>
-        <span class="font-bold text-lg tracking-wide text-white">AcademyOS</span>
+        <span class="font-bold text-lg tracking-wide text-white">ITI Portal</span>
       </div>
       <nav class="flex-1 p-4 overflow-y-auto space-y-3">
         <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
@@ -67,6 +68,7 @@ async function handleLogout() {
         </RouterLink>
       </nav>
       <div class="p-4 border-t border-surface-800 text-xs text-surface-500 text-center">
+        <MockIdentitySwitchWidget class="mb-4" />
         v1.0.0 Stable Build
       </div>
     </aside>
@@ -81,7 +83,8 @@ async function handleLogout() {
         <div class="flex items-center gap-4">
           <!-- Logged in: profile link + avatar + logout -->
           <template v-if="auth.currentUser">
-            <RouterLink to="/profile" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <RouterLink to="/profile"
+              class="cursor-pointer flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div class="text-right hidden sm:block">
                 <div class="text-sm font-semibold text-surface-800 leading-tight">
                   {{ auth.currentUser.name }}
@@ -99,7 +102,7 @@ async function handleLogout() {
             </RouterLink>
 
             <button type="button"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-surface-500 hover:bg-surface-100 hover:text-surface-800 transition-colors"
+              class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-surface-500 hover:bg-surface-100 hover:text-surface-800 transition-colors"
               @click="handleLogout">
               <i class="pi pi-sign-out"></i>
               <span class="hidden sm:inline">Logout</span>
