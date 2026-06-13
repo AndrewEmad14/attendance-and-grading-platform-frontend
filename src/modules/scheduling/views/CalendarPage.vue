@@ -10,12 +10,6 @@ const auth = useAuthStore()
 
 <template>
   <main class="p-6 max-w-7xl mx-auto w-full">
-    <div class="mb-6">
-      <h1 class="text-xl font-black text-surface-900 tracking-tight">Scheduling Operations</h1>
-      <p class="text-xs text-surface-500 mt-0.5">
-        Operational calendar timeline and engagement logging matrix interfaces.
-      </p>
-    </div>
 
     <template v-if="auth.userRole === 'track_admin'">
       <SchedulingAdminPanel />

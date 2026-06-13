@@ -2,19 +2,17 @@ import { api } from '@/utils/api'
 import { buildQuery } from '@/utils/query'
 import type {
   AttendanceRecord,
-  AttendanceLedger,
+  LedgerEntry,
   ExcuseRequest,
   ExcuseStatus,
   CheckInResult,
   Engagement,
   EngagementAttendanceEntry,
+  Paginated,
+  AttendanceLedgerMeta,
 } from './types'
-
-interface Paginated<T> {
-  data: T[]
-  meta: { current_page: number; last_page: number; per_page: number; total: number }
-  links: { first: string; last: string; prev: string | null; next: string | null }
-}
+import type { Cohort } from '@/modules/cohorts/types'
+import type { CohortStudent } from '@/types'
 
 type ListParams = {
   page?: number
@@ -24,17 +22,37 @@ type ListParams = {
   direction?: 'asc' | 'desc'
 }
 
+type CohortStudentsParams = ListParams & {
+  status?: 'good' | 'risk' | 'critical'
+  unassigned_only?: boolean
+}
+
+export const cohortsApi = {
+  list: (params: ListParams = {}) =>
+    api.get<{ data: Cohort[] }>(`/cohorts${buildQuery(params)}`),
+
+  get: (cohortId: number) =>
+    api.get<{ data: Cohort }>(`/cohorts/${cohortId}`),
+
+  students: (cohortId: number, params: CohortStudentsParams = {}) =>
+    api.get<Paginated<CohortStudent>>(`/cohorts/${cohortId}/students${buildQuery(params)}`),
+}
+
 export const attendanceApi = {
-  // Student APIs
   scan: (engagementId: number, token: string) =>
     api.post<{ data: CheckInResult }>('/attendance', { engagement_id: engagementId, token }),
 
-  studentLedger: (studentId: number) =>
-    api.get<{ data: AttendanceLedger }>(`/students/${studentId}/attendance-ledger`),
+  studentLedger: (studentId: number, params: Record<string, string> = {}) =>
+    api.get<Paginated<LedgerEntry>>(`/students/${studentId}/attendance-ledger${buildQuery(params)}`),
 
-  attendanceRecord: (id: number) => api.get<{ data: AttendanceRecord }>(`/attendance/${id}`),
+  studentLedgerMeta: (studentId: number) =>
+    api.get<{ data: AttendanceLedgerMeta }>(`/students/${studentId}/attendance-ledger/meta`),
 
-  excuseRequest: (id: number) => api.get<{ data: ExcuseRequest }>(`/excuse-requests/${id}`),
+  attendanceRecord: (id: number) =>
+    api.get<{ data: AttendanceRecord }>(`/attendance/${id}`),
+
+  excuseRequest: (id: number) =>
+    api.get<{ data: ExcuseRequest }>(`/excuse-requests/${id}`),
 
   myExcuses: (params: ListParams = {}) =>
     api.get<Paginated<ExcuseRequest>>(`/excuse-requests${buildQuery(params)}`),
@@ -50,7 +68,7 @@ export const attendanceApi = {
     return api.post<{ data: ExcuseRequest }>('/excuse-requests', payload)
   },
 
-  updateExcuse: (id: number, payload: { reason: string; attachment?: File | null }) => {
+  updateExcuse: (id: number, payload: { reason: string; attachment?: File | null; remove_attachment?: boolean }) => {
     if (payload.attachment) {
       const form = new FormData()
       form.set('reason', payload.reason)
@@ -58,10 +76,17 @@ export const attendanceApi = {
       form.set('_method', 'PATCH')
       return api.post<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, form)
     }
-    return api.patch<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, payload)
+    return api.patch<{ data: ExcuseRequest }>(`/excuse-requests/${id}`, {
+      reason: payload.reason,
+      ...(payload.remove_attachment ? { remove_attachment: true } : {}),
+    })
   },
 
-  // Instructor APIs
+  absentEngagements: (studentId: number) =>
+    api.get<{ data: { id: number; name: string; date: string }[] }>(
+      `/students/${studentId}/absent-engagements`,
+    ),
+
   mySessions: (params: ListParams & { date_from?: string; date_to?: string } = {}) =>
     api.get<Paginated<Engagement>>(`/engagements${buildQuery(params)}`),
 
@@ -70,8 +95,9 @@ export const attendanceApi = {
       `/engagements/${engagementId}/qr-token`,
     ),
 
-  // Track admin APIs
-  // Each expected student's attendance + excuse status for this engagement, optionally filtered by cohort
+  cohortStudents: (cohortId: number, params: CohortStudentsParams = {}) =>
+    api.get<Paginated<CohortStudent>>(`/cohorts/${cohortId}/students${buildQuery(params)}`),
+
   engagementAttendance: (engagementId: number, params: ListParams & { cohort_id?: number } = {}) =>
     api.get<{ data: EngagementAttendanceEntry[] }>(
       `/engagements/${engagementId}/attendance${buildQuery(params)}`,
@@ -80,13 +106,12 @@ export const attendanceApi = {
   listAttendance: (params: ListParams & { engagement_id?: number } = {}) =>
     api.get<Paginated<AttendanceRecord>>(`/attendance${buildQuery(params)}`),
 
-  updateAttendanceRecord: (
-    id: number,
-    payload: { arrived_at?: string | null; left_at?: string | null },
-  ) => api.patch<{ data: AttendanceRecord }>(`/attendance/${id}`, payload),
+  updateAttendanceRecord: (id: number, payload: { arrived_at?: string | null; left_at?: string | null }) =>
+    api.patch<{ data: AttendanceRecord }>(`/attendance/${id}`, payload),
 
-  adminExcuses: (filters: { cohort_id?: number; status?: ExcuseStatus } & ListParams = {}) =>
-    api.get<Paginated<ExcuseRequest>>(`/excuse-requests${buildQuery(filters)}`),
+  adminExcuses: (
+    filters: { cohort_id?: number; status?: ExcuseStatus; search?: string } & ListParams = {},
+  ) => api.get<Paginated<ExcuseRequest>>(`/excuse-requests${buildQuery(filters)}`),
 
   approveExcuse: (id: number) =>
     api.post<{ data: ExcuseRequest }>(`/excuse-requests/${id}/approve`, {}),
