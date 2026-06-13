@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { attendanceApi } from '../api'
 import type { LedgerEntry, PaginatedMeta } from '../types'
 import AttendanceStatusBadge from './AttendanceStatusBadge.vue'
-import ExcuseStatusTag from './ExcuseStatusTag.vue'
 
 const props = defineProps<{ studentId: number }>()
-const router = useRouter()
 
 const entries = ref<LedgerEntry[]>([])
 const meta = ref<PaginatedMeta | null>(null)
@@ -51,8 +48,6 @@ async function loadEntries(p = 1) {
 }
 
 onMounted(() => loadEntries(1))
-
-// Reset to page 1 on filter change
 watch([debouncedSearch, dateFrom, dateTo, status], () => loadEntries(1))
 
 const formatDate = (iso: string) =>
@@ -63,26 +58,21 @@ const formatTime = (iso: string | null) =>
 
 <template>
   <div class="space-y-3">
-    <!-- Error -->
     <div v-if="tableError" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
       <i class="pi pi-exclamation-triangle mr-2" />{{ tableError }}
     </div>
 
-    <!-- Row 1: status filters + excuse link -->
+    <!-- Status filters -->
     <div class="flex flex-wrap gap-2 items-center">
-      ] <button v-for="opt in (['all', 'present', 'absent'] as const)" :key="opt" @click="status = opt" :class="['cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border transition capitalize',
+      <button v-for="opt in (['all', 'present', 'absent'] as const)" :key="opt" @click="status = opt" :class="['cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border transition capitalize',
         status === opt
           ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
           : 'border-zinc-200 text-zinc-500 hover:bg-zinc-50']">
         {{ opt }}
       </button>
-      <RouterLink :to="{ name: 'MyExcuses' }"
-        class="ml-auto cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border border-zinc-200 text-zinc-600 hover:bg-zinc-50 transition">
-        <i class="pi pi-inbox" /> View My Excuses
-      </RouterLink>
     </div>
 
-    <!-- Row 2: date range + search -->
+    <!-- Date range + search -->
     <div class="flex flex-wrap gap-2 items-center">
       <input v-model="dateFrom" type="date"
         class="px-2.5 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-300" />
@@ -104,14 +94,13 @@ const formatTime = (iso: string | null) =>
       </div>
     </div>
 
-    <!-- Table -->
     <template v-else>
       <div class="overflow-x-auto rounded-xl border border-zinc-200">
         <table class="w-full text-sm">
           <thead
             class="bg-zinc-50 border-b border-zinc-200 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wide">
             <tr>
-              <th v-for="h in ['Date', 'Session', 'Instructor', 'Status', 'Excuse', 'Deduction', '']" :key="h"
+              <th v-for="h in ['Date', 'Session', 'Instructor', 'Status', 'Deduction']" :key="h"
                 :class="['px-4 py-3', h === 'Deduction' ? 'text-right' : '']">{{ h }}</th>
             </tr>
           </thead>
@@ -133,25 +122,14 @@ const formatTime = (iso: string | null) =>
                 <td class="px-4 py-3">
                   <AttendanceStatusBadge :status="entry.absence_status" />
                 </td>
-                <td class="px-4 py-3">
-                  <ExcuseStatusTag :status="entry.excuse_status" />
-                </td>
                 <td class="px-4 py-3 text-right">
                   <span :class="entry.deduction < 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'">
                     {{ entry.deduction < 0 ? entry.deduction : '—' }} </span>
                 </td>
-                <td class="px-4 py-3 text-right">
-                  <button
-                    v-if="entry.absence_status === 'absent' && (!entry.excuse_status || entry.excuse_status === 'none')"
-                    @click="router.push({ name: 'NewExcuseRequest', query: { engagement_id: entry.engagement_id, engagement_name: entry.name, engagement_date: entry.date } })"
-                    class="cursor-pointer px-2.5 py-1 rounded text-xs font-medium text-indigo-700 border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 transition">
-                    Create Excuse
-                  </button>
-                </td>
               </tr>
             </template>
             <tr v-else>
-              <td colspan="7" class="px-4 text-center text-sm text-zinc-400 h-120">
+              <td colspan="5" class="px-4 text-center text-sm text-zinc-400 h-120">
                 No attendance records found.
               </td>
             </tr>
@@ -159,7 +137,6 @@ const formatTime = (iso: string | null) =>
         </table>
       </div>
 
-      <!-- Pagination -->
       <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between text-xs text-zinc-500">
         <button :disabled="page === 1" @click="loadEntries(page - 1)"
           class="cursor-pointer disabled:cursor-not-allowed px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">

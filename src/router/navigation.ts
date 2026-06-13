@@ -32,6 +32,7 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-calendar',
     roles: ['track_admin', 'instructor', 'student'],
   },
+  
 
   // Attendance Navigation
   {
@@ -40,18 +41,18 @@ export const navigationConfig: NavigationItem[] = [
     icon: 'pi pi-check-square',
     roles: ['student'],
   },
+  {
+    label: 'Manage Attendance',
+    path: '/attendance',
+    icon: 'pi pi-check-square',
+    roles: ['track_admin'],
+  },
   // {
   //   label: 'My Sessions',
   //   path: '/attendance/sessions',
   //   icon: 'pi pi-video',
   //   roles: ['track_admin', 'instructor'],
   // },
-  {
-    label: 'Excuse Requests',
-    path: '/attendance/excuses',
-    icon: 'pi pi-inbox',
-    roles: ['track_admin'],
-  },
 
   {
     label: 'Gradebook',

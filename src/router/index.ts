@@ -137,6 +137,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/attendance/views/StaffSessionPage.vue'),
         meta: { title: 'Session Attendance', allowedRoles: ['track_admin', 'instructor'] },
       },
+      {
+        path: 'attendance',
+        name: 'AdminCohortAttendance',
+        component: () => import('@/modules/attendance/views/AdminCohortAttendancePage.vue'),
+        meta: { title: 'Cohort Attendance', allowedRoles: ['track_admin'] },
+      },
       // {
       //   path: 'attendance/sessions/:engagementId',
       //   name: 'SessionAttendance',
