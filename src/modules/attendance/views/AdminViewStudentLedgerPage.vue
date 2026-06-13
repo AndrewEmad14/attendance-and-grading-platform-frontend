@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { attendanceApi } from '../api'
-import type { AttendanceLedger } from '../types'
+import type { LedgerEntry, PaginatedMeta } from '../types'
 import AttendanceBalanceCard from '../components/AttendanceBalanceCard.vue'
 import AttendanceStatusBadge from '../components/AttendanceStatusBadge.vue'
 import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
@@ -10,25 +10,29 @@ import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
 const route = useRoute()
 
 const studentId = ref<number | ''>(route.params.id ? Number(route.params.id) : '')
-const ledger = ref<AttendanceLedger | null>(null)
+const entries = ref<LedgerEntry[]>([])
+const meta = ref<PaginatedMeta | null>(null)
+const page = ref(1)
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-const MAX_BALANCE = 10
+const MAX_BALANCE = 250
 
-const totalDeducted = computed(() => {
-  if (!ledger.value) return 0
-  return ledger.value.entries.reduce((sum, e) => (e.deduction < 0 ? sum + Math.abs(e.deduction) : sum), 0)
-})
+const totalDeducted = computed(() =>
+  entries.value.reduce((sum, e) => (e.deduction < 0 ? sum + Math.abs(e.deduction) : sum), 0)
+)
 
-async function load() {
+const currentBalance = computed(() => MAX_BALANCE - totalDeducted.value)
+
+async function load(p = 1) {
   if (!studentId.value) return
   loading.value = true
   error.value = null
-  ledger.value = null
   try {
-    const res = await attendanceApi.studentLedger(Number(studentId.value))
-    ledger.value = res.data
+    const res = await attendanceApi.studentLedger(Number(studentId.value), { page: String(p), per_page: '15' })
+    entries.value = res.data
+    meta.value = res.meta
+    page.value = p
   } catch (e: any) {
     error.value = e.message || 'Failed to load ledger'
   } finally {
@@ -36,8 +40,7 @@ async function load() {
   }
 }
 
-// If navigated with a param, load immediately
-if (studentId.value) load()
+if (studentId.value) load(1)
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
@@ -50,31 +53,28 @@ const formatTime = (iso: string | null) =>
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-6">
     <h1 class="text-xl font-semibold text-zinc-800">Student Attendance Ledger</h1>
 
-    <!-- Student ID input (if not provided via route) -->
     <div v-if="!route.params.id" class="flex gap-3">
       <input v-model="studentId" type="number" placeholder="Enter student ID"
         class="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 w-48" />
-      <button @click="load" :disabled="!studentId || loading"
+      <button @click="load(1)" :disabled="!studentId || loading"
         class="px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition">
         Load
       </button>
     </div>
 
-    <!-- Loading skeleton -->
     <div v-if="loading" class="space-y-4">
       <div class="h-24 rounded-xl bg-zinc-100 animate-pulse" />
       <div class="h-64 rounded-xl bg-zinc-100 animate-pulse" />
     </div>
 
-    <!-- Error -->
     <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
-    <template v-else-if="ledger">
-      <AttendanceBalanceCard :balance="ledger.student.current_balance" :max="MAX_BALANCE" :deducted="totalDeducted" />
+    <template v-else-if="entries.length || meta">
+      <AttendanceBalanceCard :balance="currentBalance" :max="MAX_BALANCE" :deducted="totalDeducted" />
 
-      <div v-if="ledger.entries.length" class="overflow-x-auto rounded-xl border border-zinc-200">
+      <div v-if="entries.length" class="overflow-x-auto rounded-xl border border-zinc-200">
         <table class="w-full text-sm">
           <thead class="bg-zinc-50 border-b border-zinc-200">
             <tr>
@@ -87,10 +87,10 @@ const formatTime = (iso: string | null) =>
             </tr>
           </thead>
           <tbody class="divide-y divide-zinc-100">
-            <tr v-for="entry in ledger.entries" :key="entry.engagement_id" class="hover:bg-zinc-50 transition-colors">
+            <tr v-for="entry in entries" :key="entry.engagement_id" class="hover:bg-zinc-50 transition-colors">
               <td class="px-4 py-3">
                 <p class="font-medium text-zinc-800">{{ entry.name }}</p>
-                <p class="text-xs text-zinc-400 capitalize">{{ entry.engagement_type.replace('_', ' ') }}</p>
+                <p class="text-xs text-zinc-400 capitalize">{{ entry.engagement_type?.replace('_', ' ') ?? '' }}</p>
               </td>
               <td class="px-4 py-3 text-xs text-zinc-500">
                 <p>{{ formatDate(entry.date) }}</p>
@@ -103,16 +103,28 @@ const formatTime = (iso: string | null) =>
                 <ExcuseStatusTag :status="entry.excuse_status" />
               </td>
               <td class="px-4 py-3 text-right">
-                <span :class="entry.deduction > 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'">
-                  {{ entry.deduction > 0 ? `-${entry.deduction}h` : '—' }}
-                </span>
+                <span :class="entry.deduction < 0 ? 'text-red-600 font-semibold' : 'text-zinc-400'">
+                  {{ entry.deduction < 0 ? entry.deduction : '—' }} </span>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
       <div v-else class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400">
         No entries for this student.
+      </div>
+
+      <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between text-xs text-zinc-500">
+        <button :disabled="page === 1" @click="load(page - 1)"
+          class="cursor-pointer disabled:cursor-not-allowed px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+          <i class="pi pi-chevron-left" />
+        </button>
+        <span>Page {{ meta.current_page }} of {{ meta.last_page }}</span>
+        <button :disabled="page === meta.last_page" @click="load(page + 1)"
+          class="cursor-pointer disabled:cursor-not-allowed px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+          <i class="pi pi-chevron-right" />
+        </button>
       </div>
     </template>
   </div>
