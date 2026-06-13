@@ -37,13 +37,12 @@ export function useBillingSummary() {
         // the first is used as the primary track for display purposes.
         const firstEngagement = detail?.engagements?.data?.[0]
         const delivered_hours = detail?.engagements?.data?.reduce(
-          (sum, e) => sum + (e.delivered_hours ?? e.scheduled_hours),
+          (sum, e) => sum + e.scheduled_hours,
           0,
         ) ?? row.scheduled_hours
 
         return {
           ...row,
-          track_name: firstEngagement?.track_name ?? '—',
           delivered_hours,
         }
       })
