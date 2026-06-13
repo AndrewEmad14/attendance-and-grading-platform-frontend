@@ -9,6 +9,7 @@ import ContentCard from '@/components/structural/ContentCard.vue'
 import DashboardGrid from '@/components/structural/DashboardGrid.vue'
 import StatCard from '@/components/structural/StatCard.vue'
 import type { Submission, CourseDeliverable, Course } from '@/modules/grading/types'
+import { api } from '@/utils/api'
 
 const gradingStore = useGradingStore()
 const auth = useAuthStore()
@@ -23,7 +24,7 @@ const overrideTarget = ref<{
   deliverable: CourseDeliverable
   studentName: string
 } | null>(null)
-const localScores = ref<Record<number, number | null>>({})
+const localScores = ref<Record<string | number, number | null>>({})
 
 // Dynamically compute managed cohorts for the admin
 const cohortOptions = computed(() => {
@@ -120,6 +121,33 @@ async function saveGrade(sub: Submission, deliverableId: number) {
   delete localScores.value[sub.id]
 }
 
+async function downloadSub(sub: Submission) {
+  try {
+    if (sub.submission_type === 'link') {
+      const res = await api.get<{ data: { url: string } }>(`/submissions/${sub.id}/download`)
+      if (res.data?.url) {
+        window.open(res.data.url, '_blank')
+      } else {
+        alert('No link available for this submission.')
+      }
+    } else {
+      const blob = await api.getBlob(`/submissions/${sub.id}/download`)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      // Provide a generic fallback name if the file name isn't returned in headers
+      link.setAttribute('download', `submission_${sub.id}`)
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode?.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    }
+  } catch (e: any) {
+    console.error(e)
+    alert('Failed to download submission.')
+  }
+}
+
 function openOverride(sub: Submission, d: CourseDeliverable, studentName: string) {
   overrideTarget.value = { submission: sub, deliverable: d, studentName }
   overrideVisible.value = true
@@ -136,9 +164,9 @@ async function onOverrideSuccess() {
   overrideTarget.value = null
 }
 
-import { api } from '@/utils/api'
 
 // Instructor state
+const instrCohorts = ref<any[]>([])
 const instrCohortId = ref<number | null>(null)
 const instrLabGroupId = computed(() => (auth.currentUser as any)?.labGroupId ?? null)
 
@@ -147,11 +175,14 @@ const instrSearch = ref('')
 
 // Fetch the instructor's accessible cohorts and auto-select the first one
 watchEffect(async () => {
-  if (auth.hasRole('instructor') && !instrCohortId.value) {
+  if (auth.hasRole('instructor') && !instrCohorts.value.length) {
     try {
       const res = await api.get<{ data: any[] }>('/cohorts')
       if (res.data && res.data.length > 0) {
-        instrCohortId.value = res.data[0].id
+        instrCohorts.value = res.data
+        if (!instrCohortId.value) {
+          instrCohortId.value = res.data[0].id
+        }
       }
     } catch (e) {
       console.error('Failed to load instructor cohorts', e)
@@ -227,12 +258,24 @@ function instrSaveGrade(sub: Submission) {
 const studentCohortId = computed(() => auth.currentUser?.student_profile?.cohort_id ?? 1)
 
 const studentLoading = ref(false)
+const studentSelectedCourseId = ref<number | 'all'>('all')
+
+const studentDisplayedCourses = computed(() => {
+  if (studentSelectedCourseId.value === 'all') {
+    return gradingStore.courses
+  }
+  return gradingStore.courses.filter(c => c.id === studentSelectedCourseId.value)
+})
 
 if (auth.hasRole('student')) {
   onMounted(async () => {
     studentLoading.value = true
     await gradingStore.loadCourses(studentCohortId.value)
-
+    const firstCourse = gradingStore.courses[0]
+    if (firstCourse) {
+      studentSelectedCourseId.value = firstCourse.id
+    }
+    
     // Instead of loading all deliverables (which throws 403 for students),
     // we fetch the student's personal tracker data all at once.
     const studentId = auth.currentUser?.student_profile?.id
@@ -253,26 +296,31 @@ function studentSub(deliverableId: number): Submission | undefined {
 
 function componentScore(sub: Submission | undefined, d: CourseDeliverable): number {
   if (!sub) return 0
-  const eff = sub.override_score ?? sub.raw_score ?? 0
+  // Cap at max_score to prevent over-100% individual components if override was too high
+  const eff = Math.min(sub.override_score ?? sub.raw_score ?? 0, d.max_score)
   if (d.max_score === 0) return 0
   return (eff / d.max_score) * d.course_weight
 }
 
 function courseTotal(course: Course): number {
-  return (course.deliverables ?? []).reduce((sum, d) => {
+  const deliverables = course.deliverables ?? []
+  if (deliverables.length === 0) return 0
+  
+  const totalWeight = deliverables.reduce((sum, d) => sum + d.course_weight, 0)
+  if (totalWeight === 0) return 0
+  
+  const weightedScore = deliverables.reduce((sum, d) => {
     return sum + componentScore(studentSub(d.id), d)
   }, 0)
+  
+  // Normalize the score relative to the actual total weight, capping at 100%
+  return Math.min((weightedScore / totalWeight) * 100, 100)
 }
 
-const grandTotal = computed(() => {
-  const attendanceBalance = auth.currentUser?.student_profile?.attendance_balance ?? 250
+const overallCoursesTotal = computed(() => {
+  if (gradingStore.courses.length === 0) return 0
   const coursesSum = gradingStore.courses.reduce((sum, c) => sum + courseTotal(c), 0)
-
-  // Grand Total = Attendance Ledger (out of 250) + Sum of Course Scores (each out of 100)
-  const maxPossible = 250 + gradingStore.courses.length * 100
-  if (maxPossible === 0) return 0
-
-  return ((attendanceBalance + coursesSum) / maxPossible) * 100
+  return coursesSum / gradingStore.courses.length
 })
 const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) < 60))
 </script>
@@ -455,6 +503,13 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     class="flex items-center justify-end gap-1"
                   >
                     <template v-if="d.type !== 'lab'">
+                      <button
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        title="View Submission"
+                        @click="downloadSub(getSub(student.id, d.id)!)"
+                      >
+                        <i class="pi pi-external-link text-[12px]"></i>
+                      </button>
                       <input
                         v-model.number="localScores[getSub(student.id, d.id)!.id]"
                         type="number"
@@ -486,6 +541,15 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     v-else-if="getSub(student.id, d.id)!.override_score !== null"
                     class="flex items-center justify-end gap-1"
                   >
+                    <template v-if="d.type !== 'lab'">
+                      <button
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        title="View Submission"
+                        @click="downloadSub(getSub(student.id, d.id)!)"
+                      >
+                        <i class="pi pi-external-link text-[12px]"></i>
+                      </button>
+                    </template>
                     <i class="pi pi-bolt text-amber-500 text-[12px]" title="Manual Override"></i>
                     <span class="font-bold text-blue-700 ml-1">{{
                       getSub(student.id, d.id)!.override_score
@@ -499,8 +563,17 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     </button>
                   </span>
 
-                  <!-- Graded -->
+                  <!-- Graded (Normal) -->
                   <span v-else class="flex items-center justify-end gap-1 group/grade">
+                    <template v-if="d.type !== 'lab'">
+                      <button
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        title="View Submission"
+                        @click="downloadSub(getSub(student.id, d.id)!)"
+                      >
+                        <i class="pi pi-external-link text-[12px]"></i>
+                      </button>
+                    </template>
                     <span
                       class="text-surface-900"
                       :class="
@@ -552,27 +625,43 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
     class="flex flex-col gap-4 p-6 h-full overflow-hidden"
   >
     <!-- Header Controls -->
-    <div
-      class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0"
-    >
-      <div>
-        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
-          <i class="pi pi-check-square text-primary"></i>
-          Lab Grading Matrix
-        </h2>
-
-        <!-- Deliverable selector grouped by course -->
-        <div class="flex flex-col gap-1">
-          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide"
-            >Select Lab Deliverable</label
-          >
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+      <div class="flex flex-col md:flex-row gap-4 w-full">
+        <!-- Cohort Selector -->
+        <div class="flex flex-col gap-1 w-full md:w-64">
+          <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-2">
+            <i class="pi pi-check-square text-primary"></i>
+            Lab Grading
+          </h2>
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Cohort</label>
           <div class="relative">
             <select
-              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm min-w-[280px] transition-all cursor-pointer"
+              v-model="instrCohortId"
+              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer"
+              :disabled="!instrCohorts.length"
+            >
+              <option value="" disabled>
+                {{ instrCohorts.length ? 'Select Cohort' : 'No cohorts assigned' }}
+              </option>
+              <option v-for="cohort in instrCohorts" :key="cohort.id" :value="cohort.id">
+                Cohort {{ cohort.number }} ({{ cohort.track?.name ?? 'Unknown Track' }})
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <i class="pi pi-chevron-down text-[10px]"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deliverable selector grouped by course -->
+        <div class="flex flex-col gap-1 flex-1 md:mt-9">
+          <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Select Lab Deliverable</label>
+          <div class="relative">
+            <select
+              class="appearance-none bg-white text-gray-900 border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm w-full transition-all cursor-pointer"
               :disabled="!gradingStore.courses.length"
-              @change="
-                (e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))
-              "
+              :value="instrDeliverableId"
+              @change="(e) => onInstrDeliverableChange(Number((e.target as HTMLSelectElement).value))"
             >
               <option value="">
                 {{
@@ -875,13 +964,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
-              <span class="text-surface-500 text-sm">Overall Score</span>
-              <span class="font-mono font-bold text-primary-700 text-base"
-                >{{ grandTotal.toFixed(1) }}%</span
-              >
+              <span class="text-surface-500 text-sm">Overall Courses Total</span>
+              <span class="font-mono font-bold text-primary-700 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
-              <span class="text-surface-500 text-sm">Status</span>
+              <span class="text-surface-500 text-sm">Courses Status</span>
               <span class="font-bold text-sm" :class="isAtRisk ? 'text-red-600' : 'text-green-600'">
                 {{ isAtRisk ? 'At Risk' : 'On Track' }}
               </span>
@@ -892,18 +979,30 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
       <!-- Main Content Area -->
       <div class="md:col-span-9 flex flex-col gap-6">
-        <div class="mb-2">
-          <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">
-            My Grades Breakdown
-          </h1>
-          <p class="text-surface-500 text-sm">
-            Detailed view of your performance across current courses.
-          </p>
+        <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-surface-900 tracking-tight mb-1">My Grades Breakdown</h1>
+            <p class="text-surface-500 text-sm">Detailed view of your performance across current courses.</p>
+          </div>
+          <div class="w-full md:w-64 relative">
+            <select
+              v-model="studentSelectedCourseId"
+              class="appearance-none bg-white text-surface-900 border border-surface-300 rounded-lg py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 shadow-sm w-full transition-all cursor-pointer font-medium"
+            >
+              <option value="all">All Courses</option>
+              <option v-for="course in gradingStore.courses" :key="course.id" :value="course.id">
+                {{ course.name }}
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-surface-500">
+              <i class="pi pi-chevron-down text-xs"></i>
+            </div>
+          </div>
         </div>
 
         <!-- Course Cards -->
-        <div
-          v-for="course in gradingStore.courses"
+        <div 
+          v-for="course in studentDisplayedCourses" 
           :key="course.id"
           class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group"
         >
