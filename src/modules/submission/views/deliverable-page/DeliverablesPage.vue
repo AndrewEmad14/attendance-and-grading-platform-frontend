@@ -3,6 +3,8 @@ import { ref, computed, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useAuthStore } from '@/stores/auth'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthRealStore } from '@/stores/auth-real'
 import { useGradingStore } from '@/stores/grading'
 import { getStudentSubmissions } from '@/modules/submission/services/submissionService'
 import type { Course, CourseDeliverable, Submission } from '@/modules/grading/types'

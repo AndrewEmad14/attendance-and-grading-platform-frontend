@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+//if you want to use the real auth store, uncomment the following line and comment out the above line
+//import { useAuthStore } from '@/stores/auth-real'
 import { navigationConfig } from '@/router/navigation'
 
 const auth = useAuthStore()
 const route = useRoute()
+const router = useRouter()
 
 const pageTitle = computed(() => route.meta.title || 'Dashboard')
 
@@ -36,6 +39,11 @@ const isNavActive = (itemPath: string) => {
   }
   return route.path.startsWith(itemPath)
 }
+
+async function handleLogout() {
+  await auth.logout()
+  router.push({ name: 'Login' })
+}
 </script>
 
 <template>
@@ -47,7 +55,6 @@ const isNavActive = (itemPath: string) => {
         <i class="pi pi-graduation-cap text-primary text-xl"></i>
         <span class="font-bold text-lg tracking-wide text-white">AcademyOS</span>
       </div>
-
       <nav class="flex-1 p-4 overflow-y-auto space-y-1">
         <RouterLink
           v-for="item in allowedNavItems"
@@ -64,7 +71,6 @@ const isNavActive = (itemPath: string) => {
           <span>{{ item.label }}</span>
         </RouterLink>
       </nav>
-
       <div class="p-4 border-t border-surface-800 text-xs text-surface-500 text-center">
         v1.0.0 Stable Build
       </div>
@@ -79,22 +85,49 @@ const isNavActive = (itemPath: string) => {
         </h1>
 
         <div class="flex items-center gap-4">
-          <div class="text-right hidden sm:block">
-            <div class="text-sm font-semibold text-surface-800 leading-tight">
-              {{ auth.currentUser?.name }}
-            </div>
-            <div class="text-xs text-surface-500 font-medium mt-0.5">
-              {{ auth.currentUser ? formatRole(auth.currentUser.role) : 'Guest User' }}
-            </div>
-          </div>
-
-          <div class="avatar placeholder">
-            <div
-              class="bg-primary text-white w-10 h-10 rounded-full font-bold text-sm tracking-wider shadow-inner flex items-center justify-center"
+          <!-- Logged in: profile link + avatar + logout -->
+          <template v-if="auth.currentUser">
+            <RouterLink
+              to="/profile"
+              class="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
-              <span>{{ userInitials }}</span>
-            </div>
-          </div>
+              <div class="text-right hidden sm:block">
+                <div class="text-sm font-semibold text-surface-800 leading-tight">
+                  {{ auth.currentUser.name }}
+                </div>
+                <div class="text-xs text-surface-500 font-medium mt-0.5">
+                  {{ formatRole(auth.currentUser.role) }}
+                </div>
+              </div>
+              <div class="avatar placeholder">
+                <div
+                  class="bg-primary text-white w-10 h-10 rounded-full font-bold text-sm tracking-wider shadow-inner flex items-center justify-center"
+                >
+                  <span>{{ userInitials }}</span>
+                </div>
+              </div>
+            </RouterLink>
+
+            <button
+              type="button"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-surface-500 hover:bg-surface-100 hover:text-surface-800 transition-colors"
+              @click="handleLogout"
+            >
+              <i class="pi pi-sign-out"></i>
+              <span class="hidden sm:inline">Logout</span>
+            </button>
+          </template>
+
+          <!-- Logged out: sign-in link -->
+          <template v-else>
+            <RouterLink
+              to="/login"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+            >
+              <i class="pi pi-sign-in"></i>
+              <span>Sign In</span>
+            </RouterLink>
+          </template>
         </div>
       </header>
 
