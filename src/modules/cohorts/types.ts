@@ -89,3 +89,24 @@ export interface CohortAdmin {
   name: string | null
   email: string | null
 }
+
+export interface BusinessSession {
+  id: number
+  name: string
+  created_at: string
+  updated_at: string
+
+  // Conditionally loaded (whenLoaded) — present only when the server eager-loads.
+  // `cohorts` is what tells us which cohorts a session is already attached to.
+  cohorts?: Cohort[]
+}
+
+// Request payload matching StoreBusinessSessionRequest (name only).
+export interface StoreBusinessSessionPayload {
+  name: string
+}
+
+// Body of POST /business-sessions/{id}/cohorts is simply { cohort_id }.
+export interface EnrollCohortPayload {
+  cohort_id: number
+}

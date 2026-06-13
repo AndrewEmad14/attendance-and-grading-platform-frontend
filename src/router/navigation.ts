@@ -21,9 +21,15 @@ export const navigationConfig: NavigationItem[] = [
     roles: ['branch_manager'],
   },
   {
-    label: 'Cohort Settings',
+    label: 'Cohort Management',
     path: '/cohorts',
     icon: 'pi pi-sliders-h',
+    roles: ['branch_manager'],
+  },
+  {
+    label: 'Assigned Cohorts',
+    path: '/assigned-cohorts',
+    icon: 'pi pi-sitemap',
     roles: ['track_admin'],
   },
   {
