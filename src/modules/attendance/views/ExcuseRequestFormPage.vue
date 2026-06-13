@@ -1,0 +1,88 @@
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+import { attendanceApi } from '../api'
+
+const props = defineProps<{ engagementId: number }>()
+const emit = defineEmits<{ (e: 'submitted'): void; (e: 'cancel'): void }>()
+
+const form = reactive({ reason: '', attachment: null as File | null })
+const loading = ref(false)
+const error = ref<string | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function onFileChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0] ?? null
+  form.attachment = file
+}
+
+async function submit() {
+  if (!form.reason.trim()) { error.value = 'Reason is required'; return }
+  loading.value = true
+  error.value = null
+  try {
+    await attendanceApi.createExcuse({
+      engagement_id: props.engagementId,
+      reason: form.reason,
+      attachment: form.attachment,
+    })
+    emit('submitted')
+  } catch (e: any) {
+    error.value = e.message || 'Submission failed'
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<template>
+  <div class="rounded-xl border border-zinc-200 bg-white p-6 space-y-4">
+    <h3 class="text-sm font-semibold text-zinc-800">Submit Excuse Request</h3>
+
+    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+      <i class="pi pi-exclamation-triangle mr-1.5" />{{ error }}
+    </div>
+
+    <div class="space-y-1">
+      <label class="block text-xs font-medium text-zinc-600">Reason <span class="text-red-500">*</span></label>
+      <textarea
+        v-model="form.reason"
+        rows="4"
+        placeholder="Explain why you couldn't attend..."
+        class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 resize-none"
+      />
+    </div>
+
+    <div class="space-y-1">
+      <label class="block text-xs font-medium text-zinc-600">Attachment <span class="text-zinc-400">(optional)</span></label>
+      <div
+        @click="fileInput?.click()"
+        class="cursor-pointer rounded-lg border border-dashed border-zinc-300 px-4 py-4 text-center hover:border-indigo-400 hover:bg-indigo-50/30 transition"
+      >
+        <i class="pi pi-paperclip text-zinc-400 text-lg block mb-1" />
+        <p class="text-xs text-zinc-400">
+          {{ form.attachment ? form.attachment.name : 'Click to attach a file' }}
+        </p>
+      </div>
+      <input ref="fileInput" type="file" class="hidden" @change="onFileChange" />
+    </div>
+
+    <div class="flex gap-2 justify-end pt-1">
+      <button
+        type="button"
+        @click="emit('cancel')"
+        class="px-4 py-2 rounded-lg text-sm text-zinc-600 border border-zinc-200 hover:bg-zinc-50 transition"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        :disabled="loading"
+        @click="submit"
+        class="px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2"
+      >
+        <i v-if="loading" class="pi pi-spin pi-spinner" />
+        Submit
+      </button>
+    </div>
+  </div>
+</template>
