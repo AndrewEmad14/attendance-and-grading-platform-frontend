@@ -28,6 +28,14 @@ const allowedNavItems = computed(() => {
 const formatRole = (role: string) => {
   return role.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
+
+const isNavActive = (itemPath: string) => {
+  // Prevent Gradebook (/grades) from highlighting when we are in Course Configuration (/grades/config)
+  if (itemPath === '/grades' && route.path.startsWith('/grades/config')) {
+    return false
+  }
+  return route.path.startsWith(itemPath)
+}
 </script>
 
 <template>
@@ -47,7 +55,7 @@ const formatRole = (role: string) => {
           :to="item.path"
           class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200"
           :class="
-            route.path.startsWith(item.path)
+            isNavActive(item.path)
               ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'
               : 'text-surface-400 hover:bg-surface-800 hover:text-white'
           "

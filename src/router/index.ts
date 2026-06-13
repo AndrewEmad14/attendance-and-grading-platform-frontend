@@ -142,7 +142,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'Account Expiry Console', allowedRoles: ['track_admin'] },
       },
       {
-        path: 'grades/config/:cohortId',
+        path: 'grades/config/:cohortId?',
         name: 'CourseConfig',
         component: () => import('@/modules/grading/views/CourseConfigPage.vue'),
         meta: { title: 'Course Configuration', allowedRoles: ['track_admin'] },
