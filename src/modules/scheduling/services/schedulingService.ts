@@ -84,12 +84,22 @@ export async function deleteEngagement(engagementId: number): Promise<void> {
 }
 
 /**
- * Retrieve cross-track business event logs open to cohort enrollments
- * Note: If your backend also paginates business sessions, we can apply PaginatedResponse here too.
+ * Retrieve cross-track business event logs open to cohort enrollments.
+ * Supports include parameters to append localized timeline engagement metrics.
  */
-export async function getBusinessSessions(): Promise<BusinessSession[]> {
+export async function getBusinessSessions(
+  filters: { with_engagements?: boolean } = {}
+): Promise<BusinessSession[]> {
   try {
-    const response = await api.get<ApiResponse<BusinessSession[]>>('/business-sessions')
+    const queryParams = new URLSearchParams()
+    if (filters.with_engagements) {
+      queryParams.append('with_engagements', '1')
+    }
+
+    const queryString = queryParams.toString()
+    const endpoint = queryString ? `/business-sessions?${queryString}` : '/business-sessions'
+
+    const response = await api.get<ApiResponse<BusinessSession[]>>(endpoint)
     return response.data
   } catch (err: any) {
     throw new Error('Failed to collect cross-track configurations: ' + err.message)

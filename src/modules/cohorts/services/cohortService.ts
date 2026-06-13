@@ -1,5 +1,6 @@
 import { api, type ApiResponse } from '@/utils/api'
 import type {
+  Track,
   Cohort,
   LabGroup,
   CohortStudent,
@@ -7,6 +8,15 @@ import type {
   UpdateCohortPayload,
   StoreLabGroupPayload,
 } from '../types'
+
+export async function getTracks(): Promise<Track[]> {
+  try {
+    const response = await api.get<ApiResponse<Track[]>>('/tracks')
+    return response.data
+  } catch (err: any) {
+    throw new Error('Failed to retrieve system track definitions: ' + err.message)
+  }
+}
 
 /**
  * Fetch a list of all cohorts across the system with optional filters
