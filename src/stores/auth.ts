@@ -27,7 +27,7 @@ interface LoginData {
 
 const TOKEN_KEY = 'auth_token'
 
-export const useAuthStore = defineStore('auth-real', () => {
+export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
   const currentUser = ref<AuthUser | null>(null)
   const loading = ref<boolean>(false)
