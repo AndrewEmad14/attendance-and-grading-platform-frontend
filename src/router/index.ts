@@ -13,8 +13,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: MainLayout,
-    redirect: '/dashboard-dispatcher',
+    redirect: '/dashboard',
     children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/modules/dashboard/views/DashboardPage.vue'),
+        meta: {
+          title: 'Dashboard',
+          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+        },
+      },
       {
         path: 'example',
         name: 'ComponentPlayground',
