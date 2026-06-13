@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { attendanceApi } from '../services/attendanceApi'
+import { attendanceApi } from "../api";
 import type { ExcuseRequest, ExcuseStatus } from '../types'
 import type { PaginatedMeta } from '../types'
 import ExcuseStatusTag from '../components/ExcuseStatusTag.vue'
@@ -69,11 +69,8 @@ const formatDate = (iso: string) =>
       <h1 class="text-xl font-semibold text-zinc-800">Excuse Requests</h1>
 
       <!-- Status filter -->
-      <select
-        v-model="filterStatus"
-        @change="load(1)"
-        class="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-      >
+      <select v-model="filterStatus" @change="load(1)"
+        class="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100">
         <option value="">All statuses</option>
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
@@ -92,7 +89,8 @@ const formatDate = (iso: string) =>
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!excuses.length" class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400">
+    <div v-else-if="!excuses.length"
+      class="rounded-xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-400">
       No excuse requests found.
     </div>
 
@@ -117,28 +115,25 @@ const formatDate = (iso: string) =>
               <p class="text-zinc-400">{{ formatDate(excuse.engagement.starts_at) }}</p>
             </td>
             <td class="px-4 py-3 text-xs text-zinc-400">{{ formatDate(excuse.created_at) }}</td>
-            <td class="px-4 py-3"><ExcuseStatusTag :status="excuse.status" /></td>
+            <td class="px-4 py-3">
+              <ExcuseStatusTag :status="excuse.status" />
+            </td>
             <td class="px-4 py-3 text-zinc-600 max-w-xs">
               <p class="line-clamp-2 text-xs">{{ excuse.reason }}</p>
-              <a v-if="excuse.attachment_url" :href="excuse.attachment_url" target="_blank" class="text-xs text-indigo-500 hover:underline mt-0.5 flex items-center gap-1">
+              <a v-if="excuse.attachment_url" :href="excuse.attachment_url" target="_blank"
+                class="text-xs text-indigo-500 hover:underline mt-0.5 flex items-center gap-1">
                 <i class="pi pi-paperclip" /> Attachment
               </a>
             </td>
             <td class="px-4 py-3">
               <div v-if="excuse.status === 'pending'" class="flex items-center gap-2">
-                <button
-                  @click="approve(excuse.id)"
-                  :disabled="actionLoading === excuse.id"
-                  class="px-2.5 py-1 rounded text-xs font-medium text-emerald-700 border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 disabled:opacity-50 transition"
-                >
+                <button @click="approve(excuse.id)" :disabled="actionLoading === excuse.id"
+                  class="px-2.5 py-1 rounded text-xs font-medium text-emerald-700 border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 disabled:opacity-50 transition">
                   <i v-if="actionLoading === excuse.id" class="pi pi-spin pi-spinner" />
                   <span v-else>Approve</span>
                 </button>
-                <button
-                  @click="reject(excuse.id)"
-                  :disabled="actionLoading === excuse.id"
-                  class="px-2.5 py-1 rounded text-xs font-medium text-red-700 border border-red-200 bg-red-50 hover:bg-red-100 disabled:opacity-50 transition"
-                >
+                <button @click="reject(excuse.id)" :disabled="actionLoading === excuse.id"
+                  class="px-2.5 py-1 rounded text-xs font-medium text-red-700 border border-red-200 bg-red-50 hover:bg-red-100 disabled:opacity-50 transition">
                   <i v-if="actionLoading === excuse.id" class="pi pi-spin pi-spinner" />
                   <span v-else>Reject</span>
                 </button>
@@ -152,11 +147,13 @@ const formatDate = (iso: string) =>
 
     <!-- Pagination -->
     <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between text-xs text-zinc-500">
-      <button :disabled="page === 1" @click="load(page - 1)" class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+      <button :disabled="page === 1" @click="load(page - 1)"
+        class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
         <i class="pi pi-chevron-left" />
       </button>
       <span>Page {{ meta.current_page }} of {{ meta.last_page }}</span>
-      <button :disabled="page === meta.last_page" @click="load(page + 1)" class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
+      <button :disabled="page === meta.last_page" @click="load(page + 1)"
+        class="px-3 py-1.5 rounded border border-zinc-200 disabled:opacity-40 hover:bg-zinc-50 transition">
         <i class="pi pi-chevron-right" />
       </button>
     </div>
