@@ -164,14 +164,14 @@ async function handleSubmit() {
       <!-- Mode toggle: link | file -->
       <div class="flex gap-1 p-1 bg-surface-100 rounded-lg">
         <button
-          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case"
+          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case cursor-pointer"
           :class="mode === 'link' ? 'bg-white shadow-sm text-surface-900' : 'text-surface-500'"
           @click="setMode('link')"
         >
           <i class="pi pi-link text-[11px] mr-1"></i> Link
         </button>
         <button
-          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case"
+          class="flex-1 py-1.5 rounded-md text-sm font-medium transition-colors normal-case cursor-pointer"
           :class="mode === 'file' ? 'bg-white shadow-sm text-surface-900' : 'text-surface-500'"
           @click="setMode('file')"
         >

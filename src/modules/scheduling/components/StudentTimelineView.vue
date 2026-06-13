@@ -201,8 +201,8 @@ function closeScanner() {
     </ContentCard>
 
     <div v-if="showScanner" @click="closeScanner"
-      class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fade-in">
-      <div @click.stop class="bg-white rounded-xl p-5 w-full max-w-sm space-y-3 shadow-xl">
+      class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fade-in cursor-pointer">
+      <div @click.stop class="bg-white rounded-xl p-5 w-full max-w-sm space-y-3 shadow-xl cursor-pointer">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-zinc-800">Scan QR Code</h3><button @click="closeScanner"
             class="cursor-pointer text-zinc-400 hover:text-zinc-600"><i class="pi pi-times" /></button>

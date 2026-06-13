@@ -28,7 +28,7 @@ const emit = defineEmits<{
     <template #headerAction>
       <button
         @click="emit('create-group')"
-        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2"
+        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer"
       >
         <i class="pi pi-plus text-[10px]"></i>
         New Group
@@ -113,7 +113,7 @@ const emit = defineEmits<{
           </div>
           <button
             @click="emit('delete-group', group)"
-            class="text-danger hover:bg-danger/5 rounded px-2 py-1 text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
+            class="text-danger hover:bg-danger/5 rounded px-2 py-1 text-xs font-medium transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
             title="Delete group"
           >
             <i class="pi pi-trash text-[10px]"></i>

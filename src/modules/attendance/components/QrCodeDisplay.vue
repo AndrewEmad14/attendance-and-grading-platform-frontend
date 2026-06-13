@@ -102,7 +102,7 @@ const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSta
 
       <button
         @click="fetchQr"
-        class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 hover:bg-zinc-50 transition"
+        class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 hover:bg-zinc-50 transition cursor-pointer"
       >
         <i class="pi pi-refresh" /> Refresh
       </button>

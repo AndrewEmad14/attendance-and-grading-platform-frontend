@@ -24,7 +24,7 @@ const emit = defineEmits<{
     <template #headerAction>
       <button
         @click="emit('create-session')"
-        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2"
+        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer"
       >
         <i class="pi pi-plus text-[10px]"></i>
         New Session

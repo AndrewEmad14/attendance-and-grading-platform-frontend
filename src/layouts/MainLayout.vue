@@ -59,7 +59,7 @@ async function handleLogout() {
       </div>
       <nav class="flex-1 p-4 overflow-y-auto space-y-3">
         <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200" :class="isNavActive(item.path)
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer" :class="isNavActive(item.path)
             ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'
             : 'text-surface-400 hover:bg-surface-800 hover:text-white'
             ">
@@ -112,7 +112,7 @@ async function handleLogout() {
           <!-- Logged out: sign-in link -->
           <template v-else>
             <RouterLink to="/login"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors">
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors cursor-pointer">
               <i class="pi pi-sign-in"></i>
               <span>Sign In</span>
             </RouterLink>

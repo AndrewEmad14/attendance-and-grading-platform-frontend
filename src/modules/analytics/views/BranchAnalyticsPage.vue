@@ -353,7 +353,7 @@ const outcomesBarOptions = {
           Comparing performance metrics across all active cohorts.
         </p>
       </div>
-      <button class="btn btn-outline btn-sm font-semibold text-slate-700 bg-white border-slate-300">
+      <button class="btn btn-outline btn-sm font-semibold text-slate-700 bg-white border-slate-300 cursor-pointer">
         Q2 2026 &nbsp;▾
       </button>
     </div>
@@ -430,7 +430,7 @@ const outcomesBarOptions = {
             </h3>
             <div class="relative filter-dropdown-container">
               <button @click="isDropdownOpen = !isDropdownOpen"
-                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none">
+                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none cursor-pointer">
                 <i class="pi pi-filter text-[10px]"></i>
                 Filter Tracks ({{ selectedTrackIds.length }}/3) &nbsp;▾
               </button>
@@ -480,7 +480,7 @@ const outcomesBarOptions = {
               <!-- Track selector dropdown -->
               <div class="relative metric-track-dropdown-container">
                 <button @click="isMetricTrackDropdownOpen = !isMetricTrackDropdownOpen"
-                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap">
+                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap cursor-pointer">
                   <i class="pi pi-filter text-[10px]"></i>
                   <span class="hidden sm:inline">Filter Tracks</span>
                   <span class="sm:hidden">Tracks</span>

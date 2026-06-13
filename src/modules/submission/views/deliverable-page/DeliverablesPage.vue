@@ -273,7 +273,7 @@ onMounted(loadAll)
                 <div class="shrink-0 self-start sm:self-center">
                   <button
                     v-if="canSubmit(d)"
-                    class="btn btn-sm btn-primary text-white normal-case font-medium flex items-center gap-1.5"
+                    class="btn btn-sm btn-primary text-white normal-case font-medium flex items-center gap-1.5 cursor-pointer"
                     @click="openSubmit(d)"
                   >
                     <i class="pi pi-upload text-[10px]"></i> Submit
