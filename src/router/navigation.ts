@@ -30,6 +30,12 @@ export const navigationConfig: NavigationItem[] = [
     label: 'Cohort Settings',
     path: '/cohorts',
     icon: 'pi pi-sliders-h',
+    roles: ['branch_manager'],
+  },
+  {
+    label: 'Assigned Cohorts',
+    path: '/assigned-cohorts',
+    icon: 'pi pi-sitemap',
     roles: ['track_admin'],
   },
   {

@@ -93,8 +93,14 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/modules/cohorts/views/CohortConfigPage.vue'),
         meta: {
           title: 'Cohort Configurations',
-          allowedRoles: ['branch_manager', 'track_admin', 'instructor', 'student'],
+          allowedRoles: ['branch_manager'],
         }, //['track_admin'] }
+      },
+      {
+        path: 'assigned-cohorts',
+        name: 'assigned-cohorts',
+        component: () => import('@/modules/cohorts/views/AssignedCohortsPage.vue'),
+        meta: { title: 'Assigned Cohorts', allowedRoles: ['track_admin'] },
       },
       {
         path: 'schedule',
