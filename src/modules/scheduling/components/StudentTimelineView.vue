@@ -74,9 +74,9 @@ const themes: {
   [key: string]: { icon: string; bg: string; text: string; dot: string }
   default: { icon: string; bg: string; text: string; dot: string }
 } = {
-  lecture: { icon: 'pi-desktop', bg: 'bg-info', text: 'text-info-content', dot: 'bg-info' },
-  lab: { icon: 'pi-code', bg: 'bg-success', text: 'text-success', dot: 'bg-success' },
-  business_session: { icon: 'pi-briefcase', bg: 'bg-warning', text: 'text-warning-content', dot: 'bg-warning' },
+  lecture: { icon: 'pi-desktop', bg: 'bg-info', text: 'text-info-content', dot: 'bg-info-content' },
+  lab: { icon: 'pi-code', bg: 'bg-success', text: 'text-success-content', dot: 'bg-success-content' },
+  business_session: { icon: 'pi-briefcase', bg: 'bg-warning', text: 'text-warning-content', dot: 'bg-warning-content' },
   default: { icon: 'pi-calendar', bg: 'bg-zinc-50', text: 'text-zinc-600', dot: 'bg-zinc-400' }
 }
 const getTheme = (t: string) => themes[t] || themes.default
@@ -207,8 +207,9 @@ function closeScanner() {
           <h3 class="text-sm font-semibold text-zinc-800">Scan QR Code</h3><button @click="closeScanner"
             class="cursor-pointer text-zinc-400 hover:text-zinc-600"><i class="pi pi-times" /></button>
         </div>
-        <div v-if="scanError" class="rounded-lg border border-danger-border bg-danger p-3 text-xs text-danger-content">{{ scanError
-        }}</div>
+        <div v-if="scanError" class="rounded-lg border border-danger-border bg-danger p-3 text-xs text-danger-content">
+          {{ scanError
+          }}</div>
         <video v-else id="qr-video" class="w-full rounded-lg bg-zinc-950 aspect-square object-cover" muted
           playsinline />
         <p class="text-xs text-zinc-400 text-center">Center the QR code in the frame to record attendance</p>

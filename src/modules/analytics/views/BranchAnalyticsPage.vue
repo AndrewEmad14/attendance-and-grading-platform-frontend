@@ -356,7 +356,7 @@ const outcomesBarOptions = {
       <button class="btn btn-outline btn-sm font-semibold text-slate-700 bg-white border-slate-300 cursor-pointer">
         Q2 2026 &nbsp;▾
       </button>
-    </div>
+    </header>
 
     <!-- ── Loading State ──────────────────────────────── -->
     <template v-if="isLoading">

@@ -505,8 +505,8 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       </button>
                     </template>
                     <span class="text-surface-900" :class="isLow(getSub(student.id, d.id)!.raw_score!, d.max_score)
-                        ? 'text-danger-content font-bold'
-                        : ''
+                      ? 'text-danger-content font-bold'
+                      : ''
                       ">
                       {{ getSub(student.id, d.id)!.raw_score }}
                     </span>
@@ -670,7 +670,8 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   <i class="pi pi-external-link text-[10px] mr-1"></i> View Link
                 </a>
                 <a v-else-if="sub.submission_type === 'file'" :href="`/api/submissions/${sub.id}/download`"
-                  target="_blank" class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
+                  target="_blank"
+                  class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
                   title="Download File">
                   <i class="pi pi-download text-[10px] mr-1"></i> Download
                 </a>
@@ -709,8 +710,8 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
                 <!-- State 3: Graded — show score, highlight if low -->
                 <span v-else :class="isLow(sub.raw_score!, instrSelectedDeliverable?.max_score ?? 100)
-                    ? 'text-danger-content font-bold'
-                    : 'text-gray-900 font-bold'
+                  ? 'text-danger-content font-bold'
+                  : 'text-gray-900 font-bold'
                   ">
                   {{ sub.raw_score }}
                 </span>
@@ -805,7 +806,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Overall Courses Total</span>
-              <span class="font-mono font-bold text-primary-700 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
+              <span class="font-mono font-bold text-surface-800 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Courses Status</span>
@@ -901,17 +902,17 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   'opacity-50':
                     (studentSub(d.id)?.override_score ?? studentSub(d.id)?.raw_score) === null,
                 }" :style="{
-                    width:
-                      studentSub(d.id) &&
-                        (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null
-                        ? Math.min(
-                          100,
-                          ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) /
-                            d.max_score) *
-                          100,
-                        ) + '%'
-                        : '0%',
-                  }"></div>
+                  width:
+                    studentSub(d.id) &&
+                      (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null
+                      ? Math.min(
+                        100,
+                        ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) /
+                          d.max_score) *
+                        100,
+                      ) + '%'
+                      : '0%',
+                }"></div>
               </div>
             </div>
           </div>

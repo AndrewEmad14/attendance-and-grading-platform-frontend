@@ -150,7 +150,7 @@ onMounted(async () => {
           </div>
           <span :class="[
             'text-xs font-medium px-2 py-0.5 rounded-full border',
-            avgBalance >= 70 ? 'bg-success text-success border-success-border' :
+            avgBalance >= 70 ? 'bg-success text-success-content border-success-border' :
               avgBalance >= 40 ? 'bg-warning text-warning-content border-warning-border' :
                 'bg-danger text-danger-content border-danger-border'
           ]">
@@ -164,7 +164,7 @@ onMounted(async () => {
         <div class="w-full h-1.5 rounded-full bg-zinc-100 overflow-hidden">
           <div :class="[
             'h-full rounded-full transition-all',
-            avgBalance >= 70 ? 'bg-success' : avgBalance >= 40 ? 'bg-warning' : 'bg-danger'
+            avgBalance >= 70 ? 'bg-success-content' : avgBalance >= 40 ? 'bg-warning-content' : 'bg-danger-content'
           ]" :style="{ width: `${avgBalance}%` }" />
         </div>
       </div>
@@ -185,7 +185,8 @@ onMounted(async () => {
           <span v-if="pendingCount > 0" class="w-2 h-2 rounded-full bg-danger animate-pulse" />
         </div>
         <div>
-          <p class="text-3xl font-bold text-zinc-800 group-hover:text-danger-content transition-colors">{{ pendingCount }}</p>
+          <p class="text-3xl font-bold text-zinc-800 group-hover:text-danger-content transition-colors">{{ pendingCount
+            }}</p>
           <p class="text-xs text-zinc-700 mt-0.5">Require Review</p>
         </div>
         <div class="text-xs font-semibold text-danger-content flex items-center gap-2 transition-all">
