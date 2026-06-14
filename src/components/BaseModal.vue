@@ -31,7 +31,7 @@ function handleClose() {
     :pt="{
       root: {
         class: [
-          'bg-white border border-surface-200 shadow-xl rounded-xl max-w-lg w-full mx-4 overflow-hidden',
+          'bg-white border border-surface-200 shadow-xl rounded-xl max-w-lg w-full mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto',
           modalClass,
         ],
       },

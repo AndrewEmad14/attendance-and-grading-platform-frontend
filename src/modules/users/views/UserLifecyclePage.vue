@@ -416,11 +416,11 @@ onMounted(() => {
     <!-- Toolbar Filters -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <!-- Tabs Selector -->
-      <div class="tabs bg-surface-100 p-1 rounded-lg flex gap-1 w-fit border border-surface-200">
+      <div class="tabs bg-surface-100 p-1 rounded-lg flex flex-wrap gap-1 w-full sm:w-fit border border-surface-200">
         <button
           @click="setTab('students')"
           :class="[
-            'px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer border-none outline-none uppercase tracking-wide',
+            'px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer border-none outline-none uppercase tracking-wide flex-1 sm:flex-none',
             activeTab === 'students'
               ? 'bg-white text-surface-900 shadow-xs'
               : 'text-surface-500 hover:text-surface-800 bg-transparent',
@@ -603,7 +603,7 @@ onMounted(() => {
 
       <!-- Pagination Footer -->
       <template #headerAction>
-        <div class="flex items-center gap-3 text-xs font-semibold text-surface-600">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs font-semibold text-surface-600 mt-2 sm:mt-0">
           <span>Page {{ currentPage }} of {{ lastPage }}</span>
           <div class="flex gap-1">
             <button

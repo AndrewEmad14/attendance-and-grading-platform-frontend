@@ -9,7 +9,7 @@ const auth = useAuthStore()
 </script>
 
 <template>
-  <main class="p-6 max-w-7xl mx-auto w-full">
+  <main class="p-4 sm:p-6 max-w-7xl mx-auto w-full">
 
     <template v-if="auth.userRole === 'track_admin'">
       <SchedulingAdminPanel />

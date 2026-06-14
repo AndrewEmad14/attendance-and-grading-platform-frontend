@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { navigationConfig } from '@/router/navigation'
 import MockIdentitySwitchWidget from '@/components/MockIdentitySwitchWidget.vue'
+import ScrollToTop from '@/components/ScrollToTop.vue'
+
+const isMobileMenuOpen = ref(false)
+const toggleMobileMenu = () => { isMobileMenuOpen.value = !isMobileMenuOpen.value }
+const closeMobileMenu = () => { isMobileMenuOpen.value = false }
 
 const auth = useAuthStore()
 const route = useRoute()
@@ -43,6 +48,10 @@ const isNavActive = (itemPath: string) => {
   return route.path.startsWith(itemPath)
 }
 
+watch(() => route.path, () => {
+  closeMobileMenu()
+})
+
 async function handleLogout() {
   await auth.logout()
   router.push({ name: 'Login' })
@@ -50,12 +59,29 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface-50 flex">
+  <div class="min-h-screen bg-surface-50 flex overflow-hidden">
+    <!-- Backdrop for mobile -->
+    <div
+      v-if="isMobileMenuOpen"
+      @click="closeMobileMenu"
+      class="fixed inset-0 bg-black/50 z-40 lg:hidden cursor-pointer"
+    ></div>
+
+    <!-- Sidebar / Drawer -->
     <aside
-      class="w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0 sticky top-0 h-screen">
-      <div class="h-16 flex items-center px-6 border-b border-surface-800 gap-2">
-        <i class="pi pi-graduation-cap text-primary text-xl"></i>
-        <span class="font-bold text-lg tracking-wide text-white">ITI Portal</span>
+      :class="[
+        'w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0 h-screen fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out',
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      ]"
+    >
+      <div class="h-16 flex items-center justify-between px-6 border-b border-surface-800 gap-2">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-graduation-cap text-primary text-xl"></i>
+          <span class="font-bold text-lg tracking-wide text-white">ITI Portal</span>
+        </div>
+        <button class="lg:hidden text-surface-400 hover:text-white cursor-pointer" @click="closeMobileMenu">
+          <i class="pi pi-times text-xl"></i>
+        </button>
       </div>
       <nav class="flex-1 p-4 overflow-y-auto space-y-3">
         <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
@@ -73,12 +99,18 @@ async function handleLogout() {
       </div>
     </aside>
 
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
       <header
-        class="h-16 bg-white border-b border-surface-200 flex items-center justify-between px-8 shadow-xs shrink-0">
-        <h1 class="text-xl font-bold text-surface-800 tracking-tight">
-          {{ pageTitle }}
-        </h1>
+        class="h-16 bg-white border-b border-surface-200 flex items-center justify-between px-4 sm:px-8 shadow-xs shrink-0 z-30">
+        
+        <div class="flex items-center gap-3">
+          <button class="lg:hidden text-surface-600 hover:text-surface-900 cursor-pointer" @click="toggleMobileMenu">
+            <i class="pi pi-bars text-xl"></i>
+          </button>
+          <h1 class="text-xl font-bold text-surface-800 tracking-tight truncate">
+            {{ pageTitle }}
+          </h1>
+        </div>
 
         <div class="flex items-center gap-4">
           <!-- Logged in: profile link + avatar + logout -->
@@ -120,8 +152,11 @@ async function handleLogout() {
         </div>
       </header>
 
-      <main class="flex-1 p-8 overflow-y-auto">
-        <RouterView />
+      <main class="flex-1 p-0 overflow-y-auto relative bg-surface-50">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <RouterView />
+        </div>
+        <ScrollToTop />
       </main>
     </div>
   </div>

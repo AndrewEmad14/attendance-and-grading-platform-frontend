@@ -324,8 +324,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
 <template>
   <div v-if="auth.hasRole('track_admin')" class="flex flex-col h-full overflow-hidden bg-surface-50">
-    <!-- Top Action Bar -->
-    <header class="bg-white px-6 py-4 border-b border-surface-200 flex items-center justify-between shrink-0">
+    <header class="bg-white px-4 sm:px-6 py-3 sm:py-4 border-b border-surface-200 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-3">
       <div class="flex items-center gap-4">
         <h2 class="text-2xl font-bold text-surface-900 tracking-tight">Gradebook Overview</h2>
         <span
@@ -846,7 +845,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
         <!-- Course Cards -->
         <div v-for="course in studentDisplayedCourses" :key="course.id"
-          class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group">
+          class="bg-white border border-surface-200 rounded-2xl p-4 sm:p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group">
           <div class="flex justify-between items-start mb-8">
             <div>
               <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-700 transition-colors">
