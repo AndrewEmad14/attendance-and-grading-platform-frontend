@@ -84,7 +84,7 @@ const emit = defineEmits<{
             </span>
           </div>
           <button @click="emit('delete-group', group)"
-            class="text-danger hover:bg-danger/5 rounded px-2 py-1 text-xs font-medium transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
+            class="text-danger-content hover:bg-danger/5 rounded px-2 py-1 text-xs font-medium transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
             title="Delete group">
             <i class="pi pi-trash text-[10px]"></i>
           </button>
