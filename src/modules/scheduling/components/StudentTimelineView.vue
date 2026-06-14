@@ -74,9 +74,9 @@ const themes: {
   [key: string]: { icon: string; bg: string; text: string; dot: string }
   default: { icon: string; bg: string; text: string; dot: string }
 } = {
-  lecture: { icon: 'pi-desktop', bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
-  lab: { icon: 'pi-code', bg: 'bg-emerald-50', text: 'text-success', dot: 'bg-emerald-500' },
-  business_session: { icon: 'pi-briefcase', bg: 'bg-amber-50', text: 'text-amber-500', dot: 'bg-amber-500' },
+  lecture: { icon: 'pi-desktop', bg: 'bg-info', text: 'text-info-content', dot: 'bg-info-content' },
+  lab: { icon: 'pi-code', bg: 'bg-success', text: 'text-success-content', dot: 'bg-success-content' },
+  business_session: { icon: 'pi-briefcase', bg: 'bg-warning', text: 'text-warning-content', dot: 'bg-warning-content' },
   default: { icon: 'pi-calendar', bg: 'bg-zinc-50', text: 'text-zinc-600', dot: 'bg-zinc-400' }
 }
 const getTheme = (t: string) => themes[t] || themes.default
@@ -150,7 +150,7 @@ function closeScanner() {
             class="pi pi-qrcode" /> Record Attendance</button>
       </div>
 
-      <div v-if="error" class="p-3 bg-red-50 text-red-700 rounded-lg text-xs mb-4">{{ error }}</div>
+      <div v-if="error" class="p-3 bg-danger text-danger-content rounded-lg text-xs mb-4">{{ error }}</div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div class="lg:col-span-2">
@@ -201,14 +201,15 @@ function closeScanner() {
     </ContentCard>
 
     <div v-if="showScanner" @click="closeScanner"
-      class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fade-in">
-      <div @click.stop class="bg-white rounded-xl p-5 w-full max-w-sm space-y-3 shadow-xl">
+      class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fade-in cursor-pointer">
+      <div @click.stop class="bg-white rounded-xl p-5 w-full max-w-sm space-y-3 shadow-xl cursor-pointer">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-zinc-800">Scan QR Code</h3><button @click="closeScanner"
             class="cursor-pointer text-zinc-400 hover:text-zinc-600"><i class="pi pi-times" /></button>
         </div>
-        <div v-if="scanError" class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">{{ scanError
-        }}</div>
+        <div v-if="scanError" class="rounded-lg border border-danger-border bg-danger p-3 text-xs text-danger-content">
+          {{ scanError
+          }}</div>
         <video v-else id="qr-video" class="w-full rounded-lg bg-zinc-950 aspect-square object-cover" muted
           playsinline />
         <p class="text-xs text-zinc-400 text-center">Center the QR code in the frame to record attendance</p>

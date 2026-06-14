@@ -26,13 +26,13 @@ const formatRole = (role: string) => {
 const getRoleBadgeClass = (role: string) => {
   switch (role) {
     case 'branch_manager':
-      return 'bg-blue-50 text-blue-700 border border-blue-200'
+      return 'bg-info text-info-content border border-info-border'
     case 'track_admin':
       return 'bg-purple-50 text-purple-700 border border-purple-200'
     case 'instructor':
-      return 'bg-amber-50 text-amber-700 border border-amber-200'
+      return 'bg-warning text-warning-content border border-warning-border'
     case 'student':
-      return 'bg-green-50 text-green-700 border border-green-200'
+      return 'bg-success text-success-content border border-success-border'
     default:
       return 'bg-zinc-50 text-zinc-700 border border-zinc-200'
   }
@@ -74,7 +74,7 @@ const formatDate = (dateString: string | null | undefined) => {
           <i class="pi pi-envelope text-xs"></i>
           <span>{{ user.email }}</span>
         </p>
-        <p v-if="user.expires_at" class="text-xs text-red-600 font-medium">
+        <p v-if="user.expires_at" class="text-xs text-danger-content font-medium">
           Account Access Expires: {{ formatDate(user.expires_at) }}
         </p>
       </div>
@@ -115,8 +115,8 @@ const formatDate = (dateString: string | null | undefined) => {
                 <div :class="[
                   'px-4 py-2 rounded-lg text-lg font-black tabular-nums border',
                   user.student_profile.attendance_balance >= 0 
-                    ? 'bg-green-50 text-green-700 border-green-200' 
-                    : 'bg-red-50 text-red-700 border-red-200'
+                    ? 'bg-success text-success-content border-success-border' 
+                    : 'bg-danger text-danger-content border-danger-border'
                 ]">
                   {{ user.student_profile.attendance_balance }} hrs
                 </div>
@@ -136,7 +136,7 @@ const formatDate = (dateString: string | null | undefined) => {
 
           <!-- Notes Card -->
           <ContentCard v-if="user.student_profile.notes" title="Notes & Remarks" subtitle="Confidential files and remarks logged by facilitators">
-            <div class="p-4 rounded-lg bg-yellow-50/50 border border-yellow-200/80 text-sm text-surface-700 whitespace-pre-line leading-relaxed">
+            <div class="p-4 rounded-lg bg-warning border border-warning-border text-sm text-surface-700 whitespace-pre-line leading-relaxed">
               {{ user.student_profile.notes }}
             </div>
           </ContentCard>
@@ -179,7 +179,7 @@ const formatDate = (dateString: string | null | undefined) => {
                     {{ item.cohort?.track?.name || 'Unassigned Track' }}
                   </p>
                 </div>
-                <span class="badge badge-sm bg-green-50 border-green-200 text-green-700" v-if="item.cohort?.is_active">Active</span>
+                <span class="badge badge-sm bg-success border-success-border text-success-content" v-if="item.cohort?.is_active">Active</span>
                 <span class="badge badge-sm bg-surface-200 border-surface-300 text-surface-600" v-else>Inactive</span>
               </div>
             </div>

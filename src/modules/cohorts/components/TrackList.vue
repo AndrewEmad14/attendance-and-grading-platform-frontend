@@ -23,7 +23,7 @@ const emit = defineEmits<{
     <template #headerAction>
       <button
         @click="emit('create')"
-        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2"
+        class="px-3 py-2 rounded text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer"
       >
         <i class="pi pi-plus text-[10px]"></i>
         New Track
@@ -58,7 +58,7 @@ const emit = defineEmits<{
           </div>
           <button
             @click.stop="emit('edit', track)"
-            class="text-surface-400 hover:text-primary transition-colors shrink-0"
+            class="text-surface-400 hover:text-primary transition-colors shrink-0 cursor-pointer"
             title="Edit track"
           >
             <i class="pi pi-pencil text-xs"></i>

@@ -18,9 +18,9 @@ const qrUrl = computed(() => {
 })
 
 const expiryColor = computed(() => {
-  if (secondsLeft.value > 60) return 'text-emerald-600'
-  if (secondsLeft.value > 20) return 'text-amber-500'
-  return 'text-red-600'
+  if (secondsLeft.value > 60) return 'text-success-content'
+  if (secondsLeft.value > 20) return 'text-warning-content'
+  return 'text-danger-content'
 })
 
 function startCountdown() {
@@ -71,7 +71,7 @@ const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSta
     <!-- Error -->
     <div
       v-else-if="error"
-      class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 text-center"
+      class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content text-center"
     >
       <i class="pi pi-exclamation-triangle block text-xl mb-1" />
       {{ error }}
@@ -102,7 +102,7 @@ const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSta
 
       <button
         @click="fetchQr"
-        class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 hover:bg-zinc-50 transition"
+        class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-600 hover:bg-zinc-50 transition cursor-pointer"
       >
         <i class="pi pi-refresh" /> Refresh
       </button>

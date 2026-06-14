@@ -340,9 +340,9 @@ const outcomesBarOptions = {
 </script>
 
 <template>
-  <div class="space-y-6 bg-slate-50 min-h-screen p-6 -m-8">
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+  <div class="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 bg-surface-50 min-h-screen">
+    <!-- Header Configuration & Global Filters -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <div class="text-xs font-semibold tracking-wider text-slate-500 uppercase">
           BRANCH OVERVIEW <span class="mx-1 text-slate-300">&rsaquo;</span>
@@ -353,10 +353,10 @@ const outcomesBarOptions = {
           Comparing performance metrics across all active cohorts.
         </p>
       </div>
-      <button class="btn btn-outline btn-sm font-semibold text-slate-700 bg-white border-slate-300">
+      <button class="btn btn-outline btn-sm font-semibold text-slate-700 bg-white border-slate-300 cursor-pointer">
         Q2 2026 &nbsp;▾
       </button>
-    </div>
+    </header>
 
     <!-- ── Loading State ──────────────────────────────── -->
     <template v-if="isLoading">
@@ -374,8 +374,8 @@ const outcomesBarOptions = {
     <!-- ── Error State ────────────────────────────────── -->
     <template v-else-if="error">
       <div
-        class="alert alert-error bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-center gap-3">
-        <i class="pi pi-exclamation-triangle text-xl text-red-600"></i>
+        class="alert alert-error bg-danger border border-danger-border text-danger-content p-4 rounded-lg flex items-center gap-3">
+        <i class="pi pi-exclamation-triangle text-xl text-danger-content"></i>
         <span>{{ error }}</span>
       </div>
     </template>
@@ -430,7 +430,7 @@ const outcomesBarOptions = {
             </h3>
             <div class="relative filter-dropdown-container">
               <button @click="isDropdownOpen = !isDropdownOpen"
-                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none">
+                class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold animate-none cursor-pointer">
                 <i class="pi pi-filter text-[10px]"></i>
                 Filter Tracks ({{ selectedTrackIds.length }}/3) &nbsp;▾
               </button>
@@ -480,7 +480,7 @@ const outcomesBarOptions = {
               <!-- Track selector dropdown -->
               <div class="relative metric-track-dropdown-container">
                 <button @click="isMetricTrackDropdownOpen = !isMetricTrackDropdownOpen"
-                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap">
+                  class="btn btn-outline btn-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 flex items-center gap-1 font-semibold whitespace-nowrap cursor-pointer">
                   <i class="pi pi-filter text-[10px]"></i>
                   <span class="hidden sm:inline">Filter Tracks</span>
                   <span class="sm:hidden">Tracks</span>

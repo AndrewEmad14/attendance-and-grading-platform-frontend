@@ -46,14 +46,14 @@ onMounted(async () => {
       <div v-for="n in 3" :key="n" class="h-16 rounded-xl bg-zinc-100 animate-pulse" />
     </div>
 
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-else-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
     <template v-else-if="engagement">
       <!-- Session header -->
       <div class="rounded-xl border border-zinc-200 bg-white p-5">
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">
               {{ engagement.display_context }}
@@ -99,10 +99,10 @@ onMounted(async () => {
       <!-- QR Fullscreen overlay -->
       <Teleport to="body">
         <div v-if="qrFullscreen"
-          class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-6 min-h-screen"
+          class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-6 min-h-screen cursor-pointer"
           @click="qrFullscreen = false">
           <p class="text-white text-sm font-medium tracking-wide">{{ engagement.display_title }}</p>
-          <div class="bg-white rounded-2xl p-10 w-full max-w-sm" @click.stop>
+          <div class="bg-white rounded-2xl p-10 w-full max-w-sm cursor-pointer" @click.stop>
             <QrCodeDisplay :engagement-id="engagement.id" />
           </div>
           <button @click="qrFullscreen = false"

@@ -11,7 +11,7 @@ defineProps<Props>()
 
 <template>
   <RouterLink :to="to"
-    class="card bg-white border border-surface-200 shadow-xs p-5 flex items-start gap-4 transition-all duration-200 hover:border-primary hover:shadow-md hover:shadow-primary/10 group">
+    class="card bg-white border border-surface-200 shadow-xs p-5 flex items-start gap-4 transition-all duration-200 hover:border-primary hover:shadow-md hover:shadow-primary/10 group cursor-pointer">
     <div
       class="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
       <i :class="icon"></i>

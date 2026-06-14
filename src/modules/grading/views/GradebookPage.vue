@@ -226,11 +226,11 @@ const instrDistBuckets = computed(() => {
   const dist = (gradingStore.analytics as any)?.grade_distribution
   if (!dist) return []
   const buckets = [
-    { label: '0–59', key: '0_59', color: 'bg-red-300' },
-    { label: '60–69', key: '60_69', color: 'bg-yellow-200' },
-    { label: '70–79', key: '70_79', color: 'bg-blue-200' },
-    { label: '80–89', key: '80_89', color: 'bg-green-300' },
-    { label: '90–100', key: '90_100', color: 'bg-green-500' },
+    { label: '0–59', key: '0_59', color: 'bg-danger' },
+    { label: '60–69', key: '60_69', color: 'bg-warning' },
+    { label: '70–79', key: '70_79', color: 'bg-info' },
+    { label: '80–89', key: '80_89', color: 'bg-success' },
+    { label: '90–100', key: '90_100', color: 'bg-success' },
   ]
   const maxCount = Math.max(...buckets.map((b) => dist[b.key] ?? 0), 1)
   return buckets.map((b) => ({
@@ -324,12 +324,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
 <template>
   <div v-if="auth.hasRole('track_admin')" class="flex flex-col h-full overflow-hidden bg-surface-50">
-    <!-- Top Action Bar -->
-    <header class="bg-white px-6 py-4 border-b border-surface-200 flex items-center justify-between shrink-0">
+    <header class="bg-white px-4 sm:px-6 py-3 sm:py-4 border-b border-surface-200 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-3">
       <div class="flex items-center gap-4">
         <h2 class="text-2xl font-bold text-surface-900 tracking-tight">Gradebook Overview</h2>
         <span
-          class="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded font-bold text-[10px] uppercase tracking-wider border border-blue-200">Track
+          class="bg-info text-info-content px-2.5 py-0.5 rounded font-bold text-[10px] uppercase tracking-wider border border-info-border">Track
           Admin</span>
       </div>
       <div class="flex items-center gap-3">
@@ -411,7 +410,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               </th>
 
               <th
-                class="px-4 py-3 text-xs font-bold text-primary-700 text-right w-32 bg-blue-50 border-l border-surface-300 uppercase tracking-wider shadow-[-4px_0_12px_rgba(0,0,0,0.02)] sticky right-0">
+                class="px-4 py-3 text-xs font-bold text-primary-700 text-right w-32 bg-info border-l border-surface-300 uppercase tracking-wider shadow-[-4px_0_12px_rgba(0,0,0,0.02)] sticky right-0">
                 Course Total
                 <div class="text-[9px] text-primary-600/70 font-normal mt-0.5 normal-case">
                   Out of 100%
@@ -434,9 +433,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               <tr v-for="student in students" :key="student.id"
                 class="hover:border hover:border-primary-400 hover:-outline-offset-1 border-b border-surface-200 h-10 group">
                 <td
-                  class="px-4 py-1.5 text-sm text-surface-900 border-r border-surface-300 group-hover:border-transparent sticky left-0 bg-white group-hover:bg-blue-50/50 shadow-[1px_0_0_#cbd5e1]">
+                  class="px-4 py-1.5 text-sm text-surface-900 border-r border-surface-300 group-hover:border-transparent sticky left-0 bg-white group-hover:bg-info/90 shadow-[1px_0_0_#cbd5e1]">
                   <RouterLink :to="{ name: 'StudentTags', params: { studentId: student.id } }"
-                    class="text-primary-700 hover:underline font-medium">
+                    class="text-primary-700 hover:underline font-medium cursor-pointer">
                     {{ student.name }}
                   </RouterLink>
                 </td>
@@ -455,7 +454,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   " class="flex items-center justify-end gap-1">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
@@ -464,13 +463,13 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                         class="w-14 text-right border-b border-surface-400 bg-transparent focus:border-primary-500 focus:outline-none px-1 py-0.5 text-sm font-mono text-surface-900"
                         @keydown.enter="saveGrade(getSub(student.id, d.id)!, d.id)" />
                       <button
-                        class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors"
+                        class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors cursor-pointer"
                         title="Save" @click="saveGrade(getSub(student.id, d.id)!, d.id)">
                         <i class="pi pi-check text-[14px]"></i>
                       </button>
                     </template>
                     <template v-else>
-                      <span class="text-amber-500 italic text-[11px] tracking-tight mr-1"
+                      <span class="text-warning-content italic text-[11px] tracking-tight mr-1"
                         title="Waiting for instructor to grade">Pending</span>
                     </template>
                   </span>
@@ -480,17 +479,17 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     class="flex items-center justify-end gap-1">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
                     </template>
-                    <i class="pi pi-bolt text-amber-500 text-[12px]" title="Manual Override"></i>
-                    <span class="font-bold text-blue-700 ml-1">{{
+                    <i class="pi pi-bolt text-warning-content text-[12px]" title="Manual Override"></i>
+                    <span class="font-bold text-info-content ml-1">{{
                       getSub(student.id, d.id)!.override_score
                       }}</span>
                     <button
-                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1"
+                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1 cursor-pointer"
                       title="Edit Override" @click="openOverride(getSub(student.id, d.id)!, d, student.name)">
                       <i class="pi pi-pencil text-[12px]"></i>
                     </button>
@@ -500,19 +499,19 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   <span v-else class="flex items-center justify-end gap-1 group/grade">
                     <template v-if="d.type !== 'lab'">
                       <button
-                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors"
+                        class="text-primary-600 hover:text-primary-800 mr-2 flex items-center justify-center p-1 rounded hover:bg-primary-50 transition-colors cursor-pointer"
                         title="View Submission" @click="downloadSub(getSub(student.id, d.id)!)">
                         <i class="pi pi-external-link text-[12px]"></i>
                       </button>
                     </template>
                     <span class="text-surface-900" :class="isLow(getSub(student.id, d.id)!.raw_score!, d.max_score)
-                        ? 'text-red-600 font-bold'
-                        : ''
+                      ? 'text-danger-content font-bold'
+                      : ''
                       ">
                       {{ getSub(student.id, d.id)!.raw_score }}
                     </span>
                     <button
-                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1"
+                      class="inline-flex items-center justify-center text-primary-500 hover:bg-primary-50 hover:text-primary-700 rounded p-1 transition-colors ml-1 cursor-pointer"
                       title="Override Grade" @click="openOverride(getSub(student.id, d.id)!, d, student.name)">
                       <i class="pi pi-pencil text-[12px]"></i>
                     </button>
@@ -650,11 +649,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
           </thead>
 
           <tbody>
-            <tr v-for="sub in instrSubmissionsFiltered" :key="sub.id" class="hover:bg-blue-50 group">
+            <tr v-for="sub in instrSubmissionsFiltered" :key="sub.id" class="hover:bg-info/90 group">
               <!-- Student name — links to StudentTagsPage (TASK-003 route) -->
-              <td class="sticky left-0 bg-white group-hover:bg-blue-50 font-medium text-xs">
+              <td class="sticky left-0 bg-white group-hover:bg-info/90 font-medium text-xs">
                 <RouterLink :to="{ name: 'StudentTags', params: { studentId: sub.student_id } }"
-                  class="text-primary hover:underline">
+                  class="text-primary hover:underline cursor-pointer">
                   <!-- TODO: confirm field name from real SubmissionResource response -->
                   {{
                     (sub as any).student?.name ?? (sub as any).student_name ?? `#${sub.student_id}`
@@ -666,12 +665,13 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               <td class="text-xs">
                 <a v-if="sub.submission_type === 'link' || sub.submission_type === 'url'"
                   :href="sub.submission_path || '#'" target="_blank"
-                  class="text-blue-600 hover:underline truncate inline-block max-w-[150px]"
+                  class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
                   title="Open Submission Link">
                   <i class="pi pi-external-link text-[10px] mr-1"></i> View Link
                 </a>
                 <a v-else-if="sub.submission_type === 'file'" :href="`/api/submissions/${sub.id}/download`"
-                  target="_blank" class="text-blue-600 hover:underline truncate inline-block max-w-[150px]"
+                  target="_blank"
+                  class="text-info-content hover:underline truncate inline-block max-w-[150px] cursor-pointer"
                   title="Download File">
                   <i class="pi pi-download text-[10px] mr-1"></i> Download
                 </a>
@@ -698,7 +698,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                       class="w-14 text-right border-b border-gray-400 bg-transparent focus:border-primary focus:outline-none px-1 py-0.5 text-sm font-mono text-gray-900"
                       @keydown.enter="instrSaveGrade(sub)" />
                     <button
-                      class="inline-flex items-center justify-center text-primary hover:bg-primary/10 rounded p-1 transition-colors"
+                      class="inline-flex items-center justify-center text-primary hover:bg-primary/10 rounded p-1 transition-colors cursor-pointer"
                       title="Save" @click="instrSaveGrade(sub)">
                       <i class="pi pi-check text-[14px]"></i>
                     </button>
@@ -710,8 +710,8 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
                 <!-- State 3: Graded — show score, highlight if low -->
                 <span v-else :class="isLow(sub.raw_score!, instrSelectedDeliverable?.max_score ?? 100)
-                    ? 'text-red-600 font-bold'
-                    : 'text-gray-900 font-bold'
+                  ? 'text-danger-content font-bold'
+                  : 'text-gray-900 font-bold'
                   ">
                   {{ sub.raw_score }}
                 </span>
@@ -797,7 +797,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
             </div>
             <h2 class="text-lg font-bold text-surface-900">{{ auth.currentUser?.name }}</h2>
             <span
-              class="bg-blue-50 text-blue-700 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md">Student</span>
+              class="bg-info text-info-content font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md">Student</span>
             <p class="text-surface-500 text-sm mt-1">
               {{ gradingStore.courses.length }} Active Courses
             </p>
@@ -806,11 +806,11 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
           <div class="space-y-1">
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Overall Courses Total</span>
-              <span class="font-mono font-bold text-primary-700 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
+              <span class="font-mono font-bold text-surface-800 text-base">{{ overallCoursesTotal.toFixed(1) }}%</span>
             </div>
             <div class="flex justify-between items-center py-3 border-b border-surface-100">
               <span class="text-surface-500 text-sm">Courses Status</span>
-              <span class="font-bold text-sm" :class="isAtRisk ? 'text-red-600' : 'text-green-600'">
+              <span class="font-bold text-sm" :class="isAtRisk ? 'text-danger-content' : 'text-success-content'">
                 {{ isAtRisk ? 'At Risk' : 'On Track' }}
               </span>
             </div>
@@ -845,7 +845,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
 
         <!-- Course Cards -->
         <div v-for="course in studentDisplayedCourses" :key="course.id"
-          class="bg-white border border-surface-200 rounded-2xl p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group">
+          class="bg-white border border-surface-200 rounded-2xl p-4 sm:p-6 md:p-8 hover:border-primary-300 transition-colors shadow-sm group">
           <div class="flex justify-between items-start mb-8">
             <div>
               <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-700 transition-colors">
@@ -871,9 +871,9 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                     d.name
                     }}</span>
                   <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded" :class="{
-                    'bg-blue-50 text-blue-600': d.type === 'lab',
+                    'bg-info text-info-content': d.type === 'lab',
                     'bg-purple-50 text-purple-600': d.type === 'exam',
-                    'bg-emerald-50 text-emerald-600': d.type === 'project',
+                    'bg-success text-success-content': d.type === 'project',
                   }">{{ d.type }}</span>
                 </div>
                 <span class="font-mono text-[13px] text-surface-600">
@@ -884,7 +884,7 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
                   <template v-else-if="
                     (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) === null
                   ">
-                    <span class="text-amber-500 italic mr-1">Pending</span> / {{ d.max_score }} pts
+                    <span class="text-warning-content italic mr-1">Pending</span> / {{ d.max_score }} pts
                   </template>
                   <template v-else>
                     <span class="font-bold text-surface-900">
@@ -896,23 +896,23 @@ const isAtRisk = computed(() => gradingStore.courses.some((c) => courseTotal(c) 
               </div>
               <div class="w-full bg-surface-100 h-2.5 rounded-full overflow-hidden shadow-inner relative">
                 <div class="h-full rounded-full transition-all duration-700 ease-out" :class="{
-                  'bg-blue-500': d.type === 'lab',
+                  'bg-info': d.type === 'lab',
                   'bg-purple-500': d.type === 'exam',
-                  'bg-emerald-500': d.type === 'project',
+                  'bg-success': d.type === 'project',
                   'opacity-50':
                     (studentSub(d.id)?.override_score ?? studentSub(d.id)?.raw_score) === null,
                 }" :style="{
-                    width:
-                      studentSub(d.id) &&
-                        (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null
-                        ? Math.min(
-                          100,
-                          ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) /
-                            d.max_score) *
-                          100,
-                        ) + '%'
-                        : '0%',
-                  }"></div>
+                  width:
+                    studentSub(d.id) &&
+                      (studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score) != null
+                      ? Math.min(
+                        100,
+                        ((studentSub(d.id)!.override_score ?? studentSub(d.id)!.raw_score!) /
+                          d.max_score) *
+                        100,
+                      ) + '%'
+                      : '0%',
+                }"></div>
               </div>
             </div>
           </div>

@@ -53,9 +53,9 @@ onMounted(async () => {
     <!-- Error State -->
     <template v-else-if="error">
       <div
-        class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
+        class="flex items-center gap-3 p-4 bg-danger border border-danger-border text-danger-content rounded-lg text-sm"
       >
-        <i class="pi pi-exclamation-triangle text-lg text-red-500"></i>
+        <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
       </div>
     </template>
@@ -94,7 +94,7 @@ onMounted(async () => {
                   class="badge badge-xs font-semibold px-2 py-1"
                   :class="
                     cohort.is_active
-                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                      ? 'bg-success text-success-content border-success-border'
                       : 'bg-surface-100 text-surface-500 border-surface-200'
                   "
                 >

@@ -67,14 +67,14 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const TYPE_CLASSES: Record<string, string> = {
-  lecture: 'bg-blue-100 text-blue-700 border-blue-200',
-  lab: 'bg-emerald-100 text-success border-emerald-200',
+  lecture: 'bg-info text-info-content border-info-border',
+  lab: 'bg-success text-success border-success-border',
   business_session: 'bg-purple-100 text-purple-700 border-purple-200',
 }
 
 const STATUS_CLASSES: Record<string, string> = {
-  forwarded: 'bg-emerald-100 text-success border-emerald-200',
-  pending: 'bg-amber-100 text-amber-700 border-amber-200',
+  forwarded: 'bg-success text-success border-success-border',
+  pending: 'bg-warning text-warning-content border-warning-border',
   in_progress: 'bg-surface-100 text-surface-600 border-surface-200',
 }
 
@@ -90,7 +90,7 @@ const STATUS_LABELS: Record<string, string> = {
     <!-- Back navigation -->
     <div>
       <button
-        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3"
+        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3 cursor-pointer"
         @click="router.push('/finance')">
         <i class="pi pi-chevron-left text-[10px]"></i>
         Back to Billing Summary
@@ -107,8 +107,8 @@ const STATUS_LABELS: Record<string, string> = {
         <div class="flex flex-wrap items-center gap-3">
           <h2 class="text-2xl font-bold text-surface-900">{{ detail.name }}</h2>
           <span class="badge badge-sm font-semibold uppercase tracking-wider px-2 py-1" :class="detail.compensation_type === 'internal'
-              ? 'bg-blue-100 text-blue-700 border-blue-200'
-              : 'bg-amber-100 text-amber-700 border-amber-200'
+              ? 'bg-info text-info-content border-info-border'
+              : 'bg-warning text-warning-content border-warning-border'
             ">
             {{ detail.compensation_type }}
           </span>
@@ -124,10 +124,10 @@ const STATUS_LABELS: Record<string, string> = {
 
     <!-- ── Initial Error ── -->
     <template v-if="error && !detail">
-      <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-        <i class="pi pi-exclamation-triangle text-lg text-red-500"></i>
+      <div class="flex items-center gap-3 p-4 bg-danger border border-danger-border text-danger-content rounded-lg text-sm">
+        <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
-        <button class="ml-auto btn btn-xs btn-outline border-red-300 text-red-600"
+        <button class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content cursor-pointer"
           @click="loadDetail(staffProfileId, currentPage, perPage)">
           Retry
         </button>
@@ -203,10 +203,10 @@ const STATUS_LABELS: Record<string, string> = {
 
         <!-- Localized error if a sub-page load fails -->
         <div v-if="error && detail"
-          class="mx-4 mt-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded flex items-center gap-2">
+          class="mx-4 mt-3 p-3 bg-danger border border-danger-border text-danger-content text-xs rounded flex items-center gap-2">
           <i class="pi pi-exclamation-triangle"></i>
           <span>{{ error }}</span>
-          <button class="btn btn-xs btn-outline border-red-300 text-red-600 ml-auto"
+          <button class="btn btn-xs btn-outline border-danger-border text-danger-content ml-auto cursor-pointer"
             @click="loadDetail(staffProfileId, currentPage, perPage)">
             Retry
           </button>
@@ -290,7 +290,7 @@ const STATUS_LABELS: Record<string, string> = {
               @click="goToPage(currentPage - 1)">
               <i class="pi pi-chevron-left text-[10px]"></i>
             </button>
-            <button v-for="p in detail.engagements.last_page" :key="p" class="btn btn-xs" :class="p === currentPage
+            <button v-for="p in detail.engagements.last_page" :key="p" class="btn btn-xs cursor-pointer" :class="p === currentPage
                 ? 'btn-primary text-white'
                 : 'btn-outline border-surface-300 text-surface-600'
               " @click="goToPage(p)">

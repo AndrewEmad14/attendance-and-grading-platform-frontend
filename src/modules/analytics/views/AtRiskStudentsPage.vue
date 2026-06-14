@@ -114,7 +114,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
     <!-- Back link + breadcrumb -->
     <div>
       <button
-        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3"
+        class="flex items-center gap-1.5 text-xs font-semibold text-surface-500 hover:text-primary transition-colors mb-3 cursor-pointer"
         @click="router.push('/analytics/at-risk')"
       >
         <i class="pi pi-chevron-left text-[10px]"></i>
@@ -145,12 +145,12 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
     <!-- Error State -->
     <template v-else-if="error">
       <div
-        class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
+        class="flex items-center gap-3 p-4 bg-danger border border-danger-border text-danger-content rounded-lg text-sm"
       >
-        <i class="pi pi-exclamation-triangle text-lg text-red-500"></i>
+        <i class="pi pi-exclamation-triangle text-lg text-danger-content"></i>
         <span>{{ error }}</span>
         <button
-          class="ml-auto btn btn-xs btn-outline border-red-300 text-red-600"
+          class="ml-auto btn btn-xs btn-outline border-danger-border text-danger-content cursor-pointer"
           @click="loadStudents(cohortId)"
         >
           Retry
@@ -168,22 +168,23 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
         </div>
         <div class="bg-white border border-surface-200 p-4 rounded-lg shadow-xs">
           <div class="text-[11px] font-bold tracking-widest text-surface-500 uppercase">Attendance Only</div>
-          <div class="text-3xl font-extrabold text-amber-600 mt-1">{{ attendanceOnlyCount }}</div>
+          <div class="text-3xl font-extrabold text-warning-content mt-1">{{ attendanceOnlyCount }}</div>
         </div>
         <div class="bg-white border border-surface-200 p-4 rounded-lg shadow-xs">
           <div class="text-[11px] font-bold tracking-widest text-surface-500 uppercase">Grade Only</div>
-          <div class="text-3xl font-extrabold text-orange-600 mt-1">{{ gradeOnlyCount }}</div>
+          <div class="text-3xl font-extrabold text-warning-content mt-1">{{ gradeOnlyCount }}</div>
         </div>
         <div class="bg-white border border-surface-200 p-4 rounded-lg shadow-xs">
           <div class="text-[11px] font-bold tracking-widest text-surface-500 uppercase">Both Risks</div>
-          <div class="text-3xl font-extrabold text-red-600 mt-1">{{ bothCount }}</div>
+          <div class="text-3xl font-extrabold text-danger-content mt-1">{{ bothCount }}</div>
         </div>
       </div>
 
       <!-- At-Risk Students Table -->
       <ContentCard title="At-Risk Students" :isTableContainer="true">
         <template #headerAction>
-          <div class="flex items-center gap-2">
+          <!-- Filters & Search -->
+          <div class="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0">
             <!-- Risk reason filter -->
             <select
               v-model="selectedRisk"
@@ -202,7 +203,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search name or email…"
-                class="input input-bordered input-xs pl-7 w-52 bg-white text-surface-800 border-surface-300"
+                class="input input-bordered input-xs pl-7 w-full sm:w-52 bg-white text-surface-800 border-surface-300"
               />
             </div>
           </div>
@@ -211,7 +212,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
         <!-- Empty State -->
         <template v-if="students.length === 0">
           <div class="flex flex-col items-center justify-center py-16 text-center text-surface-400">
-            <i class="pi pi-check-circle text-5xl mb-4 text-emerald-400"></i>
+            <i class="pi pi-check-circle text-5xl mb-4 text-success-content"></i>
             <p class="text-base font-semibold text-surface-700">No students at risk</p>
             <p class="text-sm mt-1">All students in this cohort are currently meeting attendance and grade requirements.</p>
           </div>
@@ -252,7 +253,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                 <td class="py-3 px-4 text-right font-mono">
                   <span
                     class="inline-flex items-center gap-1 font-semibold"
-                    :class="student.attendance_balance < 150 ? 'text-red-600' : 'text-surface-800'"
+                    :class="student.attendance_balance < 150 ? 'text-danger-content' : 'text-surface-800'"
                   >
                     <i
                       v-if="student.attendance_balance < 150"
@@ -267,13 +268,13 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                   <div class="flex flex-wrap gap-1">
                     <span
                       v-if="student.at_risk_attendance"
-                      class="badge badge-xs font-semibold px-2 py-1 bg-amber-100 text-amber-700 border-amber-200"
+                      class="badge badge-xs font-semibold px-2 py-1 bg-warning text-warning-content border-warning-border"
                     >
                       Attendance
                     </span>
                     <span
                       v-if="student.at_risk_grade"
-                      class="badge badge-xs font-semibold px-2 py-1 bg-red-100 text-red-700 border-red-200"
+                      class="badge badge-xs font-semibold px-2 py-1 bg-danger text-danger-content border-danger-border"
                     >
                       Grade
                     </span>
@@ -290,13 +291,13 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                       :title="course.course_name"
                     >
                       {{ course.course_name.split(' ').slice(0, 2).join(' ') }}
-                      <span class="text-red-500 font-bold">— {{ course.score }}</span>
+                      <span class="text-danger-content font-bold">— {{ course.score }}</span>
                     </span>
 
                     <!-- +N more / collapse toggle -->
                     <button
                       v-if="student.failing_courses.length > 2"
-                      class="text-xs font-semibold text-primary hover:underline whitespace-nowrap"
+                      class="text-xs font-semibold text-primary hover:underline whitespace-nowrap cursor-pointer"
                       @click.stop="toggleCourses(student.student_id)"
                     >
                       {{
@@ -353,7 +354,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
             <button
               v-for="p in totalPages"
               :key="p"
-              class="btn btn-xs"
+              class="btn btn-xs cursor-pointer"
               :class="
                 p === currentPage
                   ? 'btn-primary text-white'

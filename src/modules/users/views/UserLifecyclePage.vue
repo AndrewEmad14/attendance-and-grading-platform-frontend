@@ -416,11 +416,11 @@ onMounted(() => {
     <!-- Toolbar Filters -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <!-- Tabs Selector -->
-      <div class="tabs bg-surface-100 p-1 rounded-lg flex gap-1 w-fit border border-surface-200">
+      <div class="tabs bg-surface-100 p-1 rounded-lg flex flex-wrap gap-1 w-full sm:w-fit border border-surface-200">
         <button
           @click="setTab('students')"
           :class="[
-            'px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer border-none outline-none uppercase tracking-wide',
+            'px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer border-none outline-none uppercase tracking-wide flex-1 sm:flex-none',
             activeTab === 'students'
               ? 'bg-white text-surface-900 shadow-xs'
               : 'text-surface-500 hover:text-surface-800 bg-transparent',
@@ -544,8 +544,8 @@ onMounted(() => {
                 <span :class="[
                   'px-2.5 py-1 text-[11px] font-extrabold rounded-full border tabular-nums',
                   (userItem.student_profile?.attendance_balance ?? 0) >= 0 
-                    ? 'bg-green-50 text-green-700 border-green-200' 
-                    : 'bg-red-50 text-red-700 border-red-200'
+                    ? 'bg-success text-success-content border-success-border' 
+                    : 'bg-danger text-danger-content border-danger-border'
                 ]">
                   {{ userItem.student_profile?.attendance_balance ?? 0 }}
                 </span>
@@ -582,14 +582,14 @@ onMounted(() => {
                 <div class="flex justify-end gap-2">
                   <button
                     @click="openEditModal(userItem)"
-                    class="p-1.5 text-surface-500 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-md transition-all cursor-pointer"
+                    class="p-1.5 text-surface-500 hover:text-info-content hover:bg-info/90 border border-transparent hover:border-info-border rounded-md transition-all cursor-pointer"
                     title="Edit User Profile"
                   >
                     <i class="pi pi-pencil text-xs"></i>
                   </button>
                   <button
                     @click="triggerDelete(userItem)"
-                    class="p-1.5 text-surface-500 hover:text-red-650 hover:bg-red-50 border border-transparent hover:border-red-150 rounded-md transition-all cursor-pointer"
+                    class="p-1.5 text-surface-500 hover:text-danger-content hover:bg-danger/90 border border-transparent hover:border-danger-border rounded-md transition-all cursor-pointer"
                     title="Delete User"
                   >
                     <i class="pi pi-trash text-xs"></i>
@@ -603,7 +603,7 @@ onMounted(() => {
 
       <!-- Pagination Footer -->
       <template #headerAction>
-        <div class="flex items-center gap-3 text-xs font-semibold text-surface-600">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 text-xs font-semibold text-surface-600 mt-2 sm:mt-0">
           <span>Page {{ currentPage }} of {{ lastPage }}</span>
           <div class="flex gap-1">
             <button
@@ -645,7 +645,7 @@ onMounted(() => {
         <form @submit.prevent="handleSubmit" class="flex flex-col flex-1 min-h-0 text-zinc-900 bg-white">
           <div class="p-6 overflow-y-auto space-y-4 flex-1 text-xs text-zinc-800">
             
-            <div v-if="formErrors.general" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-center gap-2 font-medium">
+            <div v-if="formErrors.general" class="p-3 bg-danger border border-danger-border text-danger-content rounded-md flex items-center gap-2 font-medium">
               <i class="pi pi-exclamation-circle text-sm"></i>
               <span>{{ formErrors.general }}</span>
             </div>
@@ -660,9 +660,9 @@ onMounted(() => {
                 required
                 placeholder="Enter full name"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                :class="{ 'border-red-500': formErrors.name }"
+                :class="{ 'border-danger-border': formErrors.name }"
               />
-              <p v-if="formErrors.name" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.name }}</p>
+              <p v-if="formErrors.name" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.name }}</p>
             </div>
 
             <!-- Email Input -->
@@ -675,9 +675,9 @@ onMounted(() => {
                 required
                 placeholder="Enter email address"
                 class="w-full pl-3 pr-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                :class="{ 'border-red-500': formErrors.email }"
+                :class="{ 'border-danger-border': formErrors.email }"
               />
-              <p v-if="formErrors.email" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.email }}</p>
+              <p v-if="formErrors.email" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.email }}</p>
             </div>
 
             <!-- System Role (Drop-down, restricted on create, disabled on edit) -->
@@ -693,7 +693,7 @@ onMounted(() => {
                   {{ roleOption.label }}
                 </option>
               </select>
-              <p v-if="formErrors.role" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.role }}</p>
+              <p v-if="formErrors.role" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.role }}</p>
             </div>
 
             <!-- Expiry date input -->
@@ -718,14 +718,14 @@ onMounted(() => {
                   v-model="form.cohort_id"
                   @change="handleCohortChange"
                   class="w-full px-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] bg-white text-zinc-900"
-                  :class="{ 'border-red-500': formErrors.cohort_id }"
+                  :class="{ 'border-danger-border': formErrors.cohort_id }"
                 >
                   <option :value="undefined" disabled class="text-zinc-900 bg-white">Select active cohort roster...</option>
                   <option v-for="c in cohorts" :key="c.id" :value="c.id" class="text-zinc-900 bg-white">
                     Cohort {{ c.number }} ({{ c.track?.name || 'Unknown' }})
                   </option>
                 </select>
-                <p v-if="formErrors.cohort_id" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.cohort_id }}</p>
+                <p v-if="formErrors.cohort_id" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.cohort_id }}</p>
               </div>
 
               <!-- Lab Group Select -->
@@ -754,12 +754,12 @@ onMounted(() => {
                   id="compensation_type"
                   v-model="form.compensation_type"
                   class="w-full px-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] bg-white text-zinc-900"
-                  :class="{ 'border-red-500': formErrors.compensation_type }"
+                  :class="{ 'border-danger-border': formErrors.compensation_type }"
                 >
                   <option value="internal" class="text-zinc-900 bg-white">Internal (Monthly Salaried Salary)</option>
                   <option value="external" class="text-zinc-900 bg-white">External (Contractual Hourly Wages)</option>
                 </select>
-                <p v-if="formErrors.compensation_type" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.compensation_type }}</p>
+                <p v-if="formErrors.compensation_type" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.compensation_type }}</p>
               </div>
 
               <!-- Fixed Salary -->
@@ -771,9 +771,9 @@ onMounted(() => {
                   type="number"
                   placeholder="e.g. 5000"
                   class="w-full px-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                  :class="{ 'border-red-500': formErrors.fixed_salary }"
+                  :class="{ 'border-danger-border': formErrors.fixed_salary }"
                 />
-                <p v-if="formErrors.fixed_salary" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.fixed_salary }}</p>
+                <p v-if="formErrors.fixed_salary" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.fixed_salary }}</p>
               </div>
 
               <!-- Hourly Rate -->
@@ -785,9 +785,9 @@ onMounted(() => {
                   type="number"
                   placeholder="e.g. 50"
                   class="w-full px-3 py-2 border border-surface-300 rounded-md focus:outline-none focus:border-[#990011] text-zinc-900 bg-white"
-                  :class="{ 'border-red-500': formErrors.hourly_rate }"
+                  :class="{ 'border-danger-border': formErrors.hourly_rate }"
                 />
-                <p v-if="formErrors.hourly_rate" class="text-[10px] text-red-650 mt-0.5">{{ formErrors.hourly_rate }}</p>
+                <p v-if="formErrors.hourly_rate" class="text-[10px] text-danger-content mt-0.5">{{ formErrors.hourly_rate }}</p>
               </div>
             </div>
           </div>
@@ -821,7 +821,7 @@ onMounted(() => {
     >
       <div class="bg-white border border-surface-200 text-zinc-900 rounded-xl shadow-lg max-w-sm w-full overflow-hidden flex flex-col p-6 space-y-4">
         <div class="flex items-start gap-3 text-xs text-zinc-800">
-          <div class="w-8 h-8 rounded-full bg-red-50 border border-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
+          <div class="w-8 h-8 rounded-full bg-danger border border-danger-border text-danger-content flex items-center justify-center flex-shrink-0">
             <i class="pi pi-exclamation-triangle text-sm"></i>
           </div>
           <div class="space-y-1.5">
@@ -841,7 +841,7 @@ onMounted(() => {
           </button>
           <button
             @click="confirmDeleteUser"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+            class="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
             :disabled="deletingUserActive"
           >
             <i v-if="deletingUserActive" class="pi pi-spin pi-spinner text-xs"></i>

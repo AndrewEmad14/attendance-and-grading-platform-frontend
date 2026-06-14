@@ -125,14 +125,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+  <div class="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-6">
 
     <div>
       <h1 class="text-xl font-semibold text-zinc-800">Attendance Management</h1>
       <p class="text-sm text-zinc-700 mt-0.5">Monitor cohort health, student balances and excuse requests</p>
     </div>
 
-    <div v-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
@@ -150,9 +150,9 @@ onMounted(async () => {
           </div>
           <span :class="[
             'text-xs font-medium px-2 py-0.5 rounded-full border',
-            avgBalance >= 70 ? 'bg-emerald-50 text-success border-emerald-200' :
-              avgBalance >= 40 ? 'bg-amber-50 text-amber-500 border-amber-200' :
-                'bg-red-50 text-red-700 border-red-200'
+            avgBalance >= 70 ? 'bg-success text-success-content border-success-border' :
+              avgBalance >= 40 ? 'bg-warning text-warning-content border-warning-border' :
+                'bg-danger text-danger-content border-danger-border'
           ]">
             {{ avgBalance >= 70 ? 'Good' : avgBalance >= 40 ? 'At Risk' : 'Critical' }}
           </span>
@@ -164,7 +164,7 @@ onMounted(async () => {
         <div class="w-full h-1.5 rounded-full bg-zinc-100 overflow-hidden">
           <div :class="[
             'h-full rounded-full transition-all',
-            avgBalance >= 70 ? 'bg-success' : avgBalance >= 40 ? 'bg-amber-500' : 'bg-red-700'
+            avgBalance >= 70 ? 'bg-success-content' : avgBalance >= 40 ? 'bg-warning-content' : 'bg-danger-content'
           ]" :style="{ width: `${avgBalance}%` }" />
         </div>
       </div>
@@ -172,23 +172,24 @@ onMounted(async () => {
       <!-- Pending Excuses — entire card is the nav target -->
       <div @click="router.push({ name: 'AdminExcuses' })" class="group rounded-xl border border-zinc-200 bg-white p-5 space-y-3 cursor-pointer
                transition-all duration-200
-               hover:border-red-200 hover:bg-red-50 hover:shadow-sm hover:-translate-y-0.5">
+               hover:border-danger-border hover:bg-danger/90 hover:shadow-sm hover:-translate-y-0.5">
         <div class="flex items-center justify-between">
           <div
-            class="flex items-center gap-2 text-xs font-semibold text-zinc-700 group-hover:text-red-700 transition-colors">
+            class="flex items-center gap-2 text-xs font-semibold text-zinc-700 group-hover:text-danger-content transition-colors">
             <div
-              class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center group-hover:bg-red-100 transition-colors">
-              <i class="pi pi-inbox text-red-700 text-xs" />
+              class="w-7 h-7 rounded-lg bg-danger flex items-center justify-center group-hover:bg-danger/90 transition-colors">
+              <i class="pi pi-inbox text-danger-content text-xs" />
             </div>
             Pending Excuses
           </div>
-          <span v-if="pendingCount > 0" class="w-2 h-2 rounded-full bg-red-700 animate-pulse" />
+          <span v-if="pendingCount > 0" class="w-2 h-2 rounded-full bg-danger animate-pulse" />
         </div>
         <div>
-          <p class="text-3xl font-bold text-zinc-800 group-hover:text-red-700 transition-colors">{{ pendingCount }}</p>
+          <p class="text-3xl font-bold text-zinc-800 group-hover:text-danger-content transition-colors">{{ pendingCount
+            }}</p>
           <p class="text-xs text-zinc-700 mt-0.5">Require Review</p>
         </div>
-        <div class="text-xs font-semibold text-red-700 flex items-center gap-2 transition-all">
+        <div class="text-xs font-semibold text-danger-content flex items-center gap-2 transition-all">
           Review Now <i class="pi pi-arrow-right group-hover:translate-x-0.5 transition-transform"
             style="font-size: 0.6rem;" />
         </div>
@@ -197,8 +198,8 @@ onMounted(async () => {
       <!-- At Risk Students -->
       <div class="rounded-xl border border-zinc-200 bg-white p-5 space-y-3">
         <div class="flex items-center gap-2 text-xs font-semibold text-zinc-700">
-          <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
-            <i class="pi pi-exclamation-triangle text-amber-500 text-xs" />
+          <div class="w-7 h-7 rounded-lg bg-warning flex items-center justify-center">
+            <i class="pi pi-exclamation-triangle text-warning-content text-xs" />
           </div>
           At-Risk Students
         </div>
@@ -298,16 +299,16 @@ onMounted(async () => {
                 <span :class="[
                   'text-sm font-semibold',
                   student.attendance_balance >= 150 ? 'text-success' :
-                    student.attendance_balance >= 40 ? 'text-amber-500' : 'text-red-700'
+                    student.attendance_balance >= 40 ? 'text-warning-content' : 'text-danger-content'
                 ]">{{ student.attendance_balance }}</span>
                 <span class="text-xs text-zinc-300 ml-1">/ 250</span>
               </td>
               <td class="px-4 py-3">
                 <span :class="[
                   'text-xs font-medium px-2 py-0.5 rounded-full border',
-                  student.attendance_balance >= 150 ? 'bg-emerald-50 text-success border-emerald-200' :
-                    student.attendance_balance >= 40 ? 'bg-amber-50 text-amber-500 border-amber-200' :
-                      'bg-red-50 text-red-700 border-red-200'
+                  student.attendance_balance >= 150 ? 'bg-success text-success border-success-border' :
+                    student.attendance_balance >= 40 ? 'bg-warning text-warning-content border-warning-border' :
+                      'bg-danger text-danger-content border-danger-border'
                 ]">
                   {{ student.attendance_balance >= 150 ? 'Good' : student.attendance_balance >= 40 ? 'At Risk' :
                     'Critical' }}

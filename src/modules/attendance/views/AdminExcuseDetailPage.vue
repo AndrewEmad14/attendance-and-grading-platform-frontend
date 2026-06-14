@@ -73,7 +73,7 @@ const formatDate = (iso: string) =>
       <div class="h-40 bg-zinc-100 rounded-xl animate-pulse" />
     </div>
 
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-else-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 
@@ -140,13 +140,13 @@ const formatDate = (iso: string) =>
 
       <div v-if="excuse.status === 'pending'" class="flex gap-3">
         <button @click="approve" :disabled="!!actionLoading"
-          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-success disabled:opacity-50 transition flex items-center justify-center gap-2">
+          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-success hover:bg-success disabled:opacity-50 transition flex items-center justify-center gap-2">
           <i v-if="actionLoading === 'approve'" class="pi pi-spin pi-spinner" />
           <i v-else class="pi pi-check" />
           Approve
         </button>
         <button @click="reject" :disabled="!!actionLoading"
-          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition flex items-center justify-center gap-2">
+          class="cursor-pointer disabled:cursor-not-allowed flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-danger hover:bg-danger/90 disabled:opacity-50 transition flex items-center justify-center gap-2">
           <i v-if="actionLoading === 'reject'" class="pi pi-spin pi-spinner" />
           <i v-else class="pi pi-times" />
           Reject

@@ -44,17 +44,17 @@ import { computed } from 'vue'
   <div class="space-y-4">
     <!-- Stats row -->
     <div v-if="!loading && roster.length" class="grid grid-cols-3 gap-3">
-      <div class="rounded-lg bg-emerald-50 border border-emerald-100 p-3 text-center">
+      <div class="rounded-lg bg-success border border-success-border p-3 text-center">
         <p class="text-2xl font-bold text-success">{{ stats.present }}</p>
-        <p class="text-xs text-emerald-600 mt-0.5">Present</p>
+        <p class="text-xs text-success-content mt-0.5">Present</p>
       </div>
-      <div class="rounded-lg bg-red-50 border border-red-100 p-3 text-center">
-        <p class="text-2xl font-bold text-red-700">{{ stats.absent }}</p>
-        <p class="text-xs text-red-600 mt-0.5">Absent</p>
+      <div class="rounded-lg bg-danger border border-danger-border p-3 text-center">
+        <p class="text-2xl font-bold text-danger-content">{{ stats.absent }}</p>
+        <p class="text-xs text-danger-content mt-0.5">Absent</p>
       </div>
-      <div class="rounded-lg bg-sky-50 border border-sky-100 p-3 text-center">
-        <p class="text-2xl font-bold text-sky-700">{{ stats.excused }}</p>
-        <p class="text-xs text-sky-600 mt-0.5">Excused</p>
+      <div class="rounded-lg bg-info border border-info-border p-3 text-center">
+        <p class="text-2xl font-bold text-info-content">{{ stats.excused }}</p>
+        <p class="text-xs text-info-content mt-0.5">Excused</p>
       </div>
     </div>
 
@@ -64,7 +64,7 @@ import { computed } from 'vue'
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <div v-else-if="error" class="rounded-lg border border-danger-border bg-danger p-4 text-sm text-danger-content">
       <i class="pi pi-exclamation-triangle mr-2" />{{ error }}
     </div>
 

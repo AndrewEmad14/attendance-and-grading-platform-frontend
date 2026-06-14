@@ -149,9 +149,7 @@ onMounted(loadAll)
 <template>
   <div class="card bg-white border border-surface-200 shadow-xs w-full overflow-hidden">
     <!-- Header band -->
-    <div
-      class="p-4 bg-surface-50 border-b border-surface-200 flex flex-wrap justify-between items-center gap-2"
-    >
+    <div class="p-4 bg-surface-50 border-b border-surface-200 flex flex-wrap justify-between items-center gap-2">
       <div>
         <h3 class="font-bold text-surface-900 text-sm">My Deliverables</h3>
         <p class="text-xs text-surface-500">
@@ -159,8 +157,7 @@ onMounted(loadAll)
         </p>
       </div>
       <span
-        class="text-[10px] font-mono bg-success/10 text-success border border-success/20 px-2 py-0.5 rounded"
-      >
+        class="text-[10px] font-mono bg-success/10 text-success-content border border-success/20 px-2 py-0.5 rounded">
         Student Consumption Blueprint
       </span>
     </div>
@@ -179,14 +176,8 @@ onMounted(loadAll)
             Enrolled Courses
           </h4>
           <div class="w-full overflow-x-auto border border-surface-200 rounded-lg">
-            <DataTable
-              v-model:selection="selectedCourseRow"
-              :value="courses"
-              selectionMode="single"
-              dataKey="id"
-              class="text-xs min-w-130"
-              responsiveLayout="scroll"
-            >
+            <DataTable v-model:selection="selectedCourseRow" :value="courses" selectionMode="single" dataKey="id"
+              class="text-xs min-w-130" responsiveLayout="scroll">
               <template #empty>
                 <div class="text-center text-surface-400 py-6 text-sm">
                   No courses found for your cohort.
@@ -225,10 +216,8 @@ onMounted(loadAll)
             </h4>
           </div>
 
-          <div
-            v-if="!selectedCourse.deliverables?.length"
-            class="p-6 border border-dashed border-surface-200 rounded-xl bg-surface-50/40 text-center text-xs text-surface-400"
-          >
+          <div v-if="!selectedCourse.deliverables?.length"
+            class="p-6 border border-dashed border-surface-200 rounded-xl bg-surface-50/40 text-center text-xs text-surface-400">
             No deliverables in this course yet.
           </div>
 
@@ -237,12 +226,10 @@ onMounted(loadAll)
               <!-- Timeline node, colored by status -->
               <span
                 class="absolute -left-7.75 top-1.5 border-2 w-4 h-4 rounded-full flex items-center justify-center shadow-2xs z-10"
-                :class="statusMeta(d).node"
-              ></span>
+                :class="statusMeta(d).node"></span>
 
               <div
-                class="p-4 border border-surface-200 rounded-lg bg-surface-50/40 hover:bg-surface-50 transition-colors duration-150 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-              >
+                class="p-4 border border-surface-200 rounded-lg bg-surface-50/40 hover:bg-surface-50 transition-colors duration-150 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="space-y-1 min-w-0">
                   <div class="flex flex-wrap items-center gap-2">
                     <span class="badge border text-[10px] font-medium" :class="statusMeta(d).badge">
@@ -252,10 +239,7 @@ onMounted(loadAll)
                       {{ d.type }}
                     </span>
                   </div>
-                  <h5
-                    class="text-sm font-bold text-surface-900 tracking-tight truncate"
-                    :title="d.name"
-                  >
+                  <h5 class="text-sm font-bold text-surface-900 tracking-tight truncate" :title="d.name">
                     {{ d.name }}
                   </h5>
                   <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-surface-500">
@@ -264,25 +248,21 @@ onMounted(loadAll)
                       Due: {{ d.due_date ?? 'No deadline' }}
                     </span>
                     <span class="flex items-center gap-1">
-                      <i class="pi pi-star text-[11px]"></i>
+                      <i class="pi pi-star-fill text-warning-content text-[11px]"></i>
                       Score: <span class="font-mono text-surface-700">{{ scoreDisplay(d) }}</span>
                     </span>
                   </div>
                 </div>
 
                 <div class="shrink-0 self-start sm:self-center">
-                  <button
-                    v-if="canSubmit(d)"
-                    class="btn btn-sm btn-primary text-white normal-case font-medium flex items-center gap-1.5"
-                    @click="openSubmit(d)"
-                  >
+                  <button v-if="canSubmit(d)"
+                    class="btn btn-sm btn-primary text-white normal-case font-medium flex items-center gap-1.5 cursor-pointer"
+                    @click="openSubmit(d)">
                     <i class="pi pi-upload text-[10px]"></i> Submit
                   </button>
-                  <span
-                    v-else
-                    class="badge border border-surface-200 bg-white text-surface-600 text-xs py-2 px-3 font-medium flex items-center gap-1.5"
-                  >
-                    <i class="pi pi-check text-[10px] text-success"></i> Submitted
+                  <span v-else
+                    class="badge border border-surface-200 bg-white text-surface-600 text-xs py-2 px-3 font-medium flex items-center gap-1.5">
+                    <i class="pi pi-check text-[10px] text-success-content"></i> Submitted
                   </span>
                 </div>
               </div>
@@ -293,11 +273,7 @@ onMounted(loadAll)
     </div>
 
     <!-- Submit modal (create-only; no resubmission) -->
-    <SubmitDeliverableModal
-      v-if="modalDeliverable"
-      v-model:visible="modalOpen"
-      :deliverable="modalDeliverable"
-      @submitted="onSubmitted"
-    />
+    <SubmitDeliverableModal v-if="modalDeliverable" v-model:visible="modalOpen" :deliverable="modalDeliverable"
+      @submitted="onSubmitted" />
   </div>
 </template>
