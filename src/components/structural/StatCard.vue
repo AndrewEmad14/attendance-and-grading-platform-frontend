@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="card bg-white border border-surface-200 shadow-xs p-4 flex flex-col justify-between">
+  <div class="card bg-white border border-surface-200 shadow-xs p-3 sm:p-4 flex flex-col justify-between">
     <div>
       <div class="text-xs font-semibold text-surface-400 uppercase tracking-wider truncate">
         {{ label }}

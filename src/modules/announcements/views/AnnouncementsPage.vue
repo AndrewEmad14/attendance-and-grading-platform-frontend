@@ -286,7 +286,7 @@ onMounted(async () => {
       </div>
 
       <!-- Action buttons for staff only -->
-      <div v-if="isStaff" class="flex gap-2 w-full sm:w-auto">
+      <div v-if="isStaff" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <button
           v-if="!isTrackAdminOrInstructor"
           @click="openBroadcastModal"
@@ -308,7 +308,7 @@ onMounted(async () => {
 
     <!-- Toolbar filter -->
     <div class="flex items-center justify-between p-4 bg-white border border-surface-200 rounded-xl shadow-xs">
-      <div class="flex items-center gap-3 w-full">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
         <span class="text-xs font-bold text-surface-600 uppercase tracking-wider">Cohort Scope:</span>
         
         <!-- Cohort select dropdown for staff -->
@@ -371,7 +371,7 @@ onMounted(async () => {
           <div v-if="ann.cohort_id === null" class="absolute top-0 left-0 right-0 h-1 bg-zinc-800"></div>
 
           <!-- Announcement Header Info -->
-          <div class="flex justify-between items-start gap-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div class="space-y-1">
               <div class="flex flex-wrap items-center gap-2">
                 <h3 class="text-lg font-bold text-zinc-900 leading-snug">{{ ann.title }}</h3>
@@ -420,7 +420,7 @@ onMounted(async () => {
     <!-- Feed Pagination controls -->
     <div
       v-if="lastPage > 1"
-      class="flex items-center justify-between p-4 bg-white border border-surface-200 rounded-xl shadow-xs text-xs font-semibold text-surface-600"
+      class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white border border-surface-200 rounded-xl shadow-xs text-xs font-semibold text-surface-600"
     >
       <span>Showing {{ announcements.length }} of {{ totalAnnouncements }} notices</span>
       <div class="flex items-center gap-3">

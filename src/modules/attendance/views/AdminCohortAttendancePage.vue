@@ -125,7 +125,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+  <div class="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-6">
 
     <div>
       <h1 class="text-xl font-semibold text-zinc-800">Attendance Management</h1>

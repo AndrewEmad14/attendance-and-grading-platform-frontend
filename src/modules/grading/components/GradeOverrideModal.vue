@@ -87,7 +87,7 @@ const commitOverrideChange = async () => {
     @update:visible="$emit('update:visible', $event)"
     modal
     :header="deliverableType === 'lab' ? 'Manual Grade Override Authorization' : 'Enter Grade'"
-    :style="{ width: '450px' }"
+    :style="{ width: '90vw', maxWidth: '450px' }"
     class="text-surface-800"
   >
     <div class="space-y-4 pt-2">
