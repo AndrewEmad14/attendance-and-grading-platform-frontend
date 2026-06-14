@@ -183,7 +183,8 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
       <!-- At-Risk Students Table -->
       <ContentCard title="At-Risk Students" :isTableContainer="true">
         <template #headerAction>
-          <div class="flex items-center gap-2">
+          <!-- Filters & Search -->
+          <div class="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0">
             <!-- Risk reason filter -->
             <select
               v-model="selectedRisk"
@@ -202,7 +203,7 @@ function visibleCourses(studentId: number, courses: FailingCourse[]): FailingCou
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search name or email…"
-                class="input input-bordered input-xs pl-7 w-52 bg-white text-surface-800 border-surface-300"
+                class="input input-bordered input-xs pl-7 w-full sm:w-52 bg-white text-surface-800 border-surface-300"
               />
             </div>
           </div>

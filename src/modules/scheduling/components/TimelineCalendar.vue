@@ -93,9 +93,9 @@ function handlePageChange(event: any) {
 
       <div class="grid grid-cols-1 gap-3">
         <div v-for="session in sessions" :key="session.id"
-          class="flex items-center justify-between p-3 bg-white border border-surface-200 rounded-xl shadow-xs hover:border-surface-300 hover:shadow-sm transition-colors cursor-pointer"
+          class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white border border-surface-200 rounded-xl shadow-xs hover:border-surface-300 hover:shadow-sm transition-colors cursor-pointer"
           @click="router.push({ name: 'EngagementDetail', params: { engagementId: session.id } })">
-          <div class="flex items-start gap-4 min-w-0">
+          <div class="flex items-start gap-3 sm:gap-4 min-w-0 w-full sm:w-auto">
             <div class="text-center bg-surface-50 px-2.5 py-1.5 rounded-lg border border-surface-100 min-w-19">
               <div class="text-xs font-bold text-surface-900">
                 {{ formatTime(session.starts_at) }}
@@ -125,7 +125,7 @@ function handlePageChange(event: any) {
             </div>
           </div>
 
-          <div v-if="showActions" class="flex items-center gap-1 shrink-0">
+          <div v-if="showActions" class="flex items-center gap-2 shrink-0 self-end sm:self-auto w-full sm:w-auto justify-end border-t sm:border-none border-surface-100 pt-2 sm:pt-0">
 
             <button v-if="true || session.type !== 'business_session'" type="button"
               @click.stop="$emit('edit', session)"
@@ -150,9 +150,9 @@ function handlePageChange(event: any) {
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} engagements" :pt="{
           root: {
-            class: 'bg-transparent border-none p-0 flex justify-between items-center text-xs',
+            class: 'bg-transparent border-none p-0 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs',
           },
-          nav: { class: 'flex gap-1' },
+          nav: { class: 'flex flex-wrap justify-center gap-1' },
           pageButton: (options: any) => ({
             class: [
               'w-8 h-8 rounded-lg flex items-center justify-center font-medium transition-colors border text-xs',

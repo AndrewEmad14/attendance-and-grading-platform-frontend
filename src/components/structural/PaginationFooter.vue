@@ -15,7 +15,7 @@ defineEmits<{
 <template>
   <div
     v-if="last > 1"
-    class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-100 bg-white"
+    class="flex flex-col sm:flex-row flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-100 bg-white"
   >
     <div class="text-xs text-surface-500">
       Showing page <span class="font-semibold text-surface-900">{{ current }}</span> of

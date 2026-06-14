@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
   >
     <div
       v-if="title"
-      class="p-4 bg-surface-50 border-b border-surface-200 flex flex-wrap justify-between items-center gap-2"
+      class="p-3 sm:p-4 bg-surface-50 border-b border-surface-200 flex flex-wrap justify-between items-center gap-2"
     >
       <div>
         <h3 class="font-bold text-surface-900 text-sm tracking-tight">{{ title }}</h3>

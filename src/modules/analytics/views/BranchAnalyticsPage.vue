@@ -340,9 +340,9 @@ const outcomesBarOptions = {
 </script>
 
 <template>
-  <div class="space-y-6 bg-slate-50 min-h-screen p-6 -m-8">
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+  <div class="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 bg-surface-50 min-h-screen">
+    <!-- Header Configuration & Global Filters -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <div class="text-xs font-semibold tracking-wider text-slate-500 uppercase">
           BRANCH OVERVIEW <span class="mx-1 text-slate-300">&rsaquo;</span>

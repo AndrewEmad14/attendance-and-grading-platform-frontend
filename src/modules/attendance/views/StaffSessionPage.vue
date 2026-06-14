@@ -53,7 +53,7 @@ onMounted(async () => {
     <template v-else-if="engagement">
       <!-- Session header -->
       <div class="rounded-xl border border-zinc-200 bg-white p-5">
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-widest text-zinc-400 mb-1">
               {{ engagement.display_context }}
