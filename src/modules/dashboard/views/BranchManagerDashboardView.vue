@@ -11,6 +11,12 @@ const cards = [
     to: '/analytics',
   },
   {
+    label: 'At-Risk Students',
+    description: 'View and manage at risk students.',
+    icon: 'pi pi-exclamation-triangle',
+    to: '/at-risk',
+  },
+  {
     label: 'Finance',
     description: 'View branch billing rollup.',
     icon: 'pi pi-wallet',
@@ -21,6 +27,12 @@ const cards = [
     description: 'Inspect cohort configuration across every track.',
     icon: 'pi pi-sliders-h',
     to: '/cohorts',
+  },
+  {
+    label: 'System Users',
+    description: 'View and manage system users.',
+    icon: 'pi pi-users',
+    to: '/users',
   },
 ]
 </script>

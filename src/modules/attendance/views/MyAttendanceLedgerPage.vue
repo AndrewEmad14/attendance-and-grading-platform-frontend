@@ -42,7 +42,7 @@ onMounted(loadMeta)
     </div>
     <div v-else-if="meta" class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:items-start">
       <!-- Sidebar -->
-      <div class="space-y-4 sticky top-0 h-screen overflow-y-auto">
+      <div class="space-y-4  overflow-y-auto">
         <AttendanceBalanceCard :balance="meta.current_balance" :max="MAX_BALANCE"
           :deducted="MAX_BALANCE - meta.current_balance" />
         <div class="rounded-xl border border-zinc-200 bg-white p-5">
