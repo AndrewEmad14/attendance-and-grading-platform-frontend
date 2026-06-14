@@ -60,20 +60,13 @@ async function handleLogout() {
 
 <template>
   <div class="min-h-screen bg-surface-50 flex overflow-hidden">
-    <!-- Backdrop for mobile -->
-    <div
-      v-if="isMobileMenuOpen"
-      @click="closeMobileMenu"
-      class="fixed inset-0 bg-black/50 z-40 lg:hidden cursor-pointer"
-    ></div>
+    <div v-if="isMobileMenuOpen" @click="closeMobileMenu"
+      class="fixed inset-0 bg-black/50 z-40 lg:hidden cursor-pointer"></div>
 
-    <!-- Sidebar / Drawer -->
-    <aside
-      :class="[
-        'w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0 h-screen fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out',
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      ]"
-    >
+    <aside :class="[
+      'w-64 bg-surface-900 text-surface-100 flex flex-col border-r border-surface-800 shrink-0 h-screen fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out',
+      isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+    ]">
       <div class="h-16 flex items-center justify-between px-6 border-b border-surface-800 gap-2">
         <div class="flex items-center gap-2">
           <i class="pi pi-graduation-cap text-primary text-xl"></i>
@@ -85,7 +78,8 @@ async function handleLogout() {
       </div>
       <nav class="flex-1 p-4 overflow-y-auto space-y-3">
         <RouterLink v-for="item in allowedNavItems" :key="item.path" :to="item.path"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer" :class="isNavActive(item.path)
+          class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer"
+          :class="isNavActive(item.path)
             ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20'
             : 'text-surface-400 hover:bg-surface-800 hover:text-white'
             ">
@@ -102,18 +96,18 @@ async function handleLogout() {
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
       <header
         class="h-16 bg-white border-b border-surface-200 flex items-center justify-between px-4 sm:px-8 shadow-xs shrink-0 z-30">
-        
+
         <div class="flex items-center gap-3">
-          <button class="lg:hidden text-surface-600 hover:text-surface-900 cursor-pointer" @click="toggleMobileMenu">
-            <i class="pi pi-bars text-xl"></i>
+          <button @click="toggleMobileMenu"
+            class="lg:hidden text-surface-600 hover:text-surface-900 cursor-pointer p-1 flex items-center justify-center m-0">
+            <i class="pi pi-bars text-xl leading-none"></i>
           </button>
-          <h1 class="text-xl font-bold text-surface-800 tracking-tight truncate">
+          <h1 class="text-xl font-bold text-surface-800 tracking-tight truncate leading-none pb-0.25">
             {{ pageTitle }}
           </h1>
         </div>
 
         <div class="flex items-center gap-4">
-          <!-- Logged in: profile link + avatar + logout -->
           <template v-if="auth.currentUser">
             <RouterLink to="/profile"
               class="cursor-pointer flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -141,7 +135,6 @@ async function handleLogout() {
             </button>
           </template>
 
-          <!-- Logged out: sign-in link -->
           <template v-else>
             <RouterLink to="/login"
               class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors cursor-pointer">
